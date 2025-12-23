@@ -48,9 +48,9 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4 w-full sm:w-auto">
+                <div class="flex flex-wrap items-center gap-2 sm:gap-4 w-full lg:w-auto">
                     <!-- Total Count Badge -->
-                    <div class="flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-xl">
+                    <div class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-primary/10 border border-primary/30 rounded-xl">
                         <span class="material-symbols-outlined text-primary text-lg">school</span>
                         <span class="text-primary font-bold">{{ $totalStudents }}</span>
                         <span class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Siswa</span>
@@ -60,28 +60,29 @@
                     @if($search || $kelas)
                         <button 
                             wire:click="resetFilters"
-                            class="flex items-center gap-2 px-4 py-3 bg-white/5 border border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:text-text-primary-dark hover:border-white/20 rounded-xl transition-colors"
+                            class="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-white/5 border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark hover:border-primary/30 rounded-xl transition-colors"
                         >
                             <span class="material-symbols-outlined text-lg">refresh</span>
-                            Reset
+                            <span class="hidden sm:inline">Reset</span>
                         </button>
                     @endif
 
                     <!-- Export Excel Button -->
                     <button 
                         wire:click="exportExcel"
-                        class="flex items-center gap-2 px-5 py-3 bg-primary text-white font-bold rounded-xl hover:brightness-110 transition-all"
+                        class="flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-primary text-white font-bold rounded-xl hover:brightness-110 transition-all text-sm sm:text-base"
                     >
                         <span class="material-symbols-outlined text-lg">download</span>
-                        Export Excel
+                        <span class="hidden xs:inline">Export</span>
+                        <span class="hidden sm:inline">Excel</span>
                     </button>
 
                     <!-- Cetak PDF Button -->
                     @if($totalStudents > 0)
                     <a href="{{ route('akademik.data-siswa.download') }}"
-                        class="flex items-center gap-2 px-5 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-all">
+                        class="flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-all text-sm sm:text-base">
                         <span class="material-symbols-outlined text-lg">print</span>
-                        Cetak
+                        <span class="hidden sm:inline">Cetak</span>
                     </a>
                     @endif
                 </div>

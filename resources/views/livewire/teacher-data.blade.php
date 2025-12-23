@@ -34,10 +34,13 @@
                     <!-- Filter Jabatan -->
                     <div class="relative sm:w-56">
                         <select wire:model.live="jabatan"
-                            class="w-full px-4 py-3 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark rounded-xl text-text-primary-light dark:text-text-primary-dark focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all appearance-none cursor-pointer">
-                            <option value="">Semua Jabatan</option>
+                            class="w-full px-4 py-3 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark rounded-xl text-gray-900 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all appearance-none cursor-pointer"
+                            style="color-scheme: light dark;">
+                            <option value="" class="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">Semua
+                                Jabatan</option>
                             @foreach($jabatanOptions as $option)
-                                <option value="{{ $option }}">{{ $option }}</option>
+                                <option value="{{ $option }}"
+                                    class="bg-white dark:bg-gray-800 text-gray-900 dark:text-white">{{ $option }}</option>
                             @endforeach
                         </select>
                     </div>
