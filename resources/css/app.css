@@ -1,0 +1,257 @@
+@import url('https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&family=Noto+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+@import "tailwindcss";
+@config "../../tailwind.config.js";
+
+/* CSS Custom Properties for Emerald Green Theme */
+:root {
+    --color-emerald: #10B981;
+    --color-emerald-dark: #059669;
+    --color-emerald-light: #34D399;
+
+    /* Light Mode Defaults */
+    --bg-body: #F9FAFB;
+    --bg-card: #FFFFFF;
+    --text-main: #111827;
+    --text-muted: #4B5563;
+    --border-color: #E5E7EB;
+    --shadow-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark {
+    /* Dark Mode Overrides */
+    --bg-body: #0F172A;
+    --bg-card: #1E293B;
+    --text-main: #F8FAFC;
+    --text-muted: #94A3B8;
+    --border-color: #334155;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Smooth transitions for theme switching */
+body,
+.card,
+.surface {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Custom Animations */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+.masonry-grid {
+    column-count: 1;
+    column-gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .masonry-grid {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 1024px) {
+    .masonry-grid {
+        column-count: 3;
+    }
+}
+
+.masonry-item {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+}
+
+/* Visi Content Styling - Green color, larger text */
+.visi-content,
+.visi-content p,
+.visi-content span,
+.visi-content strong,
+.visi-content em,
+.visi-content * {
+    color: #10B981 !important;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+
+    .visi-content,
+    .visi-content p,
+    .visi-content span,
+    .visi-content strong,
+    .visi-content em,
+    .visi-content * {
+        font-size: 1.5rem;
+    }
+}
+
+/* Misi Content Styling - Same as news-content but no extra box */
+.misi-content p {
+    margin-bottom: 1rem;
+    line-height: 1.8;
+    color: var(--text-main);
+}
+
+.misi-content ol {
+    list-style-type: decimal;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.misi-content ul {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.misi-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.7;
+    color: var(--text-main);
+}
+
+/* News Content Styling for RichEditor output */
+.news-content p {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    color: var(--text-main);
+}
+
+.news-content h1,
+.news-content h2 {
+    color: var(--text-main);
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.news-content h3 {
+    color: var(--text-main);
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+}
+
+.news-content h4 {
+    color: var(--text-main);
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.125rem;
+}
+
+.news-content ul {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.news-content ol {
+    list-style-type: decimal;
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.news-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.7;
+    color: var(--text-main);
+}
+
+.news-content blockquote {
+    border-left: 4px solid var(--color-emerald);
+    padding-left: 1.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    background-color: var(--bg-card);
+    border-radius: 0 0.5rem 0.5rem 0;
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+.news-content a {
+    color: var(--color-emerald);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.news-content a:hover {
+    color: var(--color-emerald-light);
+}
+
+.news-content strong {
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.news-content em {
+    font-style: italic;
+}
+
+.news-content pre {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+}
+
+.news-content code {
+    background-color: var(--bg-card);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    color: var(--color-emerald);
+    font-size: 0.875rem;
+}
+
+.news-content hr {
+    border-color: var(--border-color);
+    margin: 2rem 0;
+}
+
+.news-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+    margin: 1.5rem 0;
+}
+
+.news-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+}
+
+.news-content th,
+.news-content td {
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    text-align: left;
+    color: var(--text-main);
+}
+
+.news-content th {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    font-weight: 600;
+}
