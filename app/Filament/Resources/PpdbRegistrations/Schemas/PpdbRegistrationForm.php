@@ -76,6 +76,7 @@ class PpdbRegistrationForm
                                         'PAUD' => 'PAUD',
                                         'BIMBA' => 'BIMBA',
                                         'Orang Tua' => 'Orang Tua',
+                                        'Pindahan' => 'Pindahan',
                                         'Lainnya' => 'Lainnya',
                                     ])
                                     ->required()
@@ -121,15 +122,33 @@ class PpdbRegistrationForm
                             ]),
 
                         Section::make('Dokumen Pendukung')
-                            ->schema([
-                                FileUpload::make('dokumen.kk')->label('Kartu Keluarga')->disk('public')->image()->openable()->downloadable()->columnSpanFull(),
-                                FileUpload::make('dokumen.akta')->label('Akta Kelahiran')->disk('public')->image()->openable()->downloadable()->columnSpanFull(),
-                                FileUpload::make('dokumen.ijazah')->label('Ijazah')->disk('public')->image()->openable()->downloadable()->columnSpanFull(),
-                                FileUpload::make('dokumen.foto')->label('Pas Foto')->disk('public')->image()->openable()->downloadable()->columnSpanFull(),
-                            ]),
+                            ->schema(static::getDokumenSchema()),
                     ])
                     ->columnSpan(['lg' => 1]),
             ])
             ->columns(3);
+    }
+
+    /**
+     * Generate dynamic document upload schema based on persyaratan settings
+     */
+    protected static function getDokumenSchema(): array
+    {
+        $persyaratan = \App\Models\AppSetting::getPpdbPersyaratan();
+        $schema = [];
+
+        foreach ($persyaratan as $item) {
+            $key = \Illuminate\Support\Str::slug($item, '_');
+            $schema[] = FileUpload::make("dokumen.{$key}")
+                ->label($item)
+                ->disk('public')
+                ->directory('ppdb/' . $key)
+                ->image()
+                ->openable()
+                ->downloadable()
+                ->columnSpanFull();
+        }
+
+        return $schema;
     }
 }

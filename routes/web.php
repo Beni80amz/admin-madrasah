@@ -45,5 +45,9 @@ Route::get('/verifikasi-surat-masuk/{id}', [App\Http\Controllers\VerifikasiSurat
 Route::get('/akses-terbatas', App\Livewire\Unauthorized::class)->name('unauthorized');
 
 // PPDB (Penerimaan Peserta Didik Baru)
+Route::get('/ppdb', App\Livewire\Ppdb\Ppdb::class)->name('ppdb');
 Route::get('/ppdb/daftar', App\Livewire\Ppdb\Register::class)->name('ppdb.register');
+Route::get('/ppdb/sukses/{id}', App\Livewire\Ppdb\Success::class)->name('ppdb.success');
+Route::get('/ppdb/receipt/{id}/download', [App\Http\Controllers\PpdbReceiptController::class, 'download'])->name('ppdb.receipt.download');
+Route::get('/ppdb/receipt/{id}/preview', [App\Http\Controllers\PpdbReceiptController::class, 'stream'])->name('ppdb.receipt.preview');
 

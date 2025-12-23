@@ -10,6 +10,7 @@ use Livewire\WithFileUploads;
 use App\Models\PpdbRegistration;
 use App\Models\AppSetting;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Str;
 
 #[Layout('components.layouts.public')]
 class Register extends Component
@@ -38,11 +39,9 @@ class Register extends Component
     public $no_hp_ortu;
     public $nama_wali;
 
-    // Step 3: Dokumen
-    public $file_kk;
-    public $file_akta;
-    public $file_ijazah;
-    public $file_foto;
+    // Step 3: Dokumen - Dynamic based on persyaratan
+    public $dokumen = [];
+    public $persyaratanDokumen = [];
 
     // Status
     public $success = false;
@@ -55,12 +54,27 @@ class Register extends Component
         }
 
         $this->agama = 'Islam'; // Default value
+
+        // Load persyaratan from settings
+        $this->persyaratanDokumen = AppSetting::getPpdbPersyaratan();
+
+        // Initialize dokumen array with null values
+        foreach ($this->persyaratanDokumen as $index => $item) {
+            $this->dokumen[$index] = null;
+        }
+    }
+
+    public function getTahunAjaranProperty()
+    {
+        return AppSetting::getValue('ppdb_tahun_ajaran', date('Y') . '/' . (date('Y') + 1));
     }
 
     #[Title('Pendaftaran Siswa Baru (PPDB)')]
     public function render()
     {
-        return view('livewire.ppdb.register');
+        return view('livewire.ppdb.register', [
+            'tahunAjaran' => $this->tahunAjaran,
+        ]);
     }
 
     public function nextStep()
@@ -136,27 +150,36 @@ class Register extends Component
 
     public function submit()
     {
-        $this->validate([
-            'file_kk' => 'required|image|max:2048', // 2MB
-            'file_akta' => 'required|image|max:2048',
-            'file_ijazah' => 'nullable|image|max:2048', // Ijazah TK/RA might be optional? Let's make it nullable or required based on context. Assume required for now or make nullable.
-            'file_foto' => 'required|image|max:2048',
-        ]);
+        // Validate all required documents
+        $rules = [];
+        $messages = [];
+
+        foreach ($this->persyaratanDokumen as $index => $item) {
+            // Make all documents required (you can add "opsional" keyword check if needed)
+            $isOptional = Str::contains(strtolower($item), 'opsional') || Str::contains(strtolower($item), 'jika ada');
+            $rules["dokumen.{$index}"] = ($isOptional ? 'nullable' : 'required') . '|image|max:2048';
+            $messages["dokumen.{$index}.required"] = "Dokumen {$item} wajib diupload.";
+            $messages["dokumen.{$index}.image"] = "Dokumen {$item} harus berupa gambar.";
+            $messages["dokumen.{$index}.max"] = "Dokumen {$item} maksimal 2MB.";
+        }
+
+        $this->validate($rules, $messages);
 
         // Generate Registration Number
         $year = date('Y');
         $count = PpdbRegistration::whereYear('created_at', $year)->count() + 1;
         $no_daftar = 'PPDB-' . $year . '-' . str_pad($count, 4, '0', STR_PAD_LEFT);
 
-        // Upload Files
-        $documents = [
-            'kk' => $this->file_kk->store('ppdb/kk', 'public'),
-            'akta' => $this->file_akta->store('ppdb/akta', 'public'),
-            'ijazah' => $this->file_ijazah ? $this->file_ijazah->store('ppdb/ijazah', 'public') : null,
-            'foto' => $this->file_foto->store('ppdb/foto', 'public'),
-        ];
+        // Upload Files with dynamic keys
+        $documents = [];
+        foreach ($this->persyaratanDokumen as $index => $item) {
+            $key = Str::slug($item, '_');
+            if ($this->dokumen[$index]) {
+                $documents[$key] = $this->dokumen[$index]->store('ppdb/' . $key, 'public');
+            }
+        }
 
-        PpdbRegistration::create([
+        $registration = PpdbRegistration::create([
             'no_daftar' => $no_daftar,
             'nama_lengkap' => $this->nama_lengkap,
             'nisn' => $this->nisn,
@@ -172,18 +195,12 @@ class Register extends Component
             'nama_ayah' => $this->nama_ayah,
             'nama_ibu' => $this->nama_ibu,
             'no_hp_ortu' => $this->no_hp_ortu,
-            'email' => $this->nama_wali, // nama_wali disimpan ke kolom email (sesuai backend label)
+            'email' => $this->nama_wali,
             'dokumen' => $documents,
             'status' => 'new',
         ]);
 
-        $this->success = true;
-        $this->registrationCode = $no_daftar;
-
-        Notification::make()
-            ->title('Pendaftaran Berhasil')
-            ->body("Kode Pendaftaran Anda: h{$no_daftar}")
-            ->success()
-            ->send();
+        // Redirect to success page
+        return redirect()->route('ppdb.success', $registration->id);
     }
 }

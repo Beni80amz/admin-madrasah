@@ -15,7 +15,12 @@ use UnitEnum;
 
 class ManageKenaikanKelas extends Page
 {
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowTrendingUp;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-arrow-trending-up';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasRole('Superadmin');
+    }
     protected static ?string $navigationLabel = 'Kenaikan Kelas';
     protected static ?string $title = 'Kenaikan Kelas';
     protected static ?string $slug = 'kenaikan-kelas';

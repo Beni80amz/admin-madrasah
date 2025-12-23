@@ -14,6 +14,11 @@ class SystemMaintenance extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasRole('Superadmin');
+    }
+
     protected static ?string $navigationLabel = 'Maintenance & Update';
 
     protected static ?string $title = 'System Maintenance';

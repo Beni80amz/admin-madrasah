@@ -28,7 +28,7 @@
                     Penerimaan Peserta Didik Baru
                 </h2>
                 <p class="mt-4 text-lg text-primary font-semibold">
-                    Tahun Ajaran {{ date('Y') }}/{{ date('Y') + 1 }}
+                    Tahun Ajaran {{ $tahunAjaran }}
                 </p>
             </div>
 
@@ -209,6 +209,7 @@
                                                     <option value="BIMBA" class="bg-white dark:bg-gray-900">BIMBA</option>
                                                     <option value="Orang Tua" class="bg-white dark:bg-gray-900">Orang Tua
                                                     </option>
+                                                    <option value="Pindahan" class="bg-white dark:bg-gray-900">Pindahan</option>
                                                     <option value="Lainnya" class="bg-white dark:bg-gray-900">Lainnya</option>
                                                 </select>
                                                 @error('asal_sekolah') <span
@@ -319,103 +320,78 @@
 
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                                        <!-- KK -->
-                                        <div
-                                            class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-primary hover:bg-primary/5 transition-all bg-white/50 dark:bg-white/5">
-                                            <label class="cursor-pointer block">
+                                        @foreach($persyaratanDokumen as $index => $item)
+                                            @php
+                                                $isOptional = Str::contains(strtolower($item), 'opsional') || Str::contains(strtolower($item), 'jika ada');
+                                            @endphp
+                                            <div
+                                                class="border-2 border-dashed rounded-xl p-4 transition-all bg-white/50 dark:bg-white/5 {{ isset($dokumen[$index]) && $dokumen[$index] ? 'border-green-500 bg-green-50/50 dark:bg-green-900/20' : 'border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-primary/5' }}">
                                                 <span
-                                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Kartu
-                                                    Keluarga (KK) <span class="text-red-500">*</span></span>
-                                                @if($file_kk)
-                                                    <div class="text-green-500 mb-2 flex items-center justify-center gap-2">
-                                                        <span class="material-symbols-outlined">check_circle</span>
-                                                        <span class="font-medium">File Terpilih</span>
+                                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 text-center">{{ $item }}
+                                                    @if(!$isOptional)
+                                                        <span class="text-red-500">*</span>
+                                                    @else
+                                                        <span class="text-gray-400 text-xs">(Opsional)</span>
+                                                    @endif
+                                                </span>
+                                                
+                                                @if(isset($dokumen[$index]) && $dokumen[$index])
+                                                    {{-- Preview Image --}}
+                                                    <div class="relative group">
+                                                        <div class="relative bg-gray-100 dark:bg-gray-700/50 rounded-lg overflow-hidden">
+                                                            <img src="{{ $dokumen[$index]->temporaryUrl() }}"
+                                                                class="w-full h-32 object-cover rounded-lg">
+                                                            {{-- Overlay with actions --}}
+                                                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                                                <button type="button" wire:click="$set('dokumen.{{ $index }}', null)"
+                                                                    class="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
+                                                                    <span class="material-symbols-outlined text-lg">delete</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2 text-center">
+                                                            <span class="text-xs text-green-600 dark:text-green-400 font-medium flex items-center justify-center gap-1">
+                                                                <span class="material-symbols-outlined text-sm">check_circle</span>
+                                                                File berhasil dipilih
+                                                            </span>
+                                                        </div>
                                                     </div>
+                                                    {{-- Hidden input for re-upload --}}
+                                                    <label class="cursor-pointer block mt-2">
+                                                        <span class="text-xs text-primary hover:underline flex items-center justify-center gap-1">
+                                                            <span class="material-symbols-outlined text-sm">refresh</span>
+                                                            Ganti file
+                                                        </span>
+                                                        <input type="file" wire:model="dokumen.{{ $index }}" class="hidden" accept="image/*">
+                                                    </label>
                                                 @else
-                                                    <span
-                                                        class="material-symbols-outlined text-5xl text-gray-400 dark:text-gray-500 mb-2 block">upload_file</span>
+                                                    {{-- Upload Placeholder --}}
+                                                    <label class="cursor-pointer block">
+                                                        <div class="flex flex-col items-center justify-center py-4">
+                                                            <span class="material-symbols-outlined text-4xl text-gray-400 dark:text-gray-500 mb-2">cloud_upload</span>
+                                                            <span class="text-sm text-gray-500 dark:text-gray-400">Klik untuk upload</span>
+                                                            <span class="text-xs text-gray-400 dark:text-gray-500 mt-1">JPG, PNG, JPEG (Maks 2MB)</span>
+                                                        </div>
+                                                        <input type="file" wire:model="dokumen.{{ $index }}" class="hidden" accept="image/*">
+                                                    </label>
                                                 @endif
-                                                <input type="file" wire:model="file_kk" class="hidden" accept="image/*">
-                                                <span class="block text-xs text-gray-500 dark:text-gray-400 mt-2">Klik untuk
-                                                    upload</span>
-                                            </label>
-                                            @error('file_kk') <span
-                                            class="text-red-500 text-sm mt-2 block">{{ $message }}</span> @enderror
-                                        </div>
-
-                                        <!-- Akta -->
-                                        <div
-                                            class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-primary hover:bg-primary/5 transition-all bg-white/50 dark:bg-white/5">
-                                            <label class="cursor-pointer block">
-                                                <span
-                                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Akta
-                                                    Kelahiran <span class="text-red-500">*</span></span>
-                                                @if($file_akta)
-                                                    <div class="text-green-500 mb-2 flex items-center justify-center gap-2">
-                                                        <span class="material-symbols-outlined">check_circle</span>
-                                                        <span class="font-medium">File Terpilih</span>
+                                                
+                                                {{-- Loading indicator --}}
+                                                <div wire:loading wire:target="dokumen.{{ $index }}" class="mt-2">
+                                                    <div class="flex items-center justify-center gap-2 text-primary">
+                                                        <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                        </svg>
+                                                        <span class="text-xs">Mengupload...</span>
                                                     </div>
-                                                @else
-                                                    <span
-                                                        class="material-symbols-outlined text-5xl text-gray-400 dark:text-gray-500 mb-2 block">upload_file</span>
-                                                @endif
-                                                <input type="file" wire:model="file_akta" class="hidden" accept="image/*">
-                                                <span class="block text-xs text-gray-500 dark:text-gray-400 mt-2">Klik untuk
-                                                    upload</span>
-                                            </label>
-                                            @error('file_akta') <span
-                                            class="text-red-500 text-sm mt-2 block">{{ $message }}</span> @enderror
-                                        </div>
-
-                                        <!-- Ijazah -->
-                                        <div
-                                            class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-primary hover:bg-primary/5 transition-all bg-white/50 dark:bg-white/5">
-                                            <label class="cursor-pointer block">
-                                                <span
-                                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Ijazah
-                                                    Terakhir <span class="text-gray-400 text-xs">(Opsional)</span></span>
-                                                @if($file_ijazah)
-                                                    <div class="text-green-500 mb-2 flex items-center justify-center gap-2">
-                                                        <span class="material-symbols-outlined">check_circle</span>
-                                                        <span class="font-medium">File Terpilih</span>
-                                                    </div>
-                                                @else
-                                                    <span
-                                                        class="material-symbols-outlined text-5xl text-gray-400 dark:text-gray-500 mb-2 block">upload_file</span>
-                                                @endif
-                                                <input type="file" wire:model="file_ijazah" class="hidden" accept="image/*">
-                                                <span class="block text-xs text-gray-500 dark:text-gray-400 mt-2">Klik untuk
-                                                    upload</span>
-                                            </label>
-                                            @error('file_ijazah') <span
-                                            class="text-red-500 text-sm mt-2 block">{{ $message }}</span> @enderror
-                                        </div>
-
-                                        <!-- Pas Foto -->
-                                        <div
-                                            class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-primary hover:bg-primary/5 transition-all bg-white/50 dark:bg-white/5">
-                                            <label class="cursor-pointer block">
-                                                <span
-                                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Pas
-                                                    Foto (Berwarna) <span class="text-red-500">*</span></span>
-                                                @if($file_foto)
-                                                    <div
-                                                        class="relative bg-gray-100 dark:bg-gray-700/50 p-2 rounded-lg inline-block">
-                                                        <img src="{{ $file_foto->temporaryUrl() }}"
-                                                            class="size-20 object-cover rounded-lg mx-auto mb-2">
-                                                        <span class="text-xs text-green-500 font-medium block">Preview</span>
-                                                    </div>
-                                                @else
-                                                    <span
-                                                        class="material-symbols-outlined text-5xl text-gray-400 dark:text-gray-500 mb-2 block">account_box</span>
-                                                @endif
-                                                <input type="file" wire:model="file_foto" class="hidden" accept="image/*">
-                                                <span class="block text-xs text-gray-500 dark:text-gray-400 mt-2">Klik untuk
-                                                    upload</span>
-                                            </label>
-                                            @error('file_foto') <span
-                                            class="text-red-500 text-sm mt-2 block">{{ $message }}</span> @enderror
-                                        </div>
+                                                </div>
+                                                
+                                                @error("dokumen.{$index}") 
+                                                    <span class="text-red-500 text-sm mt-2 block text-center">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        @endforeach
 
                                     </div>
                                 </div>
@@ -474,4 +450,5 @@
                 </div>
             @endif
         </div>
-    </div></div>
+    </div>
+</div>

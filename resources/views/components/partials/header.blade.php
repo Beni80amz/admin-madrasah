@@ -43,8 +43,8 @@
 
                 <!-- PPDB Menu (Conditional) -->
                 @if(\App\Models\AppSetting::isPpdbActive())
-                    <a class="relative text-sm font-medium transition-colors group py-2 {{ request()->routeIs('ppdb.*') ? 'text-primary dark:text-primary-light font-bold' : 'text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white' }}"
-                        href="{{ route('ppdb.register') }}" wire:navigate>
+                    <a class="relative text-sm font-medium transition-colors group py-2 {{ request()->routeIs('ppdb*') ? 'text-primary dark:text-primary-light font-bold' : 'text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white' }}"
+                        href="{{ route('ppdb') }}" wire:navigate>
                         PPDB
                         <span
                             class="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 {{ request()->routeIs('ppdb.*') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
@@ -189,7 +189,7 @@
 
                 <!-- Mobile PPDB (Conditional) -->
                 @if(\App\Models\AppSetting::isPpdbActive())
-                    <a href="{{ route('ppdb.register') }}" wire:navigate
+                    <a href="{{ route('ppdb') }}" wire:navigate
                         class="text-base font-bold leading-7 text-primary hover:text-primary-dark transition-colors border-b border-border-light dark:border-white/5 pb-2">PPDB</a>
                 @endif
 
