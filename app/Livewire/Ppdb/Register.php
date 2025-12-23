@@ -174,7 +174,7 @@ class Register extends Component
         $documents = [];
         foreach ($this->persyaratanDokumen as $index => $item) {
             $key = Str::slug($item, '_');
-            if ($this->dokumen[$index]) {
+            if (isset($this->dokumen[$index]) && is_object($this->dokumen[$index])) {
                 $documents[$key] = $this->dokumen[$index]->store('ppdb/' . $key, 'public');
             }
         }
