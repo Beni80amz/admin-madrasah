@@ -35,26 +35,47 @@
                     <h3 class="text-white font-bold text-lg">Tautan Cepat</h3>
                     <div class="flex flex-col gap-2 text-text-secondary-dark text-sm">
                         <a class="hover:text-primary transition-colors" href="{{ route('profile') }}"
-                            wire:navigate>Tentang Kami</a>
+                            wire:navigate>Profil Madrasah</a>
                         <a class="hover:text-primary transition-colors" href="{{ route('profile') }}#visi-misi"
                             wire:navigate>Visi &amp; Misi</a>
                         <a class="hover:text-primary transition-colors" href="{{ route('profile') }}#identitas"
                             wire:navigate>Struktur Organisasi</a>
-                        <a class="hover:text-primary transition-colors" href="#">Informasi PPDB</a>
-                        <a class="hover:text-primary transition-colors" href="#">Karir</a>
+
+                        @if(\App\Models\AppSetting::isPpdbActive())
+                            <a class="hover:text-primary transition-colors" href="{{ route('ppdb') }}"
+                                wire:navigate>Informasi PPDB</a>
+                        @endif
+
+                        <a class="hover:text-primary transition-colors" href="{{ route('news') }}"
+                            wire:navigate>Berita</a>
+                        <a class="hover:text-primary transition-colors" href="{{ route('gallery') }}"
+                            wire:navigate>Galeri</a>
+                        <a class="hover:text-primary transition-colors" href="{{ route('contact') }}"
+                            wire:navigate>Kontak</a>
+                        <a class="hover:text-primary transition-colors" href="{{ route('akademik.data-guru') }}"
+                            wire:navigate>Karir</a>
                     </div>
                 </div>
                 <!-- Academics -->
                 <div class="flex flex-col gap-4">
                     <h3 class="text-white font-bold text-lg">Akademik</h3>
                     <div class="flex flex-col gap-2 text-text-secondary-dark text-sm">
+                        <a class="hover:text-primary transition-colors" href="{{ route('akademik.data-siswa') }}"
+                            wire:navigate>Data Siswa</a>
+                        <a class="hover:text-primary transition-colors" href="{{ route('akademik.data-guru') }}"
+                            wire:navigate>Data Guru & Staff</a>
                         <a class="hover:text-primary transition-colors" href="{{ route('akademik.kurikulum') }}"
                             wire:navigate>Kurikulum</a>
                         <a class="hover:text-primary transition-colors" href="{{ route('akademik.kalender') }}"
                             wire:navigate>Kalender Akademik</a>
+                        <a class="hover:text-primary transition-colors" href="{{ route('akademik.prestasi-siswa') }}"
+                            wire:navigate>Prestasi Siswa</a>
+                        <a class="hover:text-primary transition-colors" href="{{ route('akademik.prestasi-guru') }}"
+                            wire:navigate>Prestasi Guru</a>
+                        <a class="hover:text-primary transition-colors" href="{{ route('akademik.data-alumni') }}"
+                            wire:navigate>Alumni</a>
                         <a class="hover:text-primary transition-colors" href="#">E-Learning</a>
                         <a class="hover:text-primary transition-colors" href="#">Perpustakaan</a>
-                        <a class="hover:text-primary transition-colors" href="#">Alumni</a>
                     </div>
                 </div>
                 <!-- Map -->
