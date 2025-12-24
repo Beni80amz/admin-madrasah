@@ -98,10 +98,32 @@ class SystemMaintenance extends Page
         $this->commandOutput = "Running git pull...\n";
 
         try {
-            // Using Symfony Process for better control over working directory and environment
-            // Adjust the path if necessary, standard assumes document root
+            // Determine the correct path to the git executable if not in PATH
+            // On standard cPanel/Niagahoster, 'git' usually works if /usr/bin is in path.
+
+            // CRITICAL: Set HOME environment variable. 
+            // git needs to know where ~/.ssh is located. 
+            // In web processes (www-data/nobody), HOME might not be set to the user's home.
+            // We assume standard cPanel structure: /home/username
+            $homeDir = $_SERVER['HOME'] ?? base_path('../..');
+            // Fallback attempt to guess home if $_SERVER['HOME'] is empty (common in some php-fpm configs)
+            if (empty($_SERVER['HOME'])) {
+                // If base_path is /home/user/public_html, go up two levels
+                $homeDir = realpath(base_path('../../'));
+            }
+
             $process = new SymfonyProcess(['git', 'pull', 'origin', 'main']);
             $process->setWorkingDirectory(base_path());
+
+            // Pass environment variables
+            $process->setEnv([
+                'HOME' => $homeDir,
+                'COMPOSER_HOME' => "$homeDir/.composer", // Good practice
+            ]);
+
+            // Set timeout to 60 seconds
+            $process->setTimeout(60);
+
             $process->run();
 
             if ($process->isSuccessful()) {
@@ -114,20 +136,27 @@ class SystemMaintenance extends Page
                     ->success()
                     ->send();
 
-                // Optionally verify if composer install is needed
-                if (file_exists(base_path('composer.lock'))) {
-                    // We could run composer install here too, but that's very heavy and risky.
-                    // Just suggest it.
-                    $this->commandOutput .= "\n[INFO] If composer.lock changed, remember to run 'composer install' manually via SSH if needed.";
+                // Check for composer.lock changes
+                if (str_contains($output, 'composer.lock')) {
+                    $this->commandOutput .= "\n[WARN] composer.lock changed! You might need to run 'composer install' via SSH manually if you encounter errors.";
+                }
+
+                // Check for migrations
+                if (str_contains($output, 'database/migrations')) {
+                    $this->commandOutput .= "\n[INFO] New migrations detected. Don't forget to click 'Migrate Database'!";
                 }
 
             } else {
                 $error = $process->getErrorOutput();
-                $this->commandOutput .= "Error:\n" . $error;
+                $output = $process->getOutput(); // Sometimes error is in stdout
+
+                $this->commandOutput .= "EXIT CODE: " . $process->getExitCode() . "\n";
+                $this->commandOutput .= "ERROR (stderr):\n" . $error . "\n";
+                $this->commandOutput .= "OUTPUT (stdout):\n" . $output;
 
                 Notification::make()
                     ->title('Update Failed')
-                    ->body('Git pull failed. Check output for details.')
+                    ->body('Git pull failed. Please check the output log below.')
                     ->danger()
                     ->send();
             }
@@ -137,7 +166,7 @@ class SystemMaintenance extends Page
 
             Notification::make()
                 ->title('Exception')
-                ->body('An error occurred while trying to run git pull.')
+                ->body('An error occurred while executing git pull.')
                 ->danger()
                 ->send();
         }
