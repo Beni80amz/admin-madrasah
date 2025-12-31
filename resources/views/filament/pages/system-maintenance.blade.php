@@ -1,98 +1,106 @@
 <x-filament-panels::page>
-    <div class="space-y-6">
+    <div class="space-y-4">
 
-        {{-- System Info & Version --}}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {{-- System Info & Version - 2 Columns with smaller text --}}
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
             {{-- Version Info --}}
-            <x-filament::section>
+            <x-filament::section compact>
                 <x-slot name="heading">
-                    Informasi Versi
+                    <span style="font-size: 0.875rem;">Informasi Versi</span>
                 </x-slot>
 
                 @if($versionInfo)
-                    <dl class="grid grid-cols-2 gap-3 text-sm">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; font-size: 0.75rem;">
                         <div>
-                            <dt class="text-gray-500 dark:text-gray-400">Versi Saat Ini</dt>
-                            <dd class="font-mono font-medium text-primary-600 dark:text-primary-400">{{ $versionInfo['current_version'] ?? '-' }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-gray-500 dark:text-gray-400">Branch</dt>
-                            <dd class="font-medium">{{ $versionInfo['branch'] ?? '-' }}</dd>
-                        </div>
-                        <div class="col-span-2">
-                            <dt class="text-gray-500 dark:text-gray-400">Commit Terakhir</dt>
-                            <dd class="font-medium truncate">{{ $versionInfo['last_commit_message'] ?? '-' }}</dd>
+                            <div style="color: #9ca3af;">Versi</div>
+                            <div style="font-family: monospace; font-weight: 500; color: #10b981;">
+                                {{ $versionInfo['current_version'] ?? '-' }}</div>
                         </div>
                         <div>
-                            <dt class="text-gray-500 dark:text-gray-400">Tanggal Commit</dt>
-                            <dd class="text-xs">{{ $versionInfo['last_commit_date'] ?? '-' }}</dd>
+                            <div style="color: #9ca3af;">Branch</div>
+                            <div style="font-weight: 500;">{{ $versionInfo['branch'] ?? '-' }}</div>
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <div style="color: #9ca3af;">Commit</div>
+                            <div style="font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ Str::limit($versionInfo['last_commit_message'] ?? '-', 35) }}</div>
                         </div>
                         <div>
-                            <dt class="text-gray-500 dark:text-gray-400">Laravel</dt>
-                            <dd>v{{ $versionInfo['laravel_version'] ?? '-' }}</dd>
+                            <div style="color: #9ca3af;">Tanggal</div>
+                            <div>{{ $versionInfo['last_commit_date'] ?? '-' }}</div>
                         </div>
-                    </dl>
+                        <div>
+                            <div style="color: #9ca3af;">Laravel</div>
+                            <div>v{{ $versionInfo['laravel_version'] ?? '-' }}</div>
+                        </div>
+                    </div>
                 @endif
             </x-filament::section>
 
-            {{-- System Requirements --}}
-            <x-filament::section>
+            {{-- System Status --}}
+            <x-filament::section compact>
                 <x-slot name="heading">
-                    Status Sistem
+                    <span style="font-size: 0.875rem;">Status Sistem</span>
                 </x-slot>
 
                 @if($systemInfo)
-                    <dl class="grid grid-cols-2 gap-3 text-sm">
-                        <div class="flex items-center gap-2">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; font-size: 0.75rem;">
+                        <div style="display: flex; align-items: center; gap: 0.25rem;">
                             @if($systemInfo['git']['available'] ?? false)
-                                <span class="text-success-500">✓</span>
+                                <span style="color: #22c55e;">✓</span>
                             @else
-                                <span class="text-danger-500">✗</span>
+                                <span style="color: #ef4444;">✗</span>
                             @endif
                             <span>Git</span>
                         </div>
-                        <div class="flex items-center gap-2">
+                        <div style="display: flex; align-items: center; gap: 0.25rem;">
                             @if($systemInfo['composer']['available'] ?? false)
-                                <span class="text-success-500">✓</span>
+                                <span style="color: #22c55e;">✓</span>
                             @else
-                                <span class="text-danger-500">✗</span>
+                                <span style="color: #ef4444;">✗</span>
                             @endif
                             <span>Composer</span>
                         </div>
-                        <div class="flex items-center gap-2">
+                        <div style="display: flex; align-items: center; gap: 0.25rem;">
                             @if($systemInfo['npm']['available'] ?? false)
-                                <span class="text-success-500">✓</span>
+                                <span style="color: #22c55e;">✓</span>
                             @else
-                                <span class="text-danger-500">✗</span>
+                                <span style="color: #ef4444;">✗</span>
                             @endif
                             <span>NPM</span>
                         </div>
-                        <div class="flex items-center gap-2">
+                        <div style="display: flex; align-items: center; gap: 0.25rem;">
                             @if($systemInfo['node']['available'] ?? false)
-                                <span class="text-success-500">✓</span>
+                                <span style="color: #22c55e;">✓</span>
                             @else
-                                <span class="text-danger-500">✗</span>
+                                <span style="color: #ef4444;">✗</span>
                             @endif
-                            <span>Node.js</span>
+                            <span>Node</span>
                         </div>
-                        <div class="col-span-2">
-                            <dt class="text-gray-500 dark:text-gray-400">Disk Space</dt>
-                            <dd class="text-xs">{{ $systemInfo['disk_free'] ?? '-' }}</dd>
+                    </div>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; font-size: 0.75rem; margin-top: 0.5rem;">
+                        <div>
+                            <div style="color: #9ca3af;">Disk</div>
+                            <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ $systemInfo['disk_free'] ?? '-' }}</div>
                         </div>
                         <div>
-                            <dt class="text-gray-500 dark:text-gray-400">Environment</dt>
-                            <dd class="uppercase text-xs font-medium {{ ($systemInfo['app_env'] ?? '') === 'production' ? 'text-success-600' : 'text-warning-600' }}">
+                            <div style="color: #9ca3af;">Env</div>
+                            <div
+                                style="text-transform: uppercase; font-weight: 500; color: {{ ($systemInfo['app_env'] ?? '') === 'production' ? '#22c55e' : '#eab308' }};">
                                 {{ $systemInfo['app_env'] ?? '-' }}
-                            </dd>
+                            </div>
                         </div>
                         <div>
-                            <dt class="text-gray-500 dark:text-gray-400">Debug Mode</dt>
-                            <dd class="text-xs {{ ($systemInfo['app_debug'] ?? '') === 'Enabled' ? 'text-danger-600' : 'text-success-600' }}">
+                            <div style="color: #9ca3af;">Debug</div>
+                            <div
+                                style="color: {{ ($systemInfo['app_debug'] ?? '') === 'Enabled' ? '#ef4444' : '#22c55e' }};">
                                 {{ $systemInfo['app_debug'] ?? '-' }}
-                            </dd>
+                            </div>
                         </div>
-                    </dl>
-                    <div class="mt-3">
+                    </div>
+                    <div style="margin-top: 0.5rem;">
                         <x-filament::button wire:click="loadSystemInfo" size="xs" color="gray">
                             Refresh
                         </x-filament::button>
@@ -101,189 +109,161 @@
             </x-filament::section>
         </div>
 
-        {{-- Update Section --}}
-        <x-filament::section>
-            <x-slot name="heading">
-                Update Aplikasi
-            </x-slot>
-            <x-slot name="description">
-                Periksa dan terapkan update terbaru dari repository GitHub.
-            </x-slot>
+        {{-- Main Actions - 3 Columns --}}
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+            {{-- Update Aplikasi --}}
+            <x-filament::section compact>
+                <x-slot name="heading">
+                    <span style="font-size: 0.875rem;">Update Aplikasi</span>
+                </x-slot>
 
-            <div class="space-y-4">
-                {{-- Check Update Button --}}
-                <div class="flex flex-wrap gap-3">
-                    <x-filament::button wire:click="checkForUpdates" color="info">
-                        🔍 Periksa Update
-                    </x-filament::button>
-
-                    @if($updateInfo && ($updateInfo['has_update'] ?? false))
-                        <x-filament::button
-                            wire:click="performFullUpdate"
-                            color="success"
-                            :disabled="$isUpdating"
-                        >
-                            @if($isUpdating)
-                                ⏳ Sedang Update...
-                            @else
-                                🚀 Update Sekarang (Full)
-                            @endif
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        <x-filament::button wire:click="checkForUpdates" size="sm" color="info">
+                            🔍 Cek Update
                         </x-filament::button>
+
+                        @if($updateInfo && ($updateInfo['has_update'] ?? false))
+                            <x-filament::button wire:click="performFullUpdate" size="sm" color="success"
+                                :disabled="$isUpdating">
+                                @if($isUpdating)
+                                    ⏳ Updating...
+                                @else
+                                    🚀 Full Update
+                                @endif
+                            </x-filament::button>
+                        @endif
+                    </div>
+
+                    @if($updateInfo)
+                        <div
+                            style="padding: 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; background: {{ $updateInfo['has_update'] ? 'rgba(234, 179, 8, 0.1)' : 'rgba(34, 197, 94, 0.1)' }};">
+                            @if($updateInfo['has_update'])
+                                <span style="color: #eab308;">⚠️ {{ $updateInfo['pending_count'] }} update</span>
+                            @else
+                                <span style="color: #22c55e;">✅ Up-to-date</span>
+                            @endif
+                        </div>
                     @endif
                 </div>
+            </x-filament::section>
 
-                {{-- Update Info --}}
-                @if($updateInfo)
-                    <div class="p-4 rounded-lg {{ $updateInfo['has_update'] ? 'bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800' : 'bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800' }}">
-                        @if($updateInfo['has_update'])
-                            <div class="flex items-center gap-2 text-warning-700 dark:text-warning-400 font-medium">
-                                <span>⚠️</span>
-                                <span>{{ $updateInfo['pending_count'] }} update tersedia!</span>
-                            </div>
-                            <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                                <span class="font-mono">{{ $updateInfo['current_version'] }}</span>
-                                →
-                                <span class="font-mono text-success-600">{{ $updateInfo['latest_version'] }}</span>
-                            </div>
-
-                            @if(!empty($updateInfo['pending_updates']))
-                                <div class="mt-3 max-h-40 overflow-y-auto">
-                                    <p class="text-xs text-gray-500 mb-1">Perubahan yang akan diterapkan:</p>
-                                    <ul class="space-y-1 text-xs font-mono text-gray-600 dark:text-gray-400">
-                                        @foreach(array_slice($updateInfo['pending_updates'], 0, 10) as $update)
-                                            <li>• {{ $update }}</li>
-                                        @endforeach
-                                        @if(count($updateInfo['pending_updates']) > 10)
-                                            <li class="text-gray-400">... dan {{ count($updateInfo['pending_updates']) - 10 }} lainnya</li>
-                                        @endif
-                                    </ul>
-                                </div>
-                            @endif
-                        @else
-                            <div class="flex items-center gap-2 text-success-700 dark:text-success-400">
-                                <span>✅</span>
-                                <span>Sistem sudah up-to-date!</span>
-                            </div>
-                        @endif
-                        <p class="mt-2 text-xs text-gray-500">Terakhir diperiksa: {{ $updateInfo['last_check'] ?? '-' }}</p>
-                    </div>
-                @endif
-            </div>
-        </x-filament::section>
-
-        {{-- Manual Update Options --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {{-- Git Only --}}
-            <x-filament::section>
+            {{-- Update Manual --}}
+            <x-filament::section compact>
                 <x-slot name="heading">
-                    Update Manual (Git Only)
-                </x-slot>
-                <x-slot name="description">
-                    Tarik perubahan terbaru tanpa install dependencies.
+                    <span style="font-size: 0.875rem;">Update Manual</span>
                 </x-slot>
 
-                <div class="space-y-3">
-                    <x-filament::button wire:click="gitPull" color="primary">
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <x-filament::button wire:click="gitPull" size="sm" color="primary" style="width: 100%;">
                         ⬇️ Git Pull
                     </x-filament::button>
 
-                    <div class="flex flex-wrap gap-2">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
                         @if($systemInfo['composer']['available'] ?? false)
-                            <x-filament::button wire:click="runComposerInstall" size="sm" color="gray">
-                                📦 Composer Install
+                            <x-filament::button wire:click="runComposerInstall" size="xs" color="gray">
+                                📦 Composer
                             </x-filament::button>
                         @endif
 
                         @if($systemInfo['npm']['available'] ?? false)
-                            <x-filament::button wire:click="runNpmBuild" size="sm" color="gray">
-                                🧩 NPM Build
+                            <x-filament::button wire:click="runNpmBuild" size="xs" color="gray">
+                                🧩 NPM
                             </x-filament::button>
                         @endif
                     </div>
                 </div>
             </x-filament::section>
 
-            {{-- Maintenance Mode --}}
-            <x-filament::section>
+            {{-- Mode Maintenance --}}
+            <x-filament::section compact>
                 <x-slot name="heading">
-                    Mode Maintenance
-                </x-slot>
-                <x-slot name="description">
-                    Aktifkan untuk mencegah akses user saat update.
+                    <span style="font-size: 0.875rem;">Mode Maintenance</span>
                 </x-slot>
 
-                <div class="space-y-3">
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                     @if($this->isInMaintenanceMode())
-                        <div class="flex items-center gap-2 p-3 bg-warning-50 dark:bg-warning-900/20 rounded-lg border border-warning-200 dark:border-warning-800">
+                        <div
+                            style="display: flex; align-items: center; gap: 0.25rem; padding: 0.5rem; background: rgba(234, 179, 8, 0.1); border-radius: 0.375rem; font-size: 0.75rem;">
                             <span>⚠️</span>
-                            <span class="text-warning-700 dark:text-warning-400 font-medium">Maintenance Mode AKTIF</span>
+                            <span style="color: #eab308; font-weight: 500;">AKTIF</span>
                         </div>
-                        <x-filament::button wire:click="toggleMaintenanceMode" color="success">
-                            ▶️ Nonaktifkan Maintenance
+                        <x-filament::button wire:click="toggleMaintenanceMode" size="sm" color="success"
+                            style="width: 100%;">
+                            ▶️ Nonaktifkan
                         </x-filament::button>
                     @else
-                        <div class="flex items-center gap-2 p-3 bg-success-50 dark:bg-success-900/20 rounded-lg border border-success-200 dark:border-success-800">
+                        <div
+                            style="display: flex; align-items: center; gap: 0.25rem; padding: 0.5rem; background: rgba(34, 197, 94, 0.1); border-radius: 0.375rem; font-size: 0.75rem;">
                             <span>✅</span>
-                            <span class="text-success-700 dark:text-success-400 font-medium">Website Online</span>
+                            <span style="color: #22c55e; font-weight: 500;">Online</span>
                         </div>
-                        <x-filament::button wire:click="toggleMaintenanceMode" color="warning">
-                            ⏸️ Aktifkan Maintenance Mode
+                        <x-filament::button wire:click="toggleMaintenanceMode" size="sm" color="warning"
+                            style="width: 100%;">
+                            ⏸️ Aktifkan
                         </x-filament::button>
                     @endif
                 </div>
             </x-filament::section>
         </div>
 
-        {{-- Cache & Database --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {{-- Cache & Optimization --}}
-            <x-filament::section>
+        {{-- Cache & Database - 3 Columns --}}
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+            {{-- Cache --}}
+            <x-filament::section compact>
                 <x-slot name="heading">
-                    Performance & Cache
-                </x-slot>
-                <x-slot name="description">
-                    Bersihkan atau rebuild cache aplikasi.
+                    <span style="font-size: 0.875rem;">Cache</span>
                 </x-slot>
 
-                <div class="flex flex-wrap gap-3">
-                    <x-filament::button wire:click="clearCache" color="warning">
-                        🗑️ Bersihkan Cache
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    <x-filament::button wire:click="clearCache" size="sm" color="warning">
+                        🗑️ Clear
                     </x-filament::button>
-                    <x-filament::button wire:click="optimizeApplication" color="success">
+                    <x-filament::button wire:click="optimizeApplication" size="sm" color="success">
                         🚀 Optimize
                     </x-filament::button>
                 </div>
             </x-filament::section>
 
             {{-- Database --}}
-            <x-filament::section>
+            <x-filament::section compact>
                 <x-slot name="heading">
-                    Database & Storage
-                </x-slot>
-                <x-slot name="description">
-                    Manajemen database dan symbolic link.
+                    <span style="font-size: 0.875rem;">Database</span>
                 </x-slot>
 
-                <div class="flex flex-wrap gap-3">
-                    <x-filament::button wire:click="migrateDatabase" color="primary">
-                        📤 Migrate Database
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                    <x-filament::button wire:click="migrateDatabase" size="sm" color="primary">
+                        📤 Migrate
                     </x-filament::button>
-                    <x-filament::button wire:click="linkStorage" color="gray">
-                        🔗 Link Storage
+                    <x-filament::button wire:click="linkStorage" size="sm" color="gray">
+                        🔗 Storage
                     </x-filament::button>
+                </div>
+            </x-filament::section>
+
+            {{-- Info --}}
+            <x-filament::section compact>
+                <x-slot name="heading">
+                    <span style="font-size: 0.875rem;">Info</span>
+                </x-slot>
+
+                <div style="font-size: 0.75rem; color: #9ca3af;">
+                    <p>PHP: {{ $versionInfo['php_version'] ?? PHP_VERSION }}</p>
+                    <p>Check: {{ $updateInfo['last_check'] ?? 'Never' }}</p>
                 </div>
             </x-filament::section>
         </div>
 
         {{-- Command Output --}}
         @if($commandOutput)
-            <x-filament::section collapsible>
+            <x-filament::section collapsible collapsed compact>
                 <x-slot name="heading">
-                    Output Log
+                    <span style="font-size: 0.875rem;">Output Log</span>
                 </x-slot>
 
-                <div class="p-4 bg-gray-900 text-gray-100 font-mono text-sm rounded-lg overflow-x-auto max-h-96 overflow-y-auto">
-                    <pre class="whitespace-pre-wrap">{{ $commandOutput }}</pre>
+                <div
+                    style="padding: 0.75rem; background: #1f2937; color: #f3f4f6; font-family: monospace; font-size: 0.75rem; border-radius: 0.375rem; overflow-x: auto; max-height: 15rem; overflow-y: auto;">
+                    <pre style="white-space: pre-wrap; margin: 0;">{{ $commandOutput }}</pre>
                 </div>
             </x-filament::section>
         @endif
