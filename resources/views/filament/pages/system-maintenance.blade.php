@@ -6,10 +6,7 @@
             {{-- Version Info --}}
             <x-filament::section>
                 <x-slot name="heading">
-                    <div class="flex items-center gap-2">
-                        <x-heroicon-o-information-circle class="w-5 h-5" />
-                        Informasi Versi
-                    </div>
+                    Informasi Versi
                 </x-slot>
 
                 @if($versionInfo)
@@ -41,43 +38,40 @@
             {{-- System Requirements --}}
             <x-filament::section>
                 <x-slot name="heading">
-                    <div class="flex items-center gap-2">
-                        <x-heroicon-o-server class="w-5 h-5" />
-                        Status Sistem
-                    </div>
+                    Status Sistem
                 </x-slot>
 
                 @if($systemInfo)
                     <dl class="grid grid-cols-2 gap-3 text-sm">
                         <div class="flex items-center gap-2">
                             @if($systemInfo['git']['available'] ?? false)
-                                <x-heroicon-o-check-circle class="w-4 h-4 text-success-500" />
+                                <span class="text-success-500">✓</span>
                             @else
-                                <x-heroicon-o-x-circle class="w-4 h-4 text-danger-500" />
+                                <span class="text-danger-500">✗</span>
                             @endif
                             <span>Git</span>
                         </div>
                         <div class="flex items-center gap-2">
                             @if($systemInfo['composer']['available'] ?? false)
-                                <x-heroicon-o-check-circle class="w-4 h-4 text-success-500" />
+                                <span class="text-success-500">✓</span>
                             @else
-                                <x-heroicon-o-x-circle class="w-4 h-4 text-danger-500" />
+                                <span class="text-danger-500">✗</span>
                             @endif
                             <span>Composer</span>
                         </div>
                         <div class="flex items-center gap-2">
                             @if($systemInfo['npm']['available'] ?? false)
-                                <x-heroicon-o-check-circle class="w-4 h-4 text-success-500" />
+                                <span class="text-success-500">✓</span>
                             @else
-                                <x-heroicon-o-x-circle class="w-4 h-4 text-danger-500" />
+                                <span class="text-danger-500">✗</span>
                             @endif
                             <span>NPM</span>
                         </div>
                         <div class="flex items-center gap-2">
                             @if($systemInfo['node']['available'] ?? false)
-                                <x-heroicon-o-check-circle class="w-4 h-4 text-success-500" />
+                                <span class="text-success-500">✓</span>
                             @else
-                                <x-heroicon-o-x-circle class="w-4 h-4 text-danger-500" />
+                                <span class="text-danger-500">✗</span>
                             @endif
                             <span>Node.js</span>
                         </div>
@@ -99,7 +93,7 @@
                         </div>
                     </dl>
                     <div class="mt-3">
-                        <x-filament::button wire:click="loadSystemInfo" size="xs" color="gray" icon="heroicon-o-arrow-path">
+                        <x-filament::button wire:click="loadSystemInfo" size="xs" color="gray">
                             Refresh
                         </x-filament::button>
                     </div>
@@ -110,10 +104,7 @@
         {{-- Update Section --}}
         <x-filament::section>
             <x-slot name="heading">
-                <div class="flex items-center gap-2">
-                    <x-heroicon-o-arrow-path class="w-5 h-5" />
-                    Update Aplikasi
-                </div>
+                Update Aplikasi
             </x-slot>
             <x-slot name="description">
                 Periksa dan terapkan update terbaru dari repository GitHub.
@@ -122,22 +113,20 @@
             <div class="space-y-4">
                 {{-- Check Update Button --}}
                 <div class="flex flex-wrap gap-3">
-                    <x-filament::button wire:click="checkForUpdates" icon="heroicon-o-magnifying-glass" color="info">
-                        Periksa Update
+                    <x-filament::button wire:click="checkForUpdates" color="info">
+                        🔍 Periksa Update
                     </x-filament::button>
 
                     @if($updateInfo && ($updateInfo['has_update'] ?? false))
                         <x-filament::button
                             wire:click="performFullUpdate"
-                            icon="heroicon-o-rocket-launch"
                             color="success"
                             :disabled="$isUpdating"
                         >
                             @if($isUpdating)
-                                <x-filament::loading-indicator class="w-4 h-4 mr-2" />
-                                Sedang Update...
+                                ⏳ Sedang Update...
                             @else
-                                Update Sekarang (Full)
+                                🚀 Update Sekarang (Full)
                             @endif
                         </x-filament::button>
                     @endif
@@ -148,12 +137,12 @@
                     <div class="p-4 rounded-lg {{ $updateInfo['has_update'] ? 'bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800' : 'bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800' }}">
                         @if($updateInfo['has_update'])
                             <div class="flex items-center gap-2 text-warning-700 dark:text-warning-400 font-medium">
-                                <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+                                <span>⚠️</span>
                                 <span>{{ $updateInfo['pending_count'] }} update tersedia!</span>
                             </div>
                             <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
                                 <span class="font-mono">{{ $updateInfo['current_version'] }}</span>
-                                <x-heroicon-o-arrow-right class="w-4 h-4 inline" />
+                                →
                                 <span class="font-mono text-success-600">{{ $updateInfo['latest_version'] }}</span>
                             </div>
 
@@ -172,7 +161,7 @@
                             @endif
                         @else
                             <div class="flex items-center gap-2 text-success-700 dark:text-success-400">
-                                <x-heroicon-o-check-circle class="w-5 h-5" />
+                                <span>✅</span>
                                 <span>Sistem sudah up-to-date!</span>
                             </div>
                         @endif
@@ -187,30 +176,27 @@
             {{-- Git Only --}}
             <x-filament::section>
                 <x-slot name="heading">
-                    <div class="flex items-center gap-2">
-                        <x-heroicon-o-code-bracket class="w-5 h-5" />
-                        Update Manual (Git Only)
-                    </div>
+                    Update Manual (Git Only)
                 </x-slot>
                 <x-slot name="description">
                     Tarik perubahan terbaru tanpa install dependencies.
                 </x-slot>
 
                 <div class="space-y-3">
-                    <x-filament::button wire:click="gitPull" icon="heroicon-o-arrow-down-tray" color="primary">
-                        Git Pull
+                    <x-filament::button wire:click="gitPull" color="primary">
+                        ⬇️ Git Pull
                     </x-filament::button>
 
                     <div class="flex flex-wrap gap-2">
                         @if($systemInfo['composer']['available'] ?? false)
-                            <x-filament::button wire:click="runComposerInstall" size="sm" color="gray" icon="heroicon-o-cube">
-                                Composer Install
+                            <x-filament::button wire:click="runComposerInstall" size="sm" color="gray">
+                                📦 Composer Install
                             </x-filament::button>
                         @endif
 
                         @if($systemInfo['npm']['available'] ?? false)
-                            <x-filament::button wire:click="runNpmBuild" size="sm" color="gray" icon="heroicon-o-puzzle-piece">
-                                NPM Build
+                            <x-filament::button wire:click="runNpmBuild" size="sm" color="gray">
+                                🧩 NPM Build
                             </x-filament::button>
                         @endif
                     </div>
@@ -220,10 +206,7 @@
             {{-- Maintenance Mode --}}
             <x-filament::section>
                 <x-slot name="heading">
-                    <div class="flex items-center gap-2">
-                        <x-heroicon-o-wrench class="w-5 h-5" />
-                        Mode Maintenance
-                    </div>
+                    Mode Maintenance
                 </x-slot>
                 <x-slot name="description">
                     Aktifkan untuk mencegah akses user saat update.
@@ -232,19 +215,19 @@
                 <div class="space-y-3">
                     @if($this->isInMaintenanceMode())
                         <div class="flex items-center gap-2 p-3 bg-warning-50 dark:bg-warning-900/20 rounded-lg border border-warning-200 dark:border-warning-800">
-                            <x-heroicon-o-exclamation-triangle class="w-5 h-5 text-warning-500" />
+                            <span>⚠️</span>
                             <span class="text-warning-700 dark:text-warning-400 font-medium">Maintenance Mode AKTIF</span>
                         </div>
-                        <x-filament::button wire:click="toggleMaintenanceMode" color="success" icon="heroicon-o-play">
-                            Nonaktifkan Maintenance
+                        <x-filament::button wire:click="toggleMaintenanceMode" color="success">
+                            ▶️ Nonaktifkan Maintenance
                         </x-filament::button>
                     @else
                         <div class="flex items-center gap-2 p-3 bg-success-50 dark:bg-success-900/20 rounded-lg border border-success-200 dark:border-success-800">
-                            <x-heroicon-o-check-circle class="w-5 h-5 text-success-500" />
+                            <span>✅</span>
                             <span class="text-success-700 dark:text-success-400 font-medium">Website Online</span>
                         </div>
-                        <x-filament::button wire:click="toggleMaintenanceMode" color="warning" icon="heroicon-o-pause">
-                            Aktifkan Maintenance Mode
+                        <x-filament::button wire:click="toggleMaintenanceMode" color="warning">
+                            ⏸️ Aktifkan Maintenance Mode
                         </x-filament::button>
                     @endif
                 </div>
@@ -256,21 +239,18 @@
             {{-- Cache & Optimization --}}
             <x-filament::section>
                 <x-slot name="heading">
-                    <div class="flex items-center gap-2">
-                        <x-heroicon-o-bolt class="w-5 h-5" />
-                        Performance & Cache
-                    </div>
+                    Performance & Cache
                 </x-slot>
                 <x-slot name="description">
                     Bersihkan atau rebuild cache aplikasi.
                 </x-slot>
 
                 <div class="flex flex-wrap gap-3">
-                    <x-filament::button wire:click="clearCache" color="warning" icon="heroicon-o-trash">
-                        Bersihkan Cache
+                    <x-filament::button wire:click="clearCache" color="warning">
+                        🗑️ Bersihkan Cache
                     </x-filament::button>
-                    <x-filament::button wire:click="optimizeApplication" color="success" icon="heroicon-o-rocket-launch">
-                        Optimize
+                    <x-filament::button wire:click="optimizeApplication" color="success">
+                        🚀 Optimize
                     </x-filament::button>
                 </div>
             </x-filament::section>
@@ -278,21 +258,18 @@
             {{-- Database --}}
             <x-filament::section>
                 <x-slot name="heading">
-                    <div class="flex items-center gap-2">
-                        <x-heroicon-o-circle-stack class="w-5 h-5" />
-                        Database & Storage
-                    </div>
+                    Database & Storage
                 </x-slot>
                 <x-slot name="description">
                     Manajemen database dan symbolic link.
                 </x-slot>
 
                 <div class="flex flex-wrap gap-3">
-                    <x-filament::button wire:click="migrateDatabase" color="primary" icon="heroicon-o-arrow-up-tray">
-                        Migrate Database
+                    <x-filament::button wire:click="migrateDatabase" color="primary">
+                        📤 Migrate Database
                     </x-filament::button>
-                    <x-filament::button wire:click="linkStorage" color="gray" icon="heroicon-o-link">
-                        Link Storage
+                    <x-filament::button wire:click="linkStorage" color="gray">
+                        🔗 Link Storage
                     </x-filament::button>
                 </div>
             </x-filament::section>
@@ -302,10 +279,7 @@
         @if($commandOutput)
             <x-filament::section collapsible>
                 <x-slot name="heading">
-                    <div class="flex items-center gap-2">
-                        <x-heroicon-o-command-line class="w-5 h-5" />
-                        Output Log
-                    </div>
+                    Output Log
                 </x-slot>
 
                 <div class="p-4 bg-gray-900 text-gray-100 font-mono text-sm rounded-lg overflow-x-auto max-h-96 overflow-y-auto">
