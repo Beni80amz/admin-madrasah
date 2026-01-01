@@ -9,11 +9,7 @@ class ProfilMadrasahController extends Controller
 {
     public function downloadPdf()
     {
-        $profile = ProfileMadrasah::first();
-
-        if (!$profile) {
-            abort(404, 'Profile Madrasah tidak ditemukan');
-        }
+        $profile = ProfileMadrasah::firstOrNew();
 
         $pdf = Pdf::loadView('pdf.profil-madrasah', [
             'profile' => $profile,
