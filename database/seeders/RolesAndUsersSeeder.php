@@ -18,14 +18,18 @@ class RolesAndUsersSeeder extends Seeder
         $superAdminRole = Role::firstOrCreate(['name' => 'Superadmin']);
         $ppdbAdminRole = Role::firstOrCreate(['name' => 'Admin PPDB']);
 
-        // 2. Assign Superadmin role to existing admin
-        $admin = User::where('email', 'admin@madrasah.sch.id')->first();
-        if ($admin) {
-            $admin->assignRole($superAdminRole);
-            $this->command->info("Role 'Superadmin' assigned to {$admin->email}");
-        } else {
-            $this->command->error("User admin@madrasah.sch.id not found!");
-        }
+        // 2. Create/Update Superadmin User and assign role
+        $superAdmin = User::updateOrCreate(
+            ['email' => 'admin@madrasah.sch.id'],
+            [
+                'name' => 'Administrator',
+                'password' => Hash::make('@#Adm!nM@drasah@#'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        $superAdmin->assignRole($superAdminRole);
+        $this->command->info("User '{$superAdmin->email}' created/updated with role 'Superadmin'");
 
         // 3. Create Admin PPDB User and assign role
         $ppdbUser = User::updateOrCreate(
