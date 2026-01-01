@@ -14,7 +14,7 @@ class Contact extends Component
     #[Title('Kontak')]
     public function render()
     {
-        $profile = ProfileMadrasah::getActive();
+        $profile = ProfileMadrasah::firstOrNew();
 
         return view('livewire.contact', [
             'operationalHours' => OperationalHour::active()->get(),

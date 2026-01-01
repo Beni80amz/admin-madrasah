@@ -15,7 +15,7 @@ class Profile extends Component
 
     public function mount()
     {
-        $this->profile = ProfileMadrasah::first();
+        $this->profile = ProfileMadrasah::firstOrNew();
     }
 
     #[Title('Profil Madrasah')]
