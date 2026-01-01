@@ -14,7 +14,8 @@
                         <div>
                             <div style="color: #9ca3af;">Versi</div>
                             <div style="font-family: monospace; font-weight: 500; color: #10b981;">
-                                {{ $versionInfo['current_version'] ?? '-' }}</div>
+                                {{ $versionInfo['current_version'] ?? '-' }}
+                            </div>
                         </div>
                         <div>
                             <div style="color: #9ca3af;">Branch</div>
@@ -23,7 +24,8 @@
                         <div style="grid-column: span 2;">
                             <div style="color: #9ca3af;">Commit</div>
                             <div style="font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                {{ Str::limit($versionInfo['last_commit_message'] ?? '-', 35) }}</div>
+                                {{ Str::limit($versionInfo['last_commit_message'] ?? '-', 35) }}
+                            </div>
                         </div>
                         <div>
                             <div style="color: #9ca3af;">Tanggal</div>
@@ -83,7 +85,8 @@
                         <div>
                             <div style="color: #9ca3af;">Disk</div>
                             <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                {{ $systemInfo['disk_free'] ?? '-' }}</div>
+                                {{ $systemInfo['disk_free'] ?? '-' }}
+                            </div>
                         </div>
                         <div>
                             <div style="color: #9ca3af;">Env</div>
@@ -157,6 +160,11 @@
                 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <x-filament::button wire:click="gitPull" size="sm" color="primary" style="width: 100%;">
                         ⬇️ Git Pull
+                    </x-filament::button>
+
+                    <x-filament::button wire:click="hardResetGit" size="sm" color="danger" style="width: 100%;"
+                        onclick="return confirm('PENTING: Ini akan menghapus semua perubahan manual di file sistem dan menyamakan 100% dengan GitHub. Lanjutkan?') || event.stopImmediatePropagation()">
+                        ⚠️ Hard Reset Git
                     </x-filament::button>
 
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">

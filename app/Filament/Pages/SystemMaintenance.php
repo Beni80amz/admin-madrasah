@@ -716,6 +716,61 @@ class SystemMaintenance extends Page
     }
 
     /**
+     * Hard Reset Git (Emergency Button)
+     */
+    public function hardResetGit(): void
+    {
+        $this->commandOutput = "Running Hard Reset (git reset --hard)...\n";
+
+        try {
+            $homeDir = $this->getHomeDirectory();
+            $branch = $this->versionInfo['branch'] ?? 'main';
+
+            $commands = [
+                ['git', '-c', 'safe.directory=*', 'fetch', '--all'],
+                ['git', '-c', 'safe.directory=*', 'reset', '--hard', "origin/{$branch}"]
+            ];
+
+            foreach ($commands as $cmd) {
+                $process = new SymfonyProcess($cmd);
+                $process->setWorkingDirectory(base_path());
+                $process->setEnv([
+                    'HOME' => $homeDir,
+                    'COMPOSER_HOME' => "$homeDir/.composer",
+                    'GIT_SSH_COMMAND' => 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no',
+                ]);
+                $process->setTimeout(300);
+                $process->run();
+
+                $this->commandOutput .= "CMD: " . implode(' ', $cmd) . "\n";
+                if ($process->isSuccessful()) {
+                    $this->commandOutput .= $process->getOutput() . "\n";
+                } else {
+                    $this->commandOutput .= "ERROR: " . $process->getErrorOutput() . "\n";
+                    throw new \Exception("Command failed: " . implode(' ', $cmd));
+                }
+            }
+
+            // Reload version info
+            $this->loadVersionInfo();
+
+            Notification::make()
+                ->title('Git Reset Successful')
+                ->body('Local changes have been discarded. Code matches GitHub now.')
+                ->success()
+                ->send();
+
+        } catch (\Exception $e) {
+            $this->commandOutput .= "Exception: " . $e->getMessage();
+            Notification::make()
+                ->title('Reset Failed')
+                ->body($e->getMessage())
+                ->danger()
+                ->send();
+        }
+    }
+
+    /**
      * Check if app is in maintenance mode
      */
     public function isInMaintenanceMode(): bool
