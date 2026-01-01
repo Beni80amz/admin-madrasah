@@ -53,10 +53,10 @@ class SystemMaintenance extends Page
 
         try {
             $this->versionInfo = [
-                'current_version' => trim(shell_exec("cd \"{$basePath}\" && git rev-parse --short HEAD 2>&1") ?? 'N/A'),
-                'branch' => trim(shell_exec("cd \"{$basePath}\" && git branch --show-current 2>&1") ?? 'main'),
-                'last_commit_date' => trim(shell_exec("cd \"{$basePath}\" && git log -1 --format=%ci 2>&1") ?? 'N/A'),
-                'last_commit_message' => trim(shell_exec("cd \"{$basePath}\" && git log -1 --pretty=%B 2>&1") ?? 'N/A'),
+                'current_version' => trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* rev-parse --short HEAD 2>&1") ?? 'N/A'),
+                'branch' => trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* branch --show-current 2>&1") ?? 'main'),
+                'last_commit_date' => trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* log -1 --format=%ci 2>&1") ?? 'N/A'),
+                'last_commit_message' => trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* log -1 --pretty=%B 2>&1") ?? 'N/A'),
                 'php_version' => PHP_VERSION,
                 'laravel_version' => app()->version(),
             ];
@@ -151,27 +151,36 @@ class SystemMaintenance extends Page
 
         try {
             // Fetch from remote
-            $process = new SymfonyProcess(['git', 'fetch', 'origin']);
+            $process = new SymfonyProcess(['git', '-c', 'safe.directory=*', 'fetch', 'origin']);
             $process->setWorkingDirectory($basePath);
-            $process->setTimeout(30);
+            $process->setEnv([
+                'HOME' => $this->getHomeDirectory(),
+                'GIT_SSH_COMMAND' => 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no',
+            ]);
+            $process->setTimeout(60);
             $process->run();
 
             // Get branch name
-            $branch = trim(shell_exec("cd \"{$basePath}\" && git branch --show-current 2>&1") ?? 'main');
+            // Note: shell_exec calls don't easily accept env vars without complex string manipulation.
+            // However, 'git branch' and 'git rev-parse' are local operations and don't need SSH keys.
+            // 'git fetch' is the only one here that talks to the remote.
+
+            $branch = trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* branch --show-current 2>&1") ?? 'main');
 
             // Count commits behind
-            $behindCount = (int) trim(shell_exec("cd \"{$basePath}\" && git rev-list HEAD..origin/{$branch} --count 2>&1") ?? '0');
+            $behindCount = (int) trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* rev-list HEAD..origin/{$branch} --count 2>&1") ?? '0');
 
             // Get pending commits
             $pendingUpdates = [];
             if ($behindCount > 0) {
-                $logOutput = shell_exec("cd \"{$basePath}\" && git log HEAD..origin/{$branch} --pretty=format:\"%h - %s (%cr)\" 2>&1");
+                // git log origin/branch assumes we have fetched. It's local now.
+                $logOutput = shell_exec("cd \"{$basePath}\" && git -c safe.directory=* log HEAD..origin/{$branch} --pretty=format:\"%h - %s (%cr)\" 2>&1");
                 $pendingUpdates = array_filter(explode("\n", $logOutput ?? ''));
             }
 
             // Get current and latest commit
-            $currentCommit = trim(shell_exec("cd \"{$basePath}\" && git rev-parse --short HEAD 2>&1") ?? 'N/A');
-            $latestCommit = trim(shell_exec("cd \"{$basePath}\" && git rev-parse --short origin/{$branch} 2>&1") ?? 'N/A');
+            $currentCommit = trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* rev-parse --short HEAD 2>&1") ?? 'N/A');
+            $latestCommit = trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* rev-parse --short origin/{$branch} 2>&1") ?? 'N/A');
 
             $this->updateInfo = [
                 'has_update' => $behindCount > 0,
@@ -456,10 +465,14 @@ class SystemMaintenance extends Page
 
             // Step 2: Git Pull
             $this->commandOutput .= "[2/6] Pulling latest changes from Git...\n";
-            $process = new SymfonyProcess(['git', 'pull', 'origin', $this->versionInfo['branch'] ?? 'main']);
+            $process = new SymfonyProcess(['git', '-c', 'safe.directory=*', 'pull', 'origin', $this->versionInfo['branch'] ?? 'main']);
             $process->setWorkingDirectory($basePath);
-            $process->setEnv(['HOME' => $homeDir, 'COMPOSER_HOME' => "$homeDir/.composer"]);
-            $process->setTimeout(60);
+            $process->setEnv([
+                'HOME' => $homeDir,
+                'COMPOSER_HOME' => "$homeDir/.composer",
+                'GIT_SSH_COMMAND' => 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no',
+            ]);
+            $process->setTimeout(300);
             $process->run();
 
             if ($process->isSuccessful()) {
@@ -575,13 +588,14 @@ class SystemMaintenance extends Page
             $homeDir = $this->getHomeDirectory();
             $branch = $this->versionInfo['branch'] ?? 'main';
 
-            $process = new SymfonyProcess(['git', 'pull', 'origin', $branch]);
+            $process = new SymfonyProcess(['git', '-c', 'safe.directory=*', 'pull', 'origin', $branch]);
             $process->setWorkingDirectory(base_path());
             $process->setEnv([
                 'HOME' => $homeDir,
                 'COMPOSER_HOME' => "$homeDir/.composer",
+                'GIT_SSH_COMMAND' => 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no',
             ]);
-            $process->setTimeout(60);
+            $process->setTimeout(300);
             $process->run();
 
             if ($process->isSuccessful()) {
@@ -622,6 +636,53 @@ class SystemMaintenance extends Page
                     ->body('Git pull failed. Check the output log.')
                     ->danger()
                     ->send();
+
+                // Add Diagnostics
+                $this->commandOutput .= "\n--- DIAGNOSTICS ---\n";
+                $this->commandOutput .= "User: " . trim(shell_exec('whoami')) . "\n";
+                $this->commandOutput .= "Home: " . $homeDir . "\n";
+                $this->commandOutput .= "UID: " . trim(shell_exec('id -u')) . "\n";
+                $this->commandOutput .= "Remote: " . trim(shell_exec('cd ' . base_path() . ' && git remote -v')) . "\n";
+
+                if (file_exists($homeDir . '/.ssh')) {
+                    $this->commandOutput .= ".ssh dir: EXISTS\n";
+
+                    // Check if key exists, if not generate it
+                    $keyPath = $homeDir . '/.ssh/id_ed25519';
+                    if (!file_exists($keyPath)) {
+                        $this->commandOutput .= "No SSH Key found. Attempting to generate...\n";
+                        // Generate key (no passphrase)
+                        shell_exec("ssh-keygen -t ed25519 -N \"\" -f \"{$keyPath}\" 2>&1");
+                    }
+
+                    // Display Public Key
+                    if (file_exists($keyPath . '.pub')) {
+                        $pubKey = trim(file_get_contents($keyPath . '.pub'));
+                        $this->commandOutput .= "\nIMPORTANT: Copy this key to GitHub > Settings > Deploy Keys:\n";
+                        $this->commandOutput .= "-------------------------------------------------------\n";
+                        $this->commandOutput .= $pubKey . "\n";
+                        $this->commandOutput .= "-------------------------------------------------------\n";
+                    } else {
+                        $this->commandOutput .= "Error: Failed to generate/read public key.\n";
+                        $this->commandOutput .= "Keys in dir: " . trim(shell_exec('ls -la ' . $homeDir . '/.ssh')) . "\n";
+                    }
+                } else {
+                    $this->commandOutput .= ".ssh dir: NOT FOUND at " . $homeDir . "/.ssh\n";
+                    $this->commandOutput .= "Attempting to create .ssh directory...\n";
+                    mkdir($homeDir . '/.ssh', 0700, true);
+
+                    // Try generation again
+                    $keyPath = $homeDir . '/.ssh/id_ed25519';
+                    shell_exec("ssh-keygen -t ed25519 -N \"\" -f \"{$keyPath}\" 2>&1");
+
+                    if (file_exists($keyPath . '.pub')) {
+                        $pubKey = trim(file_get_contents($keyPath . '.pub'));
+                        $this->commandOutput .= "\nIMPORTANT: Copy this key to GitHub > Settings > Deploy Keys:\n";
+                        $this->commandOutput .= "-------------------------------------------------------\n";
+                        $this->commandOutput .= $pubKey . "\n";
+                        $this->commandOutput .= "-------------------------------------------------------\n";
+                    }
+                }
             }
 
         } catch (\Exception $e) {
