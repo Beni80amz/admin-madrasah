@@ -25,7 +25,8 @@ class ViewServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Share siteProfile to ALL views
-        View::share('siteProfile', ProfileMadrasah::first());
+        // Use firstOrNew to prevent "Attempt to read property on null" if table is empty
+        View::share('siteProfile', ProfileMadrasah::firstOrNew());
 
         // Share active tahunAjaran to ALL views
         View::share('tahunAjaran', TahunAjaran::getActive());
