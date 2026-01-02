@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('profile_madrasahs', function (Blueprint $table) {
-            $table->string('foto_kepala_madrasah')->nullable()->after('nama_kepala_madrasah');
+            $table->string('foto_kepala_madrasah')->nullable()->after('logo');
             $table->text('kata_pengantar')->nullable()->after('foto_kepala_madrasah');
         });
     }
