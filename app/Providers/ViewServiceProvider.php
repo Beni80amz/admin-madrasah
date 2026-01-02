@@ -26,10 +26,15 @@ class ViewServiceProvider extends ServiceProvider
     {
         // Share siteProfile to ALL views
         // Use firstOrNew to prevent "Attempt to read property on null" if table is empty
-        View::share('siteProfile', ProfileMadrasah::firstOrNew());
+        // Add Schema check to prevent "Table not found" during initial migration
+        if (Schema::hasTable('profile_madrasahs')) {
+            View::share('siteProfile', ProfileMadrasah::firstOrNew());
+        }
 
         // Share active tahunAjaran to ALL views
-        View::share('tahunAjaran', TahunAjaran::getActive());
+        if (Schema::hasTable('tahun_ajarans')) {
+            View::share('tahunAjaran', TahunAjaran::getActive());
+        }
 
         // Share theme mode to ALL views (with safety check for migrations)
         if (Schema::hasTable('app_settings')) {
