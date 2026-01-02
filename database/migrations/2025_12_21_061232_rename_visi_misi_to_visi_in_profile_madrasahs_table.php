@@ -10,9 +10,15 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('profile_madrasahs', function (Blueprint $table) {
-            $table->renameColumn('visi_misi', 'visi');
-        });
+        if (Schema::hasColumn('profile_madrasahs', 'visi_misi')) {
+            Schema::table('profile_madrasahs', function (Blueprint $table) {
+                if (Schema::hasColumn('profile_madrasahs', 'visi')) {
+                    $table->dropColumn('visi_misi');
+                } else {
+                    $table->renameColumn('visi_misi', 'visi');
+                }
+            });
+        }
     }
 
     /**
