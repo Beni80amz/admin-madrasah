@@ -542,4 +542,64 @@
             </div>
         </div>
     </section>
+
+    <!-- Link Pendataan Section -->
+    @if($linkPendataans->isNotEmpty())
+        <section
+            class="w-full py-10 px-5 md:px-10 lg:px-40 bg-surface-light dark:bg-surface-dark border-t border-border-light dark:border-border-dark overflow-hidden">
+            <div class="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+                <h2 class="text-text-primary-light dark:text-text-primary-dark text-3xl font-bold">Link Pendataan</h2>
+                <div class="relative w-full overflow-hidden group">
+                    <div class="flex gap-6 animate-marquee whitespace-nowrap hover:pause-animation w-max py-4">
+                        @foreach($linkPendataans as $item)
+                            <a href="{{ $item->url }}" target="_blank"
+                                class="inline-flex flex-col items-center justify-center gap-1.5 px-4 py-4 bg-white rounded-xl shadow-sm border border-border-light dark:border-border-dark hover:border-primary hover:shadow-md transition-all shrink-0 min-w-[140px]">
+                                @if($item->image)
+                                    <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}"
+                                        class="w-20 h-20 object-contain p-1">
+                                @else
+                                    <span class="material-symbols-outlined text-primary text-6xl">link</span>
+                                @endif
+                                <span
+                                    class="text-primary font-bold text-sm text-center">{{ $item->title }}</span>
+                            </a>
+                        @endforeach
+                        <!-- Duplicate for infinite loop effect -->
+                        @foreach($linkPendataans as $item)
+                            <a href="{{ $item->url }}" target="_blank"
+                                class="inline-flex flex-col items-center justify-center gap-1.5 px-4 py-4 bg-white rounded-xl shadow-sm border border-border-light dark:border-border-dark hover:border-primary hover:shadow-md transition-all shrink-0 min-w-[140px]">
+                                @if($item->image)
+                                    <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}"
+                                        class="w-20 h-20 object-contain p-1">
+                                @else
+                                    <span class="material-symbols-outlined text-primary text-6xl">link</span>
+                                @endif
+                                <span
+                                    class="text-primary font-bold text-sm text-center">{{ $item->title }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </section>
+        <style>
+            @keyframes marquee {
+                0% {
+                    transform: translateX(0);
+                }
+
+                100% {
+                    transform: translateX(-50%);
+                }
+            }
+
+            .animate-marquee {
+                animation: marquee 20s linear infinite;
+            }
+
+            .hover\:pause-animation:hover {
+                animation-play-state: paused;
+            }
+        </style>
+    @endif
 </div>

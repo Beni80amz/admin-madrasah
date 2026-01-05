@@ -14,6 +14,7 @@ use App\Models\Rombel;
 use App\Models\Student;
 use App\Models\TahunAjaran;
 use App\Models\Teacher;
+use App\Models\LinkPendataan;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -54,6 +55,7 @@ class Home extends Component
             'totalGuru' => $totalGuru,
             'totalKelas' => $totalKelas,
             'totalAlumni' => $totalAlumni,
+            'linkPendataans' => LinkPendataan::where('is_active', true)->latest()->get(),
         ]);
     }
 }
