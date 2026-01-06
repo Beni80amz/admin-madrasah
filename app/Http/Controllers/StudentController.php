@@ -40,7 +40,7 @@ class StudentController extends Controller
         $pdf->setPaper('A4', 'portrait');
         $pdf->setOptions(['isRemoteEnabled' => true]);
 
-        $filename = 'Data-Siswa-' . ($siteProfile->nama_madrasah ?? 'Madrasah') . '.pdf';
+        $filename = 'Data-Siswa-' . ($siteProfile?->nama_madrasah ?? 'Madrasah') . '.pdf';
         $filename = str_replace(['/', '\\'], '-', $filename);
 
         return $pdf->download($filename);
