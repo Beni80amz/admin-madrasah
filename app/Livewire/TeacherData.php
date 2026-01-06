@@ -9,6 +9,9 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\ProfileMadrasah;
+use App\Models\TahunAjaran;
 
 #[Layout('components.layouts.public')]
 class TeacherData extends Component
@@ -68,6 +71,23 @@ class TeacherData extends Component
     public function updatedJabatan()
     {
         $this->resetPage();
+    }
+
+    public function downloadPdf()
+    {
+        $teachers = $this->teachersQuery->get();
+        $profile = ProfileMadrasah::first();
+        $tahunAjaran = TahunAjaran::where('is_active', true)->first();
+
+        $pdf = Pdf::loadView('pdf.teachers-landscape', [
+            'teachers' => $teachers,
+            'profile' => $profile,
+            'tahunAjaran' => $tahunAjaran,
+        ])->setPaper('a4', 'landscape');
+
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->output();
+        }, 'Data-Guru-Staff.pdf');
     }
 
     #[Title('Data Guru dan Staff')]

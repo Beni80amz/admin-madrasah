@@ -62,6 +62,15 @@
                     </button>
                 @endif
             </div>
+
+            <!-- Export Button -->
+            <div class="mt-4 flex justify-end">
+                <button wire:click="downloadPdf"
+                    class="flex items-center gap-2 px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors shadow-lg shadow-red-600/20">
+                    <span class="material-symbols-outlined text-lg">picture_as_pdf</span>
+                    Export PDF
+                </button>
+            </div>
         </div>
     </div>
 
@@ -83,13 +92,16 @@
                             Nama Lengkap</th>
                         <th
                             class="text-left py-4 px-4 text-text-secondary-light dark:text-text-secondary-dark text-xs font-medium uppercase tracking-wider">
+                            NUPTK</th>
+                        <th
+                            class="text-left py-4 px-4 text-text-secondary-light dark:text-text-secondary-dark text-xs font-medium uppercase tracking-wider">
+                            NPK/Peg.ID</th>
+                        <th
+                            class="text-left py-4 px-4 text-text-secondary-light dark:text-text-secondary-dark text-xs font-medium uppercase tracking-wider">
                             Jabatan/Posisi</th>
                         <th
                             class="text-left py-4 px-4 text-text-secondary-light dark:text-text-secondary-dark text-xs font-medium uppercase tracking-wider">
                             Tugas Pokok</th>
-                        <th
-                            class="text-left py-4 px-4 text-text-secondary-light dark:text-text-secondary-dark text-xs font-medium uppercase tracking-wider">
-                            Mata Pelajaran</th>
                         <th
                             class="text-left py-4 px-4 text-text-secondary-light dark:text-text-secondary-dark text-xs font-medium uppercase tracking-wider">
                             Kelas/Rombel</th>
@@ -120,6 +132,14 @@
                                     class="text-text-primary-light dark:text-text-primary-dark text-sm font-medium">{{ $teacher->nama_lengkap }}</span>
                             </td>
                             <td class="py-4 px-4">
+                                <span
+                                    class="text-text-secondary-light dark:text-text-secondary-dark text-sm">{{ $teacher->nuptk ?? '-' }}</span>
+                            </td>
+                            <td class="py-4 px-4">
+                                <span
+                                    class="text-text-secondary-light dark:text-text-secondary-dark text-sm">{{ $teacher->npk_peg_id ?? '-' }}</span>
+                            </td>
+                            <td class="py-4 px-4">
                                 @php
                                     $jabatanColors = [
                                         'Kepala Madrasah' => 'bg-amber-600 text-white',
@@ -140,16 +160,6 @@
                             <td class="py-4 px-4">
                                 <span
                                     class="text-text-primary-light dark:text-text-primary-dark text-sm">{{ $teacher->tugasPokok?->nama ?? '-' }}</span>
-                            </td>
-                            <td class="py-4 px-4">
-                                @if($teacher->mataPelajaran)
-                                    <span
-                                        class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-blue-600/20 text-blue-400 border border-blue-500/30">
-                                        {{ $teacher->mataPelajaran->nama }}
-                                    </span>
-                                @else
-                                    <span class="text-gray-500 text-sm">-</span>
-                                @endif
                             </td>
                             <td class="py-4 px-4">
                                 @if($teacher->kelas_rombel !== '-')
