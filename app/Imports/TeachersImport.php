@@ -82,7 +82,7 @@ class TeachersImport implements ToModel, WithHeadingRow, WithValidation, SkipsEm
 
         // Handle NPK/Peg.ID
         $npk = null;
-        $npkKeys = ['npk', 'npk_peg_id', 'peg_id', 'pegid'];
+        $npkKeys = ['npk', 'npk_peg_id', 'peg_id', 'pegid', 'npkpegid', 'npk_pegid'];
         foreach ($npkKeys as $key) {
             if (!empty($row[$key])) {
                 $npk = $row[$key];
