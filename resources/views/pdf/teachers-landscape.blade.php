@@ -8,7 +8,7 @@
     <style>
         @page {
             size: A4 landscape;
-            margin: 20mm 35mm 20mm 35mm;
+            margin: 1cm 2cm;
         }
 
         * {
@@ -18,6 +18,7 @@
         }
 
         body {
+            padding: 20px 40px;
             font-family: 'DejaVu Sans', sans-serif;
             font-size: 9px;
             color: #333;
@@ -194,7 +195,7 @@
         <table class="footer-table">
             <tr>
                 <td style="text-align: left; font-size: 8px; color: #666;">
-                    <p>Dicetak pada: {{ now()->format('d F Y H:i') }} WIB</p>
+                    <p>Dicetak pada: {{ now()->timezone('Asia/Jakarta')->translatedFormat('d F Y H:i') }} WIB</p>
                     <p>Total Data: {{ $teachers->count() }} Guru/Staff</p>
                 </td>
                 <td style="text-align: right;">
