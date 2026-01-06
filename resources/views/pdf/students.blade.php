@@ -278,15 +278,14 @@
                         </p>
                     </td>
                     <td class="footer-right">
-                        {{-- QR Code disabled temporarily due to server connection issues --}}
-                        {{--
+
                         @php
-                        $verificationUrl = url('/profil/verifikasi');
-                        $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=' .
-                        urlencode($verificationUrl);
+                            $verificationUrl = url('/profil/verifikasi');
+                            $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=' .
+                                urlencode($verificationUrl);
                         @endphp
                         <img src="{{ $qrUrl }}" class="qr-code" alt="QR Code Verifikasi">
-                        --}}
+
                     </td>
                 </tr>
             </table>

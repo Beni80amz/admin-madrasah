@@ -38,7 +38,7 @@ class StudentController extends Controller
 
         $pdf = Pdf::loadView('pdf.students', $data);
         $pdf->setPaper('A4', 'portrait');
-        $pdf->setOptions(['isRemoteEnabled' => true]);
+
 
         $filename = 'Data-Siswa-' . ($siteProfile?->nama_madrasah ?? 'Madrasah') . '.pdf';
         $filename = str_replace(['/', '\\'], '-', $filename);
