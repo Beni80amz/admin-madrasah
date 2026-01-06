@@ -10,8 +10,15 @@
             font-size: 11px;
         }
 
+        @page {
+            size: A4 portrait;
+            margin: 20mm 30mm 20mm 40mm;
+        }
+
         body {
-            margin: 20px;
+            font-family: 'DejaVu Sans', sans-serif;
+            font-size: 11px;
+            /* margin: 20px; Removed body margin to let @page handle it */
         }
 
         .header {
@@ -125,7 +132,6 @@
             <tr>
                 <th style="width: 25px;">No</th>
                 <th>Nama Lengkap</th>
-                <th>NIP/NIK</th>
                 <th>NUPTK</th>
                 <th>NPK</th>
                 <th>Jabatan</th>
@@ -139,7 +145,6 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td><strong>{{ $teacher->nama_lengkap }}</strong></td>
-                    <td>{{ $teacher->nip ?? '-' }}</td>
                     <td>{{ $teacher->nuptk ?? '-' }}</td>
                     <td>{{ $teacher->npk_peg_id ?? '-' }}</td>
                     <td>{{ $teacher->jabatan?->nama ?? '-' }}</td>
@@ -168,7 +173,7 @@
         <div class="signature-image">
             @php
                 $qrText = ($profile->nama_kepala_madrasah ?? 'Kepala Madrasah') . ' - ' . ($profile->nama_madrasah ?? 'Madrasah');
-                $qrUrl = "https://quickchart.io/qr?text=" . urlencode($qrText) . "&size=100&margin=0";
+                $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' . urlencode($qrText);
             @endphp
             <img src="{{ $qrUrl }}" alt="QR Code" style="height: 70px; width: 70px;">
         </div>
