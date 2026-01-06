@@ -45,8 +45,8 @@ class TeachersExport implements FromCollection, WithHeadings, WithMapping, WithS
             $no,
             $teacher->nama_lengkap,
             "'" . $teacher->nip, // Prefix with ' to force text format
-            "'" . $teacher->nuptk,
-            "'" . $teacher->npk_peg_id,
+            "'" . (string) $teacher->nuptk,
+            "'" . (string) $teacher->npk_peg_id,
             $teacher->jabatan?->nama ?? '-',
             $teacher->tugasPokok?->nama ?? '-',
             $teacher->tugasTambahan?->nama ?? '-',

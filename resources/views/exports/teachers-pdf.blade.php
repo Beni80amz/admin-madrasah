@@ -145,8 +145,7 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td><strong>{{ $teacher->nama_lengkap }}</strong></td>
-                    <td>{{ is_numeric($teacher->nuptk) ? number_format($teacher->nuptk, 0, '', '') : ($teacher->nuptk ?? '-') }}
-                    </td>
+                    <td>{{ $teacher->nuptk ?? '-' }}</td>
                     <td>{{ $teacher->npk_peg_id ?? '-' }}</td>
                     <td>{{ $teacher->jabatan?->nama ?? '-' }}</td>
                     <td>{{ $teacher->tugasPokok?->nama ?? '-' }}</td>

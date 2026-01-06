@@ -43,7 +43,7 @@ class TeacherForm
                     ]),
                 TextInput::make('nuptk')
                     ->label('NUPTK')
-                    ->numeric()
+                    ->regex('/^[0-9]+$/')
                     ->maxLength(20),
                 TextInput::make('npk_peg_id')
                     ->label('NPK/Peg.ID')
