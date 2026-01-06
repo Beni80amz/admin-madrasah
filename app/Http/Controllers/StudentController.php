@@ -11,6 +11,10 @@ class StudentController extends Controller
 {
     public function downloadPdf()
     {
+        // Increase memory limit and execution time for large PDF generation
+        ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', '300');
+
         $siteProfile = ProfileMadrasah::first();
         $tahunAjaran = TahunAjaran::where('is_active', true)->first();
 
@@ -39,8 +43,7 @@ class StudentController extends Controller
         $pdf = Pdf::loadView('pdf.students', $data);
         $pdf->setPaper('A4', 'portrait');
 
-
-        $filename = 'Data-Siswa-' . ($siteProfile?->nama_madrasah ?? 'Madrasah') . '.pdf';
+        $filename = 'Data-Siswa-' . (optional($siteProfile)->nama_madrasah ?? 'Madrasah') . '.pdf';
         $filename = str_replace(['/', '\\'], '-', $filename);
 
         return $pdf->download($filename);
