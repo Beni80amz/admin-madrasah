@@ -46,31 +46,34 @@
                     </div>
                 </div>
 
-                <!-- Total Count Badge -->
-                <div class="flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-xl">
-                    <span class="material-symbols-outlined text-primary text-lg">groups</span>
-                    <span class="text-primary font-bold">{{ $teachers->total() }}</span>
-                    <span class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Guru</span>
-                </div>
+                <!-- Right Side Actions -->
+                <div class="flex items-center gap-3">
+                    <!-- Total Count Badge -->
+                    <div class="flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-xl">
+                        <span class="material-symbols-outlined text-primary text-lg">groups</span>
+                        <span class="text-primary font-bold">{{ $teachers->total() }}</span>
+                        <span class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Guru</span>
+                    </div>
 
-                <!-- Reset Button -->
-                @if($search || $jabatan)
-                    <button wire:click="resetFilters"
-                        class="flex items-center gap-2 px-4 py-3 bg-white/5 border border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:text-text-primary-dark hover:border-white/20 rounded-xl transition-colors">
-                        <span class="material-symbols-outlined text-lg">refresh</span>
-                        Reset
+                    <!-- Export Button -->
+                    <button wire:click="downloadPdf"
+                        class="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors shadow-lg shadow-red-600/20 text-sm font-medium">
+                        <span class="material-symbols-outlined text-lg">picture_as_pdf</span>
+                        PDF
                     </button>
-                @endif
+
+                    <!-- Reset Button -->
+                    @if($search || $jabatan)
+                        <button wire:click="resetFilters"
+                            class="flex items-center gap-2 px-4 py-2 bg-white/5 border border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:text-text-primary-dark hover:border-white/20 rounded-xl transition-colors text-sm">
+                            <span class="material-symbols-outlined text-lg">refresh</span>
+                            Reset
+                        </button>
+                    @endif
+                </div>
             </div>
 
-            <!-- Export Button -->
-            <div class="mt-4 flex justify-end">
-                <button wire:click="downloadPdf"
-                    class="flex items-center gap-2 px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors shadow-lg shadow-red-600/20">
-                    <span class="material-symbols-outlined text-lg">picture_as_pdf</span>
-                    Export PDF
-                </button>
-            </div>
+
         </div>
     </div>
 
