@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Data Siswa {{ $siteProfile->nama_madrasah ?? 'Madrasah' }}</title>
+    <title>Data Siswa {{ $siteProfile?->nama_madrasah ?? 'Madrasah' }}</title>
     <style>
         @page {
             size: A4 portrait;
@@ -197,9 +197,9 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>{{ $siteProfile->nama_madrasah ?? 'MADRASAH' }}</h1>
+            <h1>{{ $siteProfile?->nama_madrasah ?? 'MADRASAH' }}</h1>
             <h2>DATA SISWA AKTIF</h2>
-            <p>Tahun Ajaran {{ $tahunAjaran->nama ?? '-' }}</p>
+            <p>Tahun Ajaran {{ $tahunAjaran?->nama ?? '-' }}</p>
         </div>
 
         <!-- Stats -->
@@ -210,12 +210,14 @@
             </div>
             <div class="stat-box" style="background-color: #dbeafe;">
                 <div class="stat-number" style="color: #3b82f6;">
-                    {{ $totalLakiLaki ?? $students->where('gender', 'Laki-laki')->count() }}</div>
+                    {{ $totalLakiLaki ?? $students->where('gender', 'Laki-laki')->count() }}
+                </div>
                 <div class="stat-label">Laki-laki</div>
             </div>
             <div class="stat-box" style="background-color: #fce7f3;">
                 <div class="stat-number" style="color: #ec4899;">
-                    {{ $totalPerempuan ?? $students->where('gender', 'Perempuan')->count() }}</div>
+                    {{ $totalPerempuan ?? $students->where('gender', 'Perempuan')->count() }}
+                </div>
                 <div class="stat-label">Perempuan</div>
             </div>
         </div>
@@ -270,7 +272,8 @@
                     <td class="footer-left">
                         <p>Dokumen ini dicetak pada {{ now()->setTimezone('Asia/Jakarta')->format('d F Y H:i') }} WIB
                         </p>
-                        <p>{{ $siteProfile->nama_madrasah ?? 'Madrasah' }} - {{ $siteProfile->alamat ?? 'Alamat' }}</p>
+                        <p>{{ $siteProfile?->nama_madrasah ?? 'Madrasah' }} - {{ $siteProfile?->alamat ?? 'Alamat' }}
+                        </p>
                         <p style="margin-top: 5px; font-size: 7px; color: #999;">Scan QR code untuk verifikasi dokumen
                         </p>
                     </td>
