@@ -25,6 +25,8 @@ class TeachersExport implements FromCollection, WithHeadings, WithMapping, WithS
             'No',
             'Nama Lengkap',
             'NIP/NIK',
+            'NUPTK',
+            'NPK/Peg.ID',
             'Jabatan',
             'Tugas Pokok',
             'Tugas Tambahan',
@@ -43,6 +45,8 @@ class TeachersExport implements FromCollection, WithHeadings, WithMapping, WithS
             $no,
             $teacher->nama_lengkap,
             "'" . $teacher->nip, // Prefix with ' to force text format
+            "'" . $teacher->nuptk,
+            "'" . $teacher->npk_peg_id,
             $teacher->jabatan?->nama ?? '-',
             $teacher->tugasPokok?->nama ?? '-',
             $teacher->tugasTambahan?->nama ?? '-',
@@ -56,6 +60,8 @@ class TeachersExport implements FromCollection, WithHeadings, WithMapping, WithS
     {
         return [
             'C' => NumberFormat::FORMAT_TEXT, // NIP/NIK column as text
+            'D' => NumberFormat::FORMAT_TEXT, // NUPTK
+            'E' => NumberFormat::FORMAT_TEXT, // NPK
         ];
     }
 

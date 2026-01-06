@@ -15,6 +15,8 @@ class Teacher extends Model
         'photo',
         'nama_lengkap',
         'nip',
+        'nuptk',
+        'npk_peg_id',
         'jabatan_id',
         'tugas_pokok_id',
         'tugas_tambahan_id',

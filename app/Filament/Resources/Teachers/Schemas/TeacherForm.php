@@ -41,6 +41,13 @@ class TeacherForm
                         'numeric' => 'NIP/NIK harus berupa angka.',
                         'digits_between' => 'NIP/NIK harus berisi antara 3 sampai 16 digit angka.',
                     ]),
+                TextInput::make('nuptk')
+                    ->label('NUPTK')
+                    ->numeric()
+                    ->maxLength(20),
+                TextInput::make('npk_peg_id')
+                    ->label('NPK/Peg.ID')
+                    ->maxLength(30),
                 Select::make('jabatan_id')
                     ->label('Jabatan')
                     ->relationship('jabatan', 'nama')

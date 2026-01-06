@@ -32,8 +32,8 @@ class TeachersTemplateSheet implements FromArray, WithHeadings, WithStyles, With
     public function array(): array
     {
         return [
-            ['Ahmad Fauzi', "'1234567890123456", 'Guru Kelas', 'Guru Matematika', 'Wali Kelas', 'PNS', 'Sudah', 'Ya'],
-            ['Siti Nurhaliza', "'9876543210987654", 'Guru Mapel', 'Guru Bahasa Indonesia', '', 'Non PNS', 'Belum', 'Ya'],
+            ['Ahmad Fauzi', "'1234567890123456", "'1234567890123456", "'123456", 'Guru Kelas', 'Guru Matematika', 'Wali Kelas', 'PNS', 'Sudah', 'Ya'],
+            ['Siti Nurhaliza', "'9876543210987654", "", "", 'Guru Mapel', 'Guru Bahasa Indonesia', '', 'Non PNS', 'Belum', 'Ya'],
         ];
     }
 
@@ -42,6 +42,8 @@ class TeachersTemplateSheet implements FromArray, WithHeadings, WithStyles, With
         return [
             'Nama Lengkap *',
             'NIP/NIK',
+            'NUPTK',
+            'NPK/Peg.ID',
             'Jabatan * (lihat sheet Referensi)',
             'Tugas Pokok * (lihat sheet Referensi)',
             'Tugas Tambahan (lihat sheet Referensi)',
@@ -54,7 +56,9 @@ class TeachersTemplateSheet implements FromArray, WithHeadings, WithStyles, With
     public function columnFormats(): array
     {
         return [
-            'B' => NumberFormat::FORMAT_TEXT, // NIP/NIK column as text
+            'B' => NumberFormat::FORMAT_TEXT, // NIP/NIK
+            'C' => NumberFormat::FORMAT_TEXT, // NUPTK
+            'D' => NumberFormat::FORMAT_TEXT, // NPK
         ];
     }
 

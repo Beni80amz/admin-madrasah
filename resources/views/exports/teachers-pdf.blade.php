@@ -126,6 +126,8 @@
                 <th style="width: 25px;">No</th>
                 <th>Nama Lengkap</th>
                 <th>NIP/NIK</th>
+                <th>NUPTK</th>
+                <th>NPK</th>
                 <th>Jabatan</th>
                 <th>Tugas Pokok</th>
                 <th style="width: 50px;">Status</th>
@@ -138,6 +140,8 @@
                     <td>{{ $index + 1 }}</td>
                     <td><strong>{{ $teacher->nama_lengkap }}</strong></td>
                     <td>{{ $teacher->nip ?? '-' }}</td>
+                    <td>{{ $teacher->nuptk ?? '-' }}</td>
+                    <td>{{ $teacher->npk_peg_id ?? '-' }}</td>
                     <td>{{ $teacher->jabatan?->nama ?? '-' }}</td>
                     <td>{{ $teacher->tugasPokok?->nama ?? '-' }}</td>
                     <td>

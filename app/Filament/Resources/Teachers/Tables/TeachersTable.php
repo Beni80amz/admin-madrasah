@@ -35,6 +35,14 @@ class TeachersTable
                 TextColumn::make('nip')
                     ->label('NIP/NIK')
                     ->searchable(),
+                TextColumn::make('nuptk')
+                    ->label('NUPTK')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('npk_peg_id')
+                    ->label('NPK/Peg.ID')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('jabatan.nama')
                     ->label('Jabatan')
                     ->searchable(),

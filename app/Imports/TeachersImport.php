@@ -67,9 +67,37 @@ class TeachersImport implements ToModel, WithHeadingRow, WithValidation, SkipsEm
             $nip = substr($nip, 1);
         }
 
+        // Handle NUPTK
+        $nuptk = null;
+        $nuptkKeys = ['nuptk', 'nomor_unik_pendidik_dan_tenaga_kependidikan'];
+        foreach ($nuptkKeys as $key) {
+            if (!empty($row[$key])) {
+                $nuptk = $row[$key];
+                break;
+            }
+        }
+        if ($nuptk && str_starts_with($nuptk, "'")) {
+            $nuptk = substr($nuptk, 1);
+        }
+
+        // Handle NPK/Peg.ID
+        $npk = null;
+        $npkKeys = ['npk', 'npk_peg_id', 'peg_id', 'pegid'];
+        foreach ($npkKeys as $key) {
+            if (!empty($row[$key])) {
+                $npk = $row[$key];
+                break;
+            }
+        }
+        if ($npk && str_starts_with($npk, "'")) {
+            $npk = substr($npk, 1);
+        }
+
         return new Teacher([
             'nama_lengkap' => $name,
             'nip' => $nip,
+            'nuptk' => $nuptk,
+            'npk_peg_id' => $npk,
             'jabatan_id' => $jabatan->id,
             'tugas_pokok_id' => $tugasPokok->id,
             'tugas_tambahan_id' => $tugasTambahan?->id,
