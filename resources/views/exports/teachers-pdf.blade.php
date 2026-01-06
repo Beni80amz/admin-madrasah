@@ -12,7 +12,7 @@
 
         @page {
             size: A4 portrait;
-            margin: 20mm 30mm 20mm 40mm;
+            margin: 20mm 20mm 20mm 20mm;
         }
 
         body {
@@ -134,8 +134,8 @@
                 <th>Nama Lengkap</th>
                 <th>NUPTK</th>
                 <th>NPK</th>
-                <th>Jabatan</th>
-                <th>Tugas Pokok</th>
+                <th style="width: 15%;">Jabatan</th>
+                <th style="width: 15%;">Tugas Pokok</th>
                 <th style="width: 50px;">Status</th>
                 <th style="width: 60px;">Sertifikasi</th>
             </tr>
@@ -145,7 +145,8 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td><strong>{{ $teacher->nama_lengkap }}</strong></td>
-                    <td>{{ $teacher->nuptk ?? '-' }}</td>
+                    <td>{{ is_numeric($teacher->nuptk) ? number_format($teacher->nuptk, 0, '', '') : ($teacher->nuptk ?? '-') }}
+                    </td>
                     <td>{{ $teacher->npk_peg_id ?? '-' }}</td>
                     <td>{{ $teacher->jabatan?->nama ?? '-' }}</td>
                     <td>{{ $teacher->tugasPokok?->nama ?? '-' }}</td>
