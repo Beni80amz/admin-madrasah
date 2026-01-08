@@ -143,9 +143,8 @@
         <!-- 2. Clock & Date -->
         <div class="text-center mt-4">
             <div
-                class="text-5xl font-black tracking-tight text-text-main dark:text-white flex items-baseline justify-center gap-1">
+                class="text-6xl font-black tracking-tight text-text-main dark:text-white flex items-baseline justify-center gap-1">
                 <span x-text="time">00:00</span>
-                <span class="text-lg font-bold text-gray-400" x-text="ampm">AM</span>
             </div>
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1" x-text="date">Senin, 1 Januari 2024</p>
         </div>
@@ -420,7 +419,7 @@
 
                 startSelfieCamera() {
                     const video = document.getElementById('selfie-video');
-                    
+
                     // Check if browser supports mediaDevices
                     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                         this.showAlert('error', 'Kamera Error', 'Browser tidak mendukung akses kamera. Pastikan menggunakan HTTPS.');
@@ -476,7 +475,7 @@
 
                 submitAttendance(type, qrContent = null) {
                     if (!this.latitude || !this.longitude) {
-                        this.showAlert('error', 'Lokasi Error', 'Tunggu sampai lokasi terkunci.');
+                        this.showAlert('error', 'Lokasi Belum Siap', 'Tunggu sampai lokasi terkunci (hijau). Akurasi: ' + (this.accuracy ? this.accuracy + 'm' : 'Menunggu...'));
                         return;
                     }
 
@@ -487,10 +486,10 @@
                     formData.append('longitude', this.longitude);
                     formData.append('type', type);
                     formData.append('action_status', this.activeAction); // 'masuk' or 'pulang'
-
+                    
                     if (qrContent) formData.append('qr_content', qrContent);
                     if (type === 'selfie' && this.capturedImage) formData.append('image', this.capturedImage);
-
+                    
                     formData.append('_token', '{{ csrf_token() }}');
 
                     fetch('{{ route("scan.store") }}', {
@@ -498,23 +497,39 @@
                         headers: { 'Accept': 'application/json' },
                         body: formData
                     })
-                        .then(response => response.json())
-                        .then(data => {
-                            this.submitting = false;
-                            if (data.status === 'success') {
-                                this.showAlert('success', 'Berhasil', data.message);
-                                setTimeout(() => {
-                                    window.location.href = '{{ route("dashboard.index") }}';
-                                }, 2000);
-                            } else {
-                                this.showAlert('error', 'Gagal', data.message);
-                                if (type === 'qr') setTimeout(() => this.startQrScanner(), 2000);
-                            }
-                        })
-                        .catch(error => {
-                            this.submitting = false;
-                            this.showAlert('error', 'Error', 'Terjadi kesalahan jaringan.');
-                        });
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => { throw new Error(text || 'Server Error'); });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        this.submitting = false;
+                        if (data.status === 'success') {
+                            this.showAlert('success', 'Berhasil', data.message);
+                            setTimeout(() => {
+                                window.location.href = '{{ route("dashboard.index") }}';
+                            }, 2000);
+                        } else {
+                            this.showAlert('error', 'Gagal', data.message);
+                            if (type === 'qr') setTimeout(() => this.startQrScanner(), 2000);
+                        }
+                    })
+                    .catch(error => {
+                        this.submitting = false;
+                        console.error('Submission Error:', error);
+                        
+                        // Parse JSON error if possible
+                        let errorMessage = 'Terjadi kesalahan jaringan atau server.';
+                        try {
+                            const errorObj = JSON.parse(error.message);
+                            if (errorObj.message) errorMessage = errorObj.message;
+                        } catch (e) {
+                            errorMessage = error.message.replace(/<[^>]*>?/gm, '').substring(0, 100); // Strip HTML tags and limit length
+                        }
+                        
+                        this.showAlert('error', 'Error Sistem', errorMessage);
+                    });
                 },
 
                 showAlert(type, title, message) {
