@@ -62,6 +62,21 @@ class AttendanceService
             throw new \Exception('Hari ini adalah hari libur (' . $schedule->waktu . '). Absensi tidak dapat dilakukan.');
         }
 
+        // Validate Check-in Window
+        $awalAbsenMasuk = $settings['awal_absen_masuk'] ?? '06:00:00';
+        $akhirAbsenMasuk = $settings['akhir_absen_masuk'] ?? '11:30:00';
+
+        $startWindow = Carbon::parse($date . ' ' . $awalAbsenMasuk);
+        $endWindow = Carbon::parse($date . ' ' . $akhirAbsenMasuk);
+
+        if ($now->lt($startWindow)) {
+            throw new \Exception('Belum diperbolehkan absen masuk! Waktu mulai: ' . $awalAbsenMasuk);
+        }
+
+        if ($now->gt($endWindow)) {
+            throw new \Exception('Waktu absen masuk telah lewat! Batas akhir: ' . $akhirAbsenMasuk);
+        }
+
         // Determine work start time
         $workStartTimeString = $schedule->time_in ?? $settings['work_start_time'] ?? '07:00:00';
         $workStartTime = Carbon::parse($date . ' ' . $workStartTimeString);
@@ -112,6 +127,21 @@ class AttendanceService
 
         // Get daily schedule
         $schedule = $this->getDailySchedule($now);
+
+        // Validate Check-out Window
+        $awalAbsenPulang = $settings['awal_absen_pulang'] ?? '14:30:00';
+        $akhirAbsenPulang = $settings['akhir_absen_pulang'] ?? '20:00:00';
+
+        $startWindow = Carbon::parse($date . ' ' . $awalAbsenPulang);
+        $endWindow = Carbon::parse($date . ' ' . $akhirAbsenPulang);
+
+        if ($now->lt($startWindow)) {
+            throw new \Exception('Belum saatnya melakukan Absen Pulang. Waktu mulai: ' . $awalAbsenPulang);
+        }
+
+        if ($now->gt($endWindow)) {
+            throw new \Exception('Waktu absen pulang telah habis. Batas akhir: ' . $akhirAbsenPulang);
+        }
 
         // Determine work end time
         $workEndTimeString = $schedule->time_out ?? $settings['work_end_time'] ?? '16:00:00';

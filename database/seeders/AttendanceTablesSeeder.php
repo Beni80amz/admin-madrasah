@@ -26,6 +26,10 @@ class AttendanceTablesSeeder extends Seeder
                 ['key' => 'work_start_time', 'value' => '07:00:00', 'description' => 'Jam Masuk Kerja/Sekolah'],
                 ['key' => 'work_end_time', 'value' => '14:00:00', 'description' => 'Jam Pulang Kerja/Sekolah'],
                 ['key' => 'late_tolerance_minutes', 'value' => '15', 'description' => 'Toleransi Keterlambatan (Menit)'],
+                ['key' => 'awal_absen_masuk', 'value' => '06:00:00', 'description' => 'Waktu Mulai Absen Masuk'],
+                ['key' => 'akhir_absen_masuk', 'value' => '11:30:00', 'description' => 'Batas Akhir Absen Masuk'],
+                ['key' => 'awal_absen_pulang', 'value' => '14:30:00', 'description' => 'Waktu Mulai Absen Pulang'],
+                ['key' => 'akhir_absen_pulang', 'value' => '20:00:00', 'description' => 'Batas Akhir Absen Pulang'],
             ];
 
             foreach ($settings as $setting) {
