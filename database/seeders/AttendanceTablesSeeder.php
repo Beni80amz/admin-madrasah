@@ -34,7 +34,14 @@ class AttendanceTablesSeeder extends Seeder
             $this->command->info('Default attendance settings seeded.');
         }
 
-        // 2. Create Users for Students
+        // 2. Create Roles if not exists
+        if (class_exists(\Spatie\Permission\Models\Role::class)) {
+            // Using firstOrCreate to avoid duplication and errors
+            \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Siswa', 'guard_name' => 'web']);
+            \Spatie\Permission\Models\Role::firstOrCreate(['name' => 'Guru', 'guard_name' => 'web']);
+        }
+
+        // 3. Create Users for Students
         $students = Student::whereNull('user_id')->get();
         if ($students->count() > 0) {
             $this->command->info('Creating users for ' . $students->count() . ' students...');
