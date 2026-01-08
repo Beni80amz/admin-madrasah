@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\OperationalHours\Schemas;
 
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -25,6 +26,14 @@ class OperationalHourForm
                             ->placeholder('Contoh: KBM Aktif, 07:00 - 14:00, Libur')
                             ->required()
                             ->maxLength(255),
+                        TimePicker::make('time_in')
+                            ->label('Jam Masuk (Sistem Absensi)')
+                            ->seconds(false)
+                            ->timezone('Asia/Jakarta'),
+                        TimePicker::make('time_out')
+                            ->label('Jam Pulang (Sistem Absensi)')
+                            ->seconds(false)
+                            ->timezone('Asia/Jakarta'),
                         TextInput::make('urutan')
                             ->label('Urutan Tampil')
                             ->numeric()

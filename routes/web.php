@@ -51,3 +51,24 @@ Route::get('/ppdb/sukses/{id}', App\Livewire\Ppdb\Success::class)->name('ppdb.su
 Route::get('/ppdb/receipt/{id}/download', [App\Http\Controllers\PpdbReceiptController::class, 'download'])->name('ppdb.receipt.download');
 Route::get('/ppdb/receipt/{id}/preview', [App\Http\Controllers\PpdbReceiptController::class, 'stream'])->name('ppdb.receipt.preview');
 
+// Frontend Authentication
+Route::get('/login', [App\Http\Controllers\Auth\CustomAuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [App\Http\Controllers\Auth\CustomAuthController::class, 'login'])->name('login.post');
+Route::post('/logout', [App\Http\Controllers\Auth\CustomAuthController::class, 'logout'])->name('logout');
+
+// Frontend Dashboard & Attendance
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/scan', [App\Http\Controllers\AttendanceController::class, 'index'])->name('scan.index');
+    Route::post('/scan/store', [App\Http\Controllers\AttendanceController::class, 'store'])->name('scan.store');
+
+    // Placeholder Routes for Menu Items
+    // Feature: Izin/Sakit
+    Route::get('/izin', [App\Http\Controllers\IzinController::class, 'index'])->name('izin.index');
+    Route::post('/izin', [App\Http\Controllers\IzinController::class, 'store'])->name('izin.store');
+    Route::view('/riwayat', 'frontend.features.riwayat')->name('riwayat.index');
+    Route::view('/jadwal', 'frontend.features.jadwal')->name('jadwal.index');
+    Route::view('/tugas', 'frontend.features.tugas')->name('tugas.index');
+    Route::view('/inbox', 'frontend.features.inbox')->name('inbox.index');
+    Route::view('/profil-user', 'frontend.features.profil')->name('profil.user');
+});

@@ -19,7 +19,18 @@ class OperationalHoursTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('waktu')
+                    ->label('Keterangan')
                     ->searchable()
+                    ->sortable(),
+                TextColumn::make('time_in')
+                    ->label('Masuk')
+                    ->time('H:i')
+                    ->timezone('Asia/Jakarta')
+                    ->sortable(),
+                TextColumn::make('time_out')
+                    ->label('Pulang')
+                    ->time('H:i')
+                    ->timezone('Asia/Jakarta')
                     ->sortable(),
                 IconColumn::make('is_libur')
                     ->boolean()

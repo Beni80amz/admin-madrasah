@@ -9,6 +9,8 @@ class OperationalHour extends Model
     protected $fillable = [
         'hari',
         'waktu',
+        'time_in',
+        'time_out',
         'is_libur',
         'urutan',
         'is_active',
