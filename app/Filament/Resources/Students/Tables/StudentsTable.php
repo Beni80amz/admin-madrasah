@@ -136,6 +136,31 @@ class StudentsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                \Filament\Actions\Action::make('resetDevice')
+                    ->label('Reset Perangkat')
+                    ->icon('heroicon-o-device-phone-mobile')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Reset Device ID')
+                    ->modalDescription('Apakah Anda yakin ingin mereset Device ID pengguna ini? Pengguna harus login ulang di perangkat baru.')
+                    ->modalSubmitActionLabel('Ya, Reset')
+                    ->action(function (Student $record) {
+                        if ($record->user_id) {
+                            $user = \App\Models\User::find($record->user_id);
+                            if ($user) {
+                                $user->update(['device_id' => null]);
+                                \Filament\Notifications\Notification::make()
+                                    ->title('Device ID berhasil di-reset')
+                                    ->success()
+                                    ->send();
+                            }
+                        } else {
+                            \Filament\Notifications\Notification::make()
+                                ->title('User belum terhubung')
+                                ->danger()
+                                ->send();
+                        }
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
