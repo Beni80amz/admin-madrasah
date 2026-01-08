@@ -19,13 +19,16 @@ class DashboardController extends Controller
 
         $roleText = 'User';
         $subText = '-';
+        $displayName = $user->name; // Default fallback
 
         if ($student) {
             $roleText = 'Siswa';
             $subText = $student->kelas;
+            $displayName = $student->nama_lengkap;
         } elseif ($teacher) {
             $roleText = 'Guru';
             $subText = $teacher->jabatan?->nama ?? '-';
+            $displayName = $teacher->nama_lengkap;
         }
 
         // Today's Attendance
@@ -88,7 +91,8 @@ class DashboardController extends Controller
             'subText',
             'todayAttendance',
             'summary',
-            'timeline'
+            'timeline',
+            'displayName'
         ));
     }
 }

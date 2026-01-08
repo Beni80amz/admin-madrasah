@@ -76,15 +76,16 @@
 
                 <div class="flex items-center gap-3 pl-3 border-l border-gray-200 dark:border-gray-700">
                     <div class="text-right hidden sm:block">
-                        <p class="text-sm font-bold text-text-main dark:text-white leading-tight">{{ $user->name }}</p>
+                        <p class="text-sm font-bold text-text-main dark:text-white leading-tight">{{ $displayName }}</p>
                         <p class="text-[11px] font-semibold text-primary tracking-wide">
-                            {{ $subText != '-' ? $subText : $roleText }}</p>
+                            {{ $subText != '-' ? $subText : $roleText }}
+                        </p>
                     </div>
                     <div
                         class="size-10 rounded-full bg-gray-200 overflow-hidden border-2 border-primary ring-2 ring-primary/20">
                         @php
                             $photoPath = $student->photo ?? ($teacher->photo ?? null);
-                            $photoUrl = $photoPath ? asset('storage/' . $photoPath) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=13ec25&color=0d1b0f';
+                            $photoUrl = $photoPath ? asset('storage/' . $photoPath) : 'https://ui-avatars.com/api/?name=' . urlencode($displayName) . '&background=13ec25&color=0d1b0f';
                         @endphp
                         <img alt="Profile" class="w-full h-full object-cover" src="{{ $photoUrl }}" />
                     </div>
@@ -143,7 +144,8 @@
             <div>
                 <p class="text-primary font-semibold mb-1 tracking-wide">Selamat Pagi,</p>
                 <h2 class="text-3xl md:text-4xl font-extrabold text-text-main dark:text-white tracking-tight">
-                    {{ $user->name }}</h2>
+                    {{ $displayName }}
+                </h2>
                 <div class="flex items-center gap-3 mt-3">
                     <span
                         class="px-3 py-1.5 rounded-lg bg-primary/20 text-green-800 dark:text-green-300 text-xs font-bold uppercase tracking-wider">
@@ -324,12 +326,12 @@
                                     <span
                                         class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">{{ $day }}</span>
                                     <div class="size-12 sm:size-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm transition-transform hover:scale-105
-                                        {{ $data['color'] == 'green' ? 'bg-green-100 dark:bg-green-900/30 text-green-600' : '' }}
-                                        {{ $data['color'] == 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600' : '' }}
-                                        {{ $data['color'] == 'red' ? 'bg-red-100 dark:bg-red-900/30 text-red-600' : '' }}
-                                        {{ $data['color'] == 'blue' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' : '' }}
-                                        {{ $data['color'] == 'gray' ? 'bg-gray-50 dark:bg-white/5 text-gray-300' : '' }}
-                                    ">
+                                            {{ $data['color'] == 'green' ? 'bg-green-100 dark:bg-green-900/30 text-green-600' : '' }}
+                                            {{ $data['color'] == 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600' : '' }}
+                                            {{ $data['color'] == 'red' ? 'bg-red-100 dark:bg-red-900/30 text-red-600' : '' }}
+                                            {{ $data['color'] == 'blue' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' : '' }}
+                                            {{ $data['color'] == 'gray' ? 'bg-gray-50 dark:bg-white/5 text-gray-300' : '' }}
+                                        ">
                                         @if($data['color'] == 'green') <span class="material-symbols-outlined">check</span>
                                         @elseif($data['color'] == 'yellow') <span
                                             class="material-symbols-outlined">sick</span>
@@ -341,12 +343,12 @@
                                         @endif
                                     </div>
                                     <span class="text-[10px] sm:text-xs font-bold
-                                        {{ $data['color'] == 'green' ? 'text-green-600' : '' }}
-                                        {{ $data['color'] == 'yellow' ? 'text-yellow-600' : '' }}
-                                        {{ $data['color'] == 'red' ? 'text-red-600' : '' }}
-                                        {{ $data['color'] == 'blue' ? 'text-blue-600' : '' }}
-                                        {{ $data['color'] == 'gray' ? 'text-gray-300' : '' }}
-                                    ">{{ $data['label'] != '-' ? $data['label'] : '--' }}</span>
+                                            {{ $data['color'] == 'green' ? 'text-green-600' : '' }}
+                                            {{ $data['color'] == 'yellow' ? 'text-yellow-600' : '' }}
+                                            {{ $data['color'] == 'red' ? 'text-red-600' : '' }}
+                                            {{ $data['color'] == 'blue' ? 'text-blue-600' : '' }}
+                                            {{ $data['color'] == 'gray' ? 'text-gray-300' : '' }}
+                                        ">{{ $data['label'] != '-' ? $data['label'] : '--' }}</span>
                                 </div>
                             @endforeach
                         </div>
