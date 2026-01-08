@@ -17,26 +17,27 @@ class AttendanceTablesSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Seed Attendance Settings if empty
-        if (AttendanceSetting::count() == 0) {
-            $settings = [
-                ['key' => 'office_lat', 'value' => '-6.4025', 'description' => 'Latitude Lokasi Kantor/Sekolah'], // Example coord
-                ['key' => 'office_long', 'value' => '106.7942', 'description' => 'Longitude Lokasi Kantor/Sekolah'],
-                ['key' => 'radius_meter', 'value' => '100', 'description' => 'Radius Jangkauan Absensi (Meter)'],
-                ['key' => 'work_start_time', 'value' => '07:00:00', 'description' => 'Jam Masuk Kerja/Sekolah'],
-                ['key' => 'work_end_time', 'value' => '14:00:00', 'description' => 'Jam Pulang Kerja/Sekolah'],
-                ['key' => 'late_tolerance_minutes', 'value' => '15', 'description' => 'Toleransi Keterlambatan (Menit)'],
-                ['key' => 'awal_absen_masuk', 'value' => '06:00:00', 'description' => 'Waktu Mulai Absen Masuk'],
-                ['key' => 'akhir_absen_masuk', 'value' => '11:30:00', 'description' => 'Batas Akhir Absen Masuk'],
-                ['key' => 'awal_absen_pulang', 'value' => '14:30:00', 'description' => 'Waktu Mulai Absen Pulang'],
-                ['key' => 'akhir_absen_pulang', 'value' => '20:00:00', 'description' => 'Batas Akhir Absen Pulang'],
-            ];
+        // 1. Seed Attendance Settings
+        $settings = [
+            ['key' => 'office_lat', 'value' => '-6.4025', 'description' => 'Latitude Lokasi Kantor/Sekolah'],
+            ['key' => 'office_long', 'value' => '106.7942', 'description' => 'Longitude Lokasi Kantor/Sekolah'],
+            ['key' => 'radius_meter', 'value' => '100', 'description' => 'Radius Jangkauan Absensi (Meter)'],
+            ['key' => 'work_start_time', 'value' => '07:00:00', 'description' => 'Jam Masuk Kerja/Sekolah'],
+            ['key' => 'work_end_time', 'value' => '14:00:00', 'description' => 'Jam Pulang Kerja/Sekolah'],
+            ['key' => 'late_tolerance_minutes', 'value' => '15', 'description' => 'Toleransi Keterlambatan (Menit)'],
+            ['key' => 'awal_absen_masuk', 'value' => '06:00:00', 'description' => 'Waktu Mulai Absen Masuk'],
+            ['key' => 'akhir_absen_masuk', 'value' => '11:30:00', 'description' => 'Batas Akhir Absen Masuk'],
+            ['key' => 'awal_absen_pulang', 'value' => '14:30:00', 'description' => 'Waktu Mulai Absen Pulang'],
+            ['key' => 'akhir_absen_pulang', 'value' => '20:00:00', 'description' => 'Batas Akhir Absen Pulang'],
+        ];
 
-            foreach ($settings as $setting) {
-                AttendanceSetting::create($setting);
-            }
-            $this->command->info('Default attendance settings seeded.');
+        foreach ($settings as $setting) {
+            AttendanceSetting::firstOrCreate(
+                ['key' => $setting['key']],
+                ['value' => $setting['value'], 'description' => $setting['description']]
+            );
         }
+        $this->command->info('Attendance settings seeded/updated.');
 
         // 2. Create Roles if not exists
         if (class_exists(\Spatie\Permission\Models\Role::class)) {
