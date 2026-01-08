@@ -321,14 +321,10 @@
                 startClock() {
                     const updateTime = () => {
                         const now = new Date();
-                        let hours = now.getHours();
+                        const hours = now.getHours().toString().padStart(2, '0');
                         const minutes = now.getMinutes().toString().padStart(2, '0');
-                        const ampm = hours >= 12 ? 'PM' : 'AM';
-                        hours = hours % 12;
-                        hours = hours ? hours : 12; // the hour '0' should be '12'
 
-                        this.time = `${hours.toString().padStart(2, '0')}:${minutes}`;
-                        this.ampm = ampm;
+                        this.time = `${hours}:${minutes}`;
 
                         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                         this.date = now.toLocaleDateString('id-ID', options);
@@ -486,10 +482,10 @@
                     formData.append('longitude', this.longitude);
                     formData.append('type', type);
                     formData.append('action_status', this.activeAction); // 'masuk' or 'pulang'
-                    
+
                     if (qrContent) formData.append('qr_content', qrContent);
                     if (type === 'selfie' && this.capturedImage) formData.append('image', this.capturedImage);
-                    
+
                     formData.append('_token', '{{ csrf_token() }}');
 
                     fetch('{{ route("scan.store") }}', {
@@ -497,39 +493,39 @@
                         headers: { 'Accept': 'application/json' },
                         body: formData
                     })
-                    .then(response => {
-                        if (!response.ok) {
-                            return response.text().then(text => { throw new Error(text || 'Server Error'); });
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        this.submitting = false;
-                        if (data.status === 'success') {
-                            this.showAlert('success', 'Berhasil', data.message);
-                            setTimeout(() => {
-                                window.location.href = '{{ route("dashboard.index") }}';
-                            }, 2000);
-                        } else {
-                            this.showAlert('error', 'Gagal', data.message);
-                            if (type === 'qr') setTimeout(() => this.startQrScanner(), 2000);
-                        }
-                    })
-                    .catch(error => {
-                        this.submitting = false;
-                        console.error('Submission Error:', error);
-                        
-                        // Parse JSON error if possible
-                        let errorMessage = 'Terjadi kesalahan jaringan atau server.';
-                        try {
-                            const errorObj = JSON.parse(error.message);
-                            if (errorObj.message) errorMessage = errorObj.message;
-                        } catch (e) {
-                            errorMessage = error.message.replace(/<[^>]*>?/gm, '').substring(0, 100); // Strip HTML tags and limit length
-                        }
-                        
-                        this.showAlert('error', 'Error Sistem', errorMessage);
-                    });
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.text().then(text => { throw new Error(text || 'Server Error'); });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            this.submitting = false;
+                            if (data.status === 'success') {
+                                this.showAlert('success', 'Berhasil', data.message);
+                                setTimeout(() => {
+                                    window.location.href = '{{ route("dashboard.index") }}';
+                                }, 2000);
+                            } else {
+                                this.showAlert('error', 'Gagal', data.message);
+                                if (type === 'qr') setTimeout(() => this.startQrScanner(), 2000);
+                            }
+                        })
+                        .catch(error => {
+                            this.submitting = false;
+                            console.error('Submission Error:', error);
+
+                            // Parse JSON error if possible
+                            let errorMessage = 'Terjadi kesalahan jaringan atau server.';
+                            try {
+                                const errorObj = JSON.parse(error.message);
+                                if (errorObj.message) errorMessage = errorObj.message;
+                            } catch (e) {
+                                errorMessage = error.message.replace(/<[^>]*>?/gm, '').substring(0, 100); // Strip HTML tags and limit length
+                            }
+
+                            this.showAlert('error', 'Error Sistem', errorMessage);
+                        });
                 },
 
                 showAlert(type, title, message) {
