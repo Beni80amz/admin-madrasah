@@ -18,6 +18,7 @@ class LeaveRequest extends Model
         'attachment',
         'status', // pending, approved, rejected
         'approved_by',
+        'rejection_note',
     ];
 
     protected $casts = [
@@ -33,5 +34,10 @@ class LeaveRequest extends Model
     public function approver()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function getDurationAttribute()
+    {
+        return $this->start_date->diffInDays($this->end_date) + 1;
     }
 }

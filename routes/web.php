@@ -63,9 +63,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/scan/store', [App\Http\Controllers\AttendanceController::class, 'store'])->name('scan.store');
 
     // Placeholder Routes for Menu Items
-    // Feature: Izin/Sakit
-    Route::get('/izin', [App\Http\Controllers\IzinController::class, 'index'])->name('izin.index');
-    Route::post('/izin', [App\Http\Controllers\IzinController::class, 'store'])->name('izin.store');
+    // Izin & Sakit (Leave Requests)
+    Route::prefix('izin')->name('leave.')->group(function () {
+        Route::get('/', [App\Http\Controllers\LeaveRequestController::class, 'index'])->name('index');
+        Route::get('/buat', [App\Http\Controllers\LeaveRequestController::class, 'create'])->name('create');
+        Route::post('/simpan', [App\Http\Controllers\LeaveRequestController::class, 'store'])->name('store');
+        Route::post('/{leaveRequest}/approve', [App\Http\Controllers\LeaveRequestController::class, 'approve'])->name('approve');
+        Route::post('/{leaveRequest}/reject', [App\Http\Controllers\LeaveRequestController::class, 'reject'])->name('reject');
+    });
 
     Route::get('/riwayat', [App\Http\Controllers\AttendanceController::class, 'history'])->name('riwayat.index');
     Route::get('/riwayat/export', [App\Http\Controllers\AttendanceController::class, 'downloadPdf'])->name('riwayat.export');
