@@ -94,7 +94,8 @@ class RdmSyncService
     public function syncStudentsFromRdm(): array
     {
         set_time_limit(300); // 5 Minutes max execution
-        $stats = ['created' => 0, 'updated' => 0, 'errors' => 0, 'error_details' => []];
+        $batchId = 'student_' . now()->format('YmdHis');
+        $stats = ['created' => 0, 'updated' => 0, 'errors' => 0, 'error_details' => [], 'batch_id' => $batchId];
 
         try {
             // GET JENJANG FROM PROFILE
@@ -262,13 +263,35 @@ class RdmSyncService
                     }
                 } catch (\Throwable $e) {
                     $studentName = $rdmStudent->siswa_nama ?? 'N/A';
+                    $studentNis = $rdmStudent->siswa_nis ?? 'N/A';
+                    $studentKelas = $kelas ?? 'N/A';
                     $errorMsg = $e->getMessage();
+
                     Log::error('RDM Sync Student Error: ' . $errorMsg, [
                         'siswa_id' => $rdmStudent->siswa_id ?? 'N/A',
                         'siswa_nama' => $studentName
                     ]);
+
                     $stats['errors']++;
-                    // Collect first 10 errors for display (avoid too long notification)
+
+                    // Save to database for detailed view
+                    try {
+                        \App\Models\SyncErrorLog::create([
+                            'sync_type' => 'student',
+                            'batch_id' => $batchId,
+                            'rdm_id' => $rdmStudent->siswa_id ?? null,
+                            'nama' => $studentName,
+                            'nis_nip' => $studentNis,
+                            'kelas' => $studentKelas,
+                            'error_type' => \App\Models\SyncErrorLog::parseErrorType($errorMsg),
+                            'error_column' => \App\Models\SyncErrorLog::parseErrorColumn($errorMsg),
+                            'error_message' => substr($errorMsg, 0, 500), // Limit length
+                        ]);
+                    } catch (\Throwable $logError) {
+                        // Silently fail if logging fails
+                    }
+
+                    // Collect first 10 errors for notification display
                     if (count($stats['error_details']) < 10) {
                         $stats['error_details'][] = "{$studentName}: {$errorMsg}";
                     }
