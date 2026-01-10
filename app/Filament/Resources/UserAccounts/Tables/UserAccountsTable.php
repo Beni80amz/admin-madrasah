@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Filament\Resources\UserAccounts\Tables;
+
+use App\Models\User;
+use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Database\Eloquent\Collection;
+use Filament\Tables\Actions\Action;
+
+class UserAccountsTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('name')
+                    ->label('Nama Lengkap')
+                    ->description(fn(User $record) => $record->teacher?->nama_lengkap ?? ($record->student?->nama_lengkap ?? ''))
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('email')
+                    ->label('Username / Email')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable(),
+                TextColumn::make('roles.name')
+                    ->label('Role')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'super_admin' => 'danger',
+                        'teacher' => 'info',
+                        'student' => 'success',
+                        default => 'gray',
+                    })
+                    ->searchable(),
+            ])
+            ->filters([
+                \Filament\Tables\Filters\SelectFilter::make('roles')
+                    ->relationship('roles', 'name')
+                    ->label('Filter Role'),
+            ])
+            ->actions([
+                // No edit/delete needed for now, just view
+            ])
+            ->bulkActions([
+                \Filament\Actions\BulkActionGroup::make([
+                    BulkAction::make('export_csv')
+                        ->label('Export ke CSV')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->action(function (Collection $records) {
+                            return response()->streamDownload(function () use ($records) {
+                                echo "Nama Lengkap,Username/Email,Role,Nama Asli (Jika Guru/Siswa)\n";
+                                foreach ($records as $record) {
+                                    $role = $record->roles->first()?->name ?? '-';
+                                    $realName = $record->teacher?->nama_lengkap ?? ($record->student?->nama_lengkap ?? $record->name);
+
+                                    echo "\"{$record->name}\",\"{$record->email}\",\"{$role}\",\"{$realName}\"\n";
+                                }
+                            }, 'users_export_' . date('Y-m-d_H-i-s') . '.csv');
+                        })
+                        ->deselectRecordsAfterCompletion(),
+                ]),
+            ]);
+    }
+}
