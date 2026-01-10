@@ -64,13 +64,21 @@
             class="flex w-full lg:w-1/2 flex-col items-center justify-center bg-background-light dark:bg-background-dark p-6 sm:p-12 relative">
             <div class="w-full max-w-[440px] flex flex-col">
                 <div class="flex flex-col items-center mb-10 text-center">
-                    <div
-                        class="lg:hidden w-14 h-14 rounded-xl bg-primary flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
-                        <span class="material-symbols-outlined text-background-dark"
-                            style="font-size: 32px;">school</span>
-                    </div>
+                    @if($profile && $profile->logo)
+                        <img src="{{ asset('storage/' . $profile->logo) }}" alt="Logo"
+                            class="lg:hidden w-14 h-14 rounded-xl object-contain mb-4 shadow-lg shadow-primary/20" />
+                    @else
+                        <div
+                            class="lg:hidden w-14 h-14 rounded-xl bg-primary flex items-center justify-center mb-4 shadow-lg shadow-primary/20">
+                            <span class="material-symbols-outlined text-background-dark"
+                                style="font-size: 32px;">school</span>
+                        </div>
+                    @endif
                     <h1 class="text-slate-900 dark:text-white text-[32px] font-bold tracking-tight leading-tight">
                         ABSENSI DIGITAL</h1>
+                    @if($profile && $profile->nama_madrasah)
+                        <p class="text-primary text-base font-semibold mt-1">{{ $profile->nama_madrasah }}</p>
+                    @endif
                     <p class="text-slate-500 dark:text-slate-400 text-base font-normal mt-2">Silakan masuk untuk
                         melanjutkan</p>
                 </div>
@@ -128,7 +136,7 @@
                     <p class="text-slate-400 dark:text-slate-600 text-sm">
                         Mengalami kendala saat login? <br />
                         <a class="text-slate-600 dark:text-slate-400 font-medium hover:text-primary dark:hover:text-primary transition-colors underline decoration-slate-300 dark:decoration-slate-700 underline-offset-4"
-                            href="#">Hubungi Admin Sekolah</a>
+                            href="#">Hubungi Admin/Operator Madrasah</a>
                     </p>
                 </div>
             </div>

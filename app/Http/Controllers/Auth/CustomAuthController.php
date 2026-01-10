@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProfileMadrasah;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
@@ -15,7 +16,8 @@ class CustomAuthController extends Controller
 {
     public function showLoginForm()
     {
-        return view('frontend.auth.login');
+        $profile = ProfileMadrasah::getActive();
+        return view('frontend.auth.login', compact('profile'));
     }
 
     public function login(Request $request)
