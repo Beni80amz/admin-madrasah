@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\LeaveRequests;
+namespace App\Filament\Resources;
 
 use App\Filament\Resources\LeaveRequests\Pages\CreateLeaveRequest;
 use App\Filament\Resources\LeaveRequests\Pages\EditLeaveRequest;
