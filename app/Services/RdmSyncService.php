@@ -46,12 +46,23 @@ class RdmSyncService
                         $stats['updated']++;
                     } else {
                         // Check if teacher exists by NIP to avoid duplicates
-                        $existingByNip = Teacher::where('nip', $rdmTeacher->guru_nip)
-                            ->whereNull('rdm_id')
-                            ->first();
+                        $existingTeacher = null;
 
-                        if ($existingByNip) {
-                            $existingByNip->update($data);
+                        if (!empty($rdmTeacher->guru_nip)) {
+                            $existingTeacher = Teacher::where('nip', $rdmTeacher->guru_nip)
+                                ->whereNull('rdm_id')
+                                ->first();
+                        }
+
+                        // Fallback: Check by Name if NIP didn't match (case-insensitive search)
+                        if (!$existingTeacher) {
+                            $existingTeacher = Teacher::where('nama_lengkap', 'LIKE', $rdmTeacher->guru_nama)
+                                ->whereNull('rdm_id')
+                                ->first();
+                        }
+
+                        if ($existingTeacher) {
+                            $existingTeacher->update($data);
                             $stats['updated']++;
                         } else {
                             Teacher::create($data);
