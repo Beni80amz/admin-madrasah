@@ -187,11 +187,10 @@
         </div>
     </div>
 
-    <div style="text-align: right; font-size: 9px; font-style: italic; margin-bottom: 5px; margin-top: 5px;">
-        Dokumen ini dicetak pada {{ now()->locale('id')->isoFormat('D MMMM Y HH:mm') }} WIB
-    </div>
-
     <div class="footer">
+        <div style="float: left; width: 50%; font-size: 9px; font-style: italic;">
+            Dokumen ini dicetak pada {{ now()->locale('id')->isoFormat('D MMMM Y HH:mm') }} WIB
+        </div>
         <div class="signature-box">
             <p>
                 Depok, {{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM Y') }} <br>
