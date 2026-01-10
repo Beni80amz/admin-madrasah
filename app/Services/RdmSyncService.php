@@ -94,7 +94,7 @@ class RdmSyncService
     public function syncStudentsFromRdm(): array
     {
         set_time_limit(300); // 5 Minutes max execution
-        $stats = ['created' => 0, 'updated' => 0, 'errors' => 0];
+        $stats = ['created' => 0, 'updated' => 0, 'errors' => 0, 'error_details' => []];
 
         try {
             // GET JENJANG FROM PROFILE
@@ -261,11 +261,17 @@ class RdmSyncService
                         }
                     }
                 } catch (\Throwable $e) {
-                    Log::error('RDM Sync Student Error: ' . $e->getMessage(), [
+                    $studentName = $rdmStudent->siswa_nama ?? 'N/A';
+                    $errorMsg = $e->getMessage();
+                    Log::error('RDM Sync Student Error: ' . $errorMsg, [
                         'siswa_id' => $rdmStudent->siswa_id ?? 'N/A',
-                        'siswa_nama' => $rdmStudent->siswa_nama ?? 'N/A'
+                        'siswa_nama' => $studentName
                     ]);
                     $stats['errors']++;
+                    // Collect first 10 errors for display (avoid too long notification)
+                    if (count($stats['error_details']) < 10) {
+                        $stats['error_details'][] = "{$studentName}: {$errorMsg}";
+                    }
                 }
             }
         } catch (\Throwable $e) {

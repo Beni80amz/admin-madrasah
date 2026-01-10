@@ -112,15 +112,27 @@ class RdmSync extends Page
                         $service = new RdmSyncService();
                         $results = $service->syncStudentsFromRdm();
 
+                        // Build notification body with error details if any
+                        $body = sprintf(
+                            "%d baru, %d diperbarui, %d error",
+                            $results['created'],
+                            $results['updated'],
+                            $results['errors']
+                        );
+
+                        // Append error details if available
+                        if (!empty($results['error_details'])) {
+                            $body .= "\n\n📋 Detail Error:\n• " . implode("\n• ", $results['error_details']);
+                            if ($results['errors'] > count($results['error_details'])) {
+                                $body .= "\n... dan " . ($results['errors'] - count($results['error_details'])) . " error lainnya (lihat log)";
+                            }
+                        }
+
                         Notification::make()
                             ->title('Sinkronisasi Siswa Berhasil!')
-                            ->body(sprintf(
-                                "%d baru, %d diperbarui, %d error",
-                                $results['created'],
-                                $results['updated'],
-                                $results['errors']
-                            ))
+                            ->body($body)
                             ->success()
+                            ->duration(10000) // Keep notification visible longer
                             ->send();
 
                     } catch (\Throwable $e) {
