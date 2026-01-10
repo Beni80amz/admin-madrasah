@@ -1,5 +1,5 @@
 <x-filament-panels::page>
-    <div class="space-y-6">
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
         {{-- Info Section --}}
         <x-filament::section>
             <x-slot name="heading">
@@ -9,27 +9,54 @@
                 Gunakan tombol di atas untuk men-sinkronkan data Guru dan Siswa dari database RDM.
             </x-slot>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <div class="font-medium text-xs text-primary-600 dark:text-primary-400 mb-1">Sync Semua Data</div>
-                    <div class="text-xs text-gray-600 dark:text-gray-400">Sinkronisasi data Guru dan Siswa sekaligus
+            {{-- Grid using flexbox for fallback --}}
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                {{-- Card 1 --}}
+                <div style="padding: 0.75rem; background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem;"
+                    class="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                    <div style="font-weight: 500; font-size: 0.85rem; margin-bottom: 0.25rem; color: #059669;"
+                        class="text-primary-600 dark:text-primary-400">
+                        Sync Semua Data
+                    </div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;" class="text-gray-600 dark:text-gray-400">
+                        Sinkronisasi data Guru dan Siswa sekaligus
                     </div>
                 </div>
-                <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <div class="font-medium text-xs text-info-600 dark:text-info-400 mb-1">Sync Guru Saja</div>
-                    <div class="text-xs text-gray-600 dark:text-gray-400">Hanya sinkronisasi data Guru</div>
+
+                {{-- Card 2 --}}
+                <div style="padding: 0.75rem; background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem;"
+                    class="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                    <div style="font-weight: 500; font-size: 0.85rem; margin-bottom: 0.25rem; color: #0ea5e9;"
+                        class="text-info-600 dark:text-info-400">
+                        Sync Guru Saja
+                    </div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;" class="text-gray-600 dark:text-gray-400">
+                        Hanya sinkronisasi data Guru
+                    </div>
                 </div>
-                <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <div class="font-medium text-xs text-success-600 dark:text-success-400 mb-1">Sync Siswa Saja</div>
-                    <div class="text-xs text-gray-600 dark:text-gray-400">Hanya sinkronisasi data Siswa</div>
+
+                {{-- Card 3 --}}
+                <div style="padding: 0.75rem; background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.5rem;"
+                    class="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                    <div style="font-weight: 500; font-size: 0.85rem; margin-bottom: 0.25rem; color: #10b981;"
+                        class="text-success-600 dark:text-success-400">
+                        Sync Siswa Saja
+                    </div>
+                    <div style="font-size: 0.8rem; opacity: 0.8;" class="text-gray-600 dark:text-gray-400">
+                        Hanya sinkronisasi data Siswa
+                    </div>
                 </div>
             </div>
 
-            <div class="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-700">
-                <div class="flex gap-2">
-                    <x-heroicon-m-information-circle class="w-5 h-5 text-amber-500"
-                        style="width: 20px; height: 20px;" />
-                    <p class="text-amber-700 dark:text-amber-300 text-sm">
+            {{-- Note Box --}}
+            <div style="padding: 0.75rem; background-color: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.2); border-radius: 0.5rem;"
+                class="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700">
+                <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
+                    <x-heroicon-m-information-circle
+                        style="width: 20px; height: 20px; color: #f59e0b; flex-shrink: 0;" />
+                    <p style="font-size: 0.875rem; color: #d97706; margin: 0;"
+                        class="text-amber-700 dark:text-amber-300">
                         <strong>Catatan:</strong> Data dari RDM akan menjadi master. Data yang sudah ada di Admin
                         Madrasah dengan NIP/NIS yang sama akan diperbarui.
                     </p>
@@ -39,7 +66,7 @@
 
         {{-- Connection Status --}}
         <x-filament::section>
-            <div class="flex items-center justify-between mb-4">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
                 <div class="text-lg font-semibold text-gray-900 dark:text-white">
                     Status Koneksi Database RDM
                 </div>
@@ -57,30 +84,34 @@
 
                 @if($connectionOk)
                     <span
-                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800">
-                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                        style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; background-color: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">
+                        <span
+                            style="width: 0.375rem; height: 0.375rem; border-radius: 50%; background-color: #10b981;"></span>
                         Terhubung
                     </span>
                 @else
                     <span
-                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800">
-                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                        style="display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2);">
+                        <span
+                            style="width: 0.375rem; height: 0.375rem; border-radius: 50%; background-color: #ef4444;"></span>
                         Terputus
                     </span>
                 @endif
             </div>
 
             @if($connectionOk)
-                <p class="text-sm text-gray-600 dark:text-gray-400">
+                <p style="font-size: 0.875rem; opacity: 0.8;" class="text-gray-600 dark:text-gray-400">
                     Koneksi ke database RDM berhasil terjalin. Fitur sinkronisasi siap digunakan.
                 </p>
             @else
-                <div class="mt-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700">
-                    <p class="text-red-700 dark:text-red-300 text-sm font-medium mb-1">Detail Error:</p>
+                <div
+                    style="margin-top: 0.75rem; padding: 0.75rem; background-color: rgba(239, 68, 68, 0.1); border-radius: 0.5rem; border: 1px solid rgba(239, 68, 68, 0.2);">
+                    <p style="color: #ef4444; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.25rem;">Detail Error:
+                    </p>
                     <code
-                        class="text-xs text-red-600 dark:text-red-400 block break-all">{{ $connectionError ?? 'Unknown error' }}</code>
-                    <p class="text-red-500 dark:text-red-500 text-xs mt-2">Pastikan kredensial RDM sudah dikonfigurasi di
-                        file .env server dan database dapat diakses.</p>
+                        style="font-size: 0.75rem; color: #ef4444; display: block; word-break: break-all;">{{ $connectionError ?? 'Unknown error' }}</code>
+                    <p style="color: #ef4444; font-size: 0.75rem; margin-top: 0.5rem;">Pastikan kredensial RDM sudah
+                        dikonfigurasi di file .env server dan database dapat diakses.</p>
                 </div>
             @endif
         </x-filament::section>
