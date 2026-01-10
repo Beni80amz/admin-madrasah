@@ -11,7 +11,6 @@ use App\Models\Teacher;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
@@ -19,7 +18,7 @@ class TeacherResource extends Resource
 {
     protected static ?string $model = Teacher::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserCircle;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
     protected static UnitEnum|string|null $navigationGroup = 'Akademik';
 
