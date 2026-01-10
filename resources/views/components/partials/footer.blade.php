@@ -74,7 +74,7 @@
                             wire:navigate>Prestasi Guru</a>
                         <a class="hover:text-primary transition-colors" href="{{ route('akademik.data-alumni') }}"
                             wire:navigate>Alumni</a>
-                        <a class="hover:text-primary transition-colors" href="#">E-Learning</a>
+                        <a class="hover:text-primary transition-colors" href="{{ route('login') }}">Absensi Digital</a>
                         <a class="hover:text-primary transition-colors" href="#">Perpustakaan</a>
                     </div>
                 </div>
