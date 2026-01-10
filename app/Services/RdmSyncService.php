@@ -146,7 +146,8 @@ class RdmSyncService
                     $kelas = $rdmStudent->rdm_kelas_alias;
 
                     if (empty($kelas) || !str_contains($kelas, '-')) {
-                        if (!empty($rdmStudent->rdm_tingkat_id) && !empty($rdmStudent->rdm_kelas_nama)) {
+                        // Use !is_null because tingkat_id might be 0 or '0'
+                        if (!is_null($rdmStudent->rdm_tingkat_id) && !empty($rdmStudent->rdm_kelas_nama)) {
                             // Convert Tingkat ID to Grade if needed, usually mapped 1-1 for MI
                             // If Tingkat > 12 (rare), keep as is.
                             $kelas = "{$rdmStudent->rdm_tingkat_id}-{$rdmStudent->rdm_kelas_nama}";
