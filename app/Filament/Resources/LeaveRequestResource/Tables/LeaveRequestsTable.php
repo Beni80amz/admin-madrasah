@@ -76,7 +76,7 @@ class LeaveRequestsTable
                     ]),
             ])
             ->actions([
-                \Filament\Tables\Actions\Action::make('approve')
+                \Filament\Actions\Action::make('approve')
                     ->label('Setujui')
                     ->icon('heroicon-o-check')
                     ->color('success')
@@ -91,7 +91,7 @@ class LeaveRequestsTable
                             ->success()
                             ->send();
                     }),
-                \Filament\Tables\Actions\Action::make('reject')
+                \Filament\Actions\Action::make('reject')
                     ->label('Tolak')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
