@@ -97,21 +97,26 @@ class RdmSyncService
         $stats = ['created' => 0, 'updated' => 0, 'errors' => 0];
 
         try {
+            // DETERMINE CURRENT ACADEMIC YEAR
+            $currentYear = DB::connection('rdm')->table('e_siswa')->max('tahunajaran_id');
+            Log::info("RDM Sync: Detected Current Year: {$currentYear}");
+
             // FIXED QUERY:
-            // 1. Join 'e_kelas' to get 'kelas_alias' (e.g. "1-A")
-            // 2. Filter Active: 'siswa_statuskel' usually contains "Lulus"/"Mutasi". Active = NULL or Empty.
+            // 1. Join 'e_kelas' to get 'kelas_alias'. Use INNER JOIN to ensure student has a valid class.
+            // 2. Filter by Current Year to remove alumni/history.
             $rdmStudents = DB::connection('rdm')
                 ->table('e_siswa')
-                ->leftJoin('e_kelas', 'e_siswa.kelas_id', '=', 'e_kelas.kelas_id')
+                ->join('e_kelas', 'e_siswa.kelas_id', '=', 'e_kelas.kelas_id') // Inner Join to enforce class existence
                 ->select(
                     'e_siswa.*',
                     'e_kelas.kelas_alias',
                     'e_kelas.kelas_nama'
                 )
+                ->where('e_siswa.tahunajaran_id', $currentYear) // Validation: Must be this year's student
                 ->where(function ($q) {
                     $q->whereNull('e_siswa.siswa_statuskel')
                         ->orWhere('e_siswa.siswa_statuskel', '')
-                        ->orWhere('e_siswa.siswa_statuskel', '0'); // Just in case '0' is used
+                        ->orWhere('e_siswa.siswa_statuskel', '0');
                 })
                 ->get();
 
