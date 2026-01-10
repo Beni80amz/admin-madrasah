@@ -58,13 +58,36 @@ Route::post('/logout', [App\Http\Controllers\Auth\CustomAuthController::class, '
 
 Route::get('/debug-rdm', function () {
     try {
-        $student = \Illuminate\Support\Facades\DB::connection('rdm')
-            ->table('e_siswa')
-            ->first();
+        $rdm = \Illuminate\Support\Facades\DB::connection('rdm');
+
+        // 1. Check Class Table candidate
+        $kelasTable = null;
+        try {
+            $kelas = $rdm->table('e_kelas')->first();
+            $kelasTable = [
+                'exists' => true,
+                'columns' => $kelas ? array_keys((array) $kelas) : [],
+                'sample' => $kelas
+            ];
+        } catch (\Exception $e) {
+            $kelasTable = ['exists' => false, 'error' => $e->getMessage()];
+        }
+
+        // 2. Check Student Status Data
+        $students = $rdm->table('e_siswa')
+            ->select('siswa_id', 'siswa_nama', 'kelas_id', 'siswa_statuskel', 'tahunajaran_id')
+            ->limit(5)
+            ->get();
+
+        // 3. Check Distinct Statuses
+        $statuses = $rdm->table('e_siswa')
+            ->distinct()
+            ->pluck('siswa_statuskel');
+
         dd([
-            'Structure' => $student,
-            'All Columns' => array_keys((array) $student),
-            'Active Status Value' => $student->siswa_aktif ?? 'N/A'
+            'Table e_kelas' => $kelasTable,
+            'Student Sample' => $students->toArray(),
+            'Msg' => 'Mohon screenshot bagian ini, terutama Table e_kelas dan Student Sample'
         ]);
     } catch (\Exception $e) {
         dd($e->getMessage());
