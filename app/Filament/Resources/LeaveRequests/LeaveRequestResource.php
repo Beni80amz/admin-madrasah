@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class LeaveRequestResource extends Resource
 {
@@ -24,7 +25,7 @@ class LeaveRequestResource extends Resource
     protected static ?string $pluralModelLabel = 'Permohonan Izin';
     protected static ?string $modelLabel = 'Permohonan Izin';
 
-    protected static ?string $navigationGroup = 'Akademik';
+    protected static UnitEnum|string|null $navigationGroup = 'Akademik';
     protected static ?int $navigationSort = 99;
     protected static ?string $slug = 'permohonan-izin-belajar';
 
