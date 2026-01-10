@@ -19,6 +19,7 @@ class StudentsTable
     {
         return $table
             ->modifyQueryUsing(fn($query) => $query->where('status', Student::STATUS_AKTIF))
+            ->defaultSort('kelas', 'asc') // 1. Set default sort
             ->columns([
                 ImageColumn::make('photo')
                     ->label('Photo')
@@ -52,7 +53,11 @@ class StudentsTable
                 TextColumn::make('kelas')
                     ->label('Kelas')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable(query: function ($query, string $direction) {
+                        return $query
+                            ->orderBy('kelas', $direction)
+                            ->orderBy('nama_lengkap', 'asc');
+                    }),
                 TextColumn::make('nama_ibu')
                     ->label('Nama Ibu')
                     ->searchable(),
