@@ -123,7 +123,8 @@ class RdmSync extends Page
                             ->success()
                             ->send();
 
-                    } catch (\Exception $e) {
+                    } catch (\Throwable $e) {
+                        \Illuminate\Support\Facades\Log::error('Sync Error: ' . $e->getMessage());
                         Notification::make()
                             ->title('Gagal Sinkronisasi Siswa')
                             ->body('Error: ' . $e->getMessage())

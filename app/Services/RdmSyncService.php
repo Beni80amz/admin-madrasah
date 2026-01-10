@@ -93,6 +93,7 @@ class RdmSyncService
      */
     public function syncStudentsFromRdm(): array
     {
+        set_time_limit(300); // 5 Minutes max execution
         $stats = ['created' => 0, 'updated' => 0, 'errors' => 0];
 
         try {
@@ -217,8 +218,10 @@ class RdmSyncService
                 }
             }
         } catch (\Throwable $e) {
-            Log::error('RDM Connection Error: ' . $e->getMessage());
-            throw $e;
+            Log::error('RDM Fatal Error: ' . $e->getMessage());
+            // Do not throw, return error stats so UI doesn't crash
+            $stats['errors']++;
+            $stats['message'] = $e->getMessage();
         }
 
         return $stats;
