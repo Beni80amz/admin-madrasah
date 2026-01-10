@@ -56,6 +56,21 @@ Route::get('/login', [App\Http\Controllers\Auth\CustomAuthController::class, 'sh
 Route::post('/login', [App\Http\Controllers\Auth\CustomAuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [App\Http\Controllers\Auth\CustomAuthController::class, 'logout'])->name('logout');
 
+Route::get('/debug-rdm', function () {
+    try {
+        $student = \Illuminate\Support\Facades\DB::connection('rdm')
+            ->table('e_siswa')
+            ->first();
+        dd([
+            'Structure' => $student,
+            'All Columns' => array_keys((array) $student),
+            'Active Status Value' => $student->siswa_aktif ?? 'N/A'
+        ]);
+    } catch (\Exception $e) {
+        dd($e->getMessage());
+    }
+});
+
 // Frontend Dashboard & Attendance
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard.index');
