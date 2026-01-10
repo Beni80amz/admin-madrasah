@@ -101,7 +101,7 @@ class RdmSyncService
             // 2. Filter Active: 'siswa_statuskel' usually contains "Lulus"/"Mutasi". Active = NULL or Empty.
             $rdmStudents = DB::connection('rdm')
                 ->table('e_siswa')
-                ->join('e_kelas', 'e_siswa.kelas_id', '=', 'e_kelas.kelas_id')
+                ->leftJoin('e_kelas', 'e_siswa.kelas_id', '=', 'e_kelas.kelas_id')
                 ->select(
                     'e_siswa.*',
                     'e_kelas.kelas_alias',
@@ -208,15 +208,15 @@ class RdmSyncService
                             }
                         }
                     }
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     Log::error('RDM Sync Student Error: ' . $e->getMessage(), [
-                        'siswa_id' => $rdmStudent->siswa_id,
-                        'siswa_nama' => $rdmStudent->siswa_nama
+                        'siswa_id' => $rdmStudent->siswa_id ?? 'N/A',
+                        'siswa_nama' => $rdmStudent->siswa_nama ?? 'N/A'
                     ]);
                     $stats['errors']++;
                 }
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('RDM Connection Error: ' . $e->getMessage());
             throw $e;
         }
@@ -240,34 +240,39 @@ class RdmSyncService
      */
     private function ensureUserExists($model, string $role, string $username): void
     {
-        if (empty($username) || $username === '-')
-            return;
+        try {
+            if (empty($username) || $username === '-')
+                return;
 
-        // Create Role if not exists
-        $roleModel = \Spatie\Permission\Models\Role::firstOrCreate(['name' => $role]);
+            // Create Role if not exists
+            $roleModel = \Spatie\Permission\Models\Role::firstOrCreate(['name' => $role]);
 
-        // Find or Create User
-        // Check by email (username)
-        $user = \App\Models\User::where('email', $username)->first();
+            // Find or Create User
+            // Check by email (username)
+            $user = \App\Models\User::where('email', $username)->first();
 
-        if (!$user) {
-            $user = \App\Models\User::create([
-                'name' => $model->nama_lengkap ?? $username,
-                'email' => $username,
-                'password' => \Illuminate\Support\Facades\Hash::make($username), // Default password = username
-                'email_verified_at' => now(),
-            ]);
-        }
+            if (!$user) {
+                $user = \App\Models\User::create([
+                    'name' => $model->nama_lengkap ?? $username,
+                    'email' => $username,
+                    'password' => \Illuminate\Support\Facades\Hash::make($username), // Default password = username
+                    'email_verified_at' => now(),
+                ]);
+            }
 
-        // Assign Role
-        if (!$user->hasRole($role)) {
-            $user->assignRole($role);
-        }
+            // Assign Role
+            if (!$user->hasRole($role)) {
+                $user->assignRole($role);
+            }
 
-        // Link to Model if not already linked
-        if ($model->user_id !== $user->id) {
-            $model->user_id = $user->id;
-            $model->saveQuietly(); // Avoid triggering observers again
+            // Link to Model if not already linked
+            if ($model->user_id !== $user->id) {
+                $model->user_id = $user->id;
+                $model->saveQuietly(); // Avoid triggering observers again
+            }
+        } catch (\Throwable $e) {
+            Log::error("RDM User Auto-create failed for {$username}: " . $e->getMessage());
+            // Do not re-throw, just log and continue syncing data
         }
     }
 }
