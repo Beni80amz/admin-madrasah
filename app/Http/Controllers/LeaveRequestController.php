@@ -29,7 +29,8 @@ class LeaveRequestController extends Controller
             // 2. Pending Approvals (if eligible)
             $pendingApprovals = $this->leaveService->getPendingRequestsFor($user);
 
-            return view('frontend.leave.index', compact('myRequests', 'pendingApprovals'));
+            $view = view('frontend.leave.index', compact('myRequests', 'pendingApprovals'));
+            return $view->render(); // Force render to catch blade errors
         } catch (\Throwable $e) {
             dd($e->getMessage(), $e->getTraceAsString());
         }
