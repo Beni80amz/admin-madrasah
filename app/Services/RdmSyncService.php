@@ -96,10 +96,13 @@ class RdmSyncService
         $stats = ['created' => 0, 'updated' => 0, 'errors' => 0];
 
         try {
-            // Get all active students from RDM
+            // Get all active students from RDM with Class Name
+            // Joining e_siswa with e_kelas (assuming e_kelas table exists and has kelas_id)
             $rdmStudents = DB::connection('rdm')
                 ->table('e_siswa')
-                ->where('siswa_aktif', 1)
+                ->join('e_kelas', 'e_siswa.kelas_id', '=', 'e_kelas.kelas_id')
+                ->where('e_siswa.siswa_aktif', 1)
+                ->select('e_siswa.*', 'e_kelas.kelas_nama as nama_kelas_real')
                 ->get();
 
             foreach ($rdmStudents as $rdmStudent) {
@@ -118,9 +121,8 @@ class RdmSyncService
                         }
                     }
 
-                    // Get or guess Class/Rombel
-                    // You might need to adjust this depending on RDM schema (e.g. siswa_kelas or rombel columns)
-                    $kelas = $rdmStudent->kelas ?? '-';
+                    // Get Class Name from JOIN result
+                    $kelas = $rdmStudent->nama_kelas_real ?? $rdmStudent->kelas ?? '-';
 
                     $data = [
                         'rdm_id' => $rdmStudent->siswa_id,
