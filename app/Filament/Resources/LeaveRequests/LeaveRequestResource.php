@@ -21,13 +21,14 @@ class LeaveRequestResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $navigationLabel = 'Permohonan Izin (Fix)';
+    // protected static ?string $navigationLabel = 'Permohonan Izin (Fix)';
     protected static ?string $pluralModelLabel = 'Permohonan Izin';
     protected static ?string $modelLabel = 'Permohonan Izin';
 
-    protected static UnitEnum|string|null $navigationGroup = 'Akademik';
-    protected static ?int $navigationSort = 99;
-    protected static ?string $slug = 'permohonan-izin-belajar';
+    // protected static UnitEnum|string|null $navigationGroup = 'Akademik';
+    // protected static ?int $navigationSort = 99;
+    // protected static ?string $slug = 'permohonan-izin-belajar';
+    protected static ?string $navigationLabel = 'TEST MENU UPDATE';
 
     public static function canViewAny(): bool
     {
