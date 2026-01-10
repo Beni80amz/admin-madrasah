@@ -114,6 +114,7 @@ class RdmSyncService
                     'e_kelas.tingkat_id as rdm_tingkat_id'
                 )
                 ->where('e_siswa.tahunajaran_id', $currentYear) // Validation: Must be this year's student
+                ->where('e_kelas.tingkat_id', '<=', 6) // STRICT FILTER: Only Grade 1-6 (MI)
                 ->where(function ($q) {
                     $q->whereNull('e_siswa.siswa_statuskel')
                         ->orWhere('e_siswa.siswa_statuskel', '')
