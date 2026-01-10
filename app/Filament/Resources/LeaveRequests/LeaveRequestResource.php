@@ -26,6 +26,11 @@ class LeaveRequestResource extends Resource
 
     protected static ?string $navigationGroup = 'Akademik';
 
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return LeaveRequestForm::configure($schema);
