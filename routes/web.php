@@ -66,7 +66,10 @@ Route::middleware(['auth'])->group(function () {
     // Feature: Izin/Sakit
     Route::get('/izin', [App\Http\Controllers\IzinController::class, 'index'])->name('izin.index');
     Route::post('/izin', [App\Http\Controllers\IzinController::class, 'store'])->name('izin.store');
-    Route::view('/riwayat', 'frontend.features.riwayat')->name('riwayat.index');
+
+    Route::get('/riwayat', [App\Http\Controllers\AttendanceController::class, 'history'])->name('riwayat.index');
+    Route::get('/riwayat/export', [App\Http\Controllers\AttendanceController::class, 'downloadPdf'])->name('riwayat.export');
+
     Route::view('/jadwal', 'frontend.features.jadwal')->name('jadwal.index');
     Route::view('/tugas', 'frontend.features.tugas')->name('tugas.index');
     Route::view('/inbox', 'frontend.features.inbox')->name('inbox.index');

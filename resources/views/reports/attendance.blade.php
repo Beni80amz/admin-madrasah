@@ -15,6 +15,15 @@
             margin-bottom: 20px;
             border-bottom: 2px solid #000;
             padding-bottom: 10px;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: auto;
         }
 
         .header h1 {
@@ -25,6 +34,7 @@
 
         .header p {
             margin: 2px 0;
+            font-size: 11px;
         }
 
         .meta {
@@ -70,26 +80,42 @@
         .footer {
             width: 100%;
             margin-top: 30px;
+            page-break-inside: avoid;
         }
 
-        .signature {
+        .signature-box {
             float: right;
-            width: 200px;
+            width: 250px;
             text-align: center;
         }
 
-        .qr-code {
-            float: left;
-            width: 100px;
+        .qr-code-container {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .clear {
+            clear: both;
         }
     </style>
 </head>
 
 <body>
     <div class="header">
-        <h1>Laporan Absensi Madrasah</h1>
-        <p>Jl. Contoh No. 123, Kota Contoh</p>
-        <p>Telp: (021) 12345678 | Email: admin@madrasah.sch.id</p>
+        {{-- Optional Logo --}}
+        @if(isset($profile) && $profile->logo)
+            {{-- Assuming logo is stored in public disk. For PDF, we might need absolute path --}}
+            {{-- <img src="{{ public_path('storage/' . $profile->logo) }}" class="logo"> --}}
+        @endif
+
+        <h1>{{ $profile->nama_madrasah ?? 'MADRASAH' }}</h1>
+        <p>{{ $profile->alamat ?? 'Alamat Madrasah' }}</p>
+        <p>
+            Telp: {{ $profile->no_hp ?? '-' }}
+            @if($profile->email) | Email: {{ $profile->email }} @endif
+        </p>
     </div>
 
     <div class="meta">
@@ -102,15 +128,8 @@
             <tr>
                 <td><strong>Nama</strong></td>
                 <td>:</td>
-                <td>{{ $user ? $user->name : 'Semua Pegawai' }}</td>
+                <td>{{ $teacherName }}</td>
             </tr>
-            @if($user && $user->nipy)
-                <tr>
-                    <td><strong>NIPY</strong></td>
-                    <td>:</td>
-                    <td>{{ $user->nipy }}</td>
-                </tr>
-            @endif
         </table>
     </div>
 
@@ -136,7 +155,14 @@
                     <td>{{ \Carbon\Carbon::parse($row->date)->locale('id')->isoFormat('D MMMM Y') }}</td>
                     <td>{{ \Carbon\Carbon::parse($row->date)->locale('id')->isoFormat('dddd') }}</td>
                     @if(!$user)
-                    <td>{{ $row->user->name ?? '-' }}</td> @endif
+                        {{-- Attempt to find teacher name if lazy loaded, otherwise fallback to user name --}}
+                        @php
+                            $tName = $row->user->name ?? '-';
+                            // If we can access teacher relation through user, we could display it here
+                            // Ideally we should eager load teacher in controller
+                        @endphp
+                        <td>{{ $tName }}</td>
+                    @endif
                     <td style="text-align: center;">{{ $row->time_in ?? '-' }}</td>
                     <td style="text-align: center;">{{ $row->time_out ?? '-' }}</td>
                     <td style="text-align: center; text-transform: capitalize;">{{ $row->status }}</td>
@@ -157,16 +183,25 @@
     </div>
 
     <div class="footer">
-        <div class="qr-code">
-            <img
-                src="data:image/svg+xml;base64, {{ base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(100)->generate($qrData)) }} ">
-        </div>
-        <div class="signature">
-            <p>{{ \Carbon\Carbon::now()->locale('id')->isoFormat('dddd, D MMMM Y') }}</p>
-            <p>Mengetahui,<br>Kepala Madrasah</p>
+        <div class="signature-box">
+            {{-- QR Code Positioned Above --}}
+            <div class="qr-code-container">
+                <img
+                    src="data:image/svg+xml;base64, {{ base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(90)->generate($qrData)) }}">
+            </div>
+
+            <p>
+                Depok, {{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM Y') }} <br>
+                Mengetahui,<br>
+                Kepala Madrasah
+            </p>
             <br><br><br>
-            <p><strong>(______________________)</strong></p>
+            <p><strong>{{ $profile->nama_kepala_madrasah ?? '______________________' }}</strong></p>
+            @if(isset($profile->nip_kepala_madrasah))
+                <p>NIP. {{ $profile->nip_kepala_madrasah }}</p>
+            @endif
         </div>
+        <div class="clear"></div>
     </div>
 </body>
 

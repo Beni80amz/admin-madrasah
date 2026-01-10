@@ -47,7 +47,7 @@ class AttendancesTable
                             ->required(),
                         \Filament\Forms\Components\Select::make('user_id')
                             ->label('Pegawai (Opsional)')
-                            ->options(\App\Models\User::pluck('name', 'id'))
+                            ->options(\App\Models\Teacher::pluck('nama_lengkap', 'user_id'))
                             ->searchable()
                             ->placeholder('Semua Pegawai'),
                         \Filament\Forms\Components\Radio::make('format')
@@ -81,6 +81,16 @@ class AttendancesTable
                         } else {
                             // PDF
                             $user = $userId ? \App\Models\User::find($userId) : null;
+                            $profile = \App\Models\ProfileMadrasah::first();
+
+                            $teacherName = $user ? ($user->name) : 'Semua Pegawai';
+                            if ($userId) {
+                                $teacher = \App\Models\Teacher::where('user_id', $userId)->first();
+                                if ($teacher) {
+                                    $teacherName = $teacher->nama_lengkap;
+                                }
+                            }
+
                             $summary = [
                                 'hadir' => $attendances->where('status', 'hadir')->count(),
                                 'telat' => $attendances->where('status', 'telat')->count(),
@@ -89,11 +99,13 @@ class AttendancesTable
                                 'alpha' => $attendances->where('status', 'alpha')->count(),
                             ];
 
-                            $qrData = "Validasi Dokumen\nPeriode: $month/$year\nTotal Data: " . $attendances->count() . "\nGenerated: " . now()->format('Y-m-d H:i:s');
+                            $qrData = "Validasi Dokumen\nPeriode: $month/$year\nPegawai: $teacherName\nGenerated: " . now()->format('Y-m-d H:i:s');
 
                             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.attendance', [
                                 'attendances' => $attendances,
                                 'user' => $user,
+                                'teacherName' => $teacherName,
+                                'profile' => $profile,
                                 'period' => \Carbon\Carbon::create($year, $month, 1)->locale('id')->isoFormat('MMMM Y'),
                                 'summary' => $summary,
                                 'qrData' => $qrData,

@@ -123,4 +123,59 @@ class AttendanceController extends Controller
             return response()->json(['message' => $e->getMessage(), 'status' => 'error'], 400);
         }
     }
+    public function history(Request $request)
+    {
+        $user = Auth::user();
+        $month = $request->input('month', now()->month);
+        $year = $request->input('year', now()->year);
+
+        $attendances = \App\Models\Attendance::where('user_id', $user->id)
+            ->whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->orderBy('date', 'desc')
+            ->get();
+
+        return view('frontend.features.riwayat', compact('attendances', 'month', 'year'));
+    }
+
+    public function downloadPdf(Request $request)
+    {
+        $user = Auth::user();
+        $month = $request->input('month', now()->month);
+        $year = $request->input('year', now()->year);
+
+        $attendances = \App\Models\Attendance::where('user_id', $user->id)
+            ->whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->orderBy('date', 'asc')
+            ->get();
+
+        $profile = \App\Models\ProfileMadrasah::first();
+        $teacher = \App\Models\Teacher::where('user_id', $user->id)->first();
+        $teacherName = $teacher ? $teacher->nama_lengkap : $user->name;
+
+        $summary = [
+            'hadir' => $attendances->where('status', 'hadir')->count(),
+            'telat' => $attendances->where('status', 'telat')->count(),
+            'izin' => $attendances->where('status', 'izin')->count(),
+            'sakit' => $attendances->where('status', 'sakit')->count(),
+            'alpha' => $attendances->where('status', 'alpha')->count(),
+        ];
+
+        $qrData = "Validasi Dokumen\nPeriode: $month/$year\nPegawai: $teacherName\nGenerated: " . now()->format('Y-m-d H:i:s');
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.attendance', [
+            'attendances' => $attendances,
+            'user' => $user,
+            'teacherName' => $teacherName,
+            'profile' => $profile,
+            'period' => \Carbon\Carbon::create($year, $month, 1)->locale('id')->isoFormat('MMMM Y'),
+            'summary' => $summary,
+            'qrData' => $qrData,
+        ]);
+
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->download('Laporan-Absensi-' . $month . '-' . $year . '.pdf');
+    }
 }
