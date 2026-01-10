@@ -1,13 +1,13 @@
 <x-filament-panels::page>
     <div class="space-y-6">
         {{-- Info Section --}}
-        <div class="p-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        <x-filament::section>
+            <x-slot name="heading">
                 Sinkronisasi Data dengan RDM
-            </h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            </x-slot>
+            <x-slot name="description">
                 Gunakan tombol di atas untuk men-sinkronkan data Guru dan Siswa dari database RDM.
-            </p>
+            </x-slot>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
@@ -27,21 +27,22 @@
 
             <div class="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-700">
                 <div class="flex gap-2">
-                    <x-heroicon-m-information-circle class="w-5 h-5 text-amber-500" />
+                    <x-heroicon-m-information-circle class="w-5 h-5 text-amber-500"
+                        style="width: 20px; height: 20px;" />
                     <p class="text-amber-700 dark:text-amber-300 text-sm">
                         <strong>Catatan:</strong> Data dari RDM akan menjadi master. Data yang sudah ada di Admin
                         Madrasah dengan NIP/NIS yang sama akan diperbarui.
                     </p>
                 </div>
             </div>
-        </div>
+        </x-filament::section>
 
         {{-- Connection Status --}}
-        <div class="p-6 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-            <div class="flex items-center justify-between mb-2">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+        <x-filament::section>
+            <div class="flex items-center justify-between mb-4">
+                <div class="text-lg font-semibold text-gray-900 dark:text-white">
                     Status Koneksi Database RDM
-                </h3>
+                </div>
 
                 @php
                     $connectionOk = false;
@@ -76,11 +77,12 @@
             @else
                 <div class="mt-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700">
                     <p class="text-red-700 dark:text-red-300 text-sm font-medium mb-1">Detail Error:</p>
-                    <code class="text-xs text-red-600 dark:text-red-400">{{ $connectionError ?? 'Unknown error' }}</code>
+                    <code
+                        class="text-xs text-red-600 dark:text-red-400 block break-all">{{ $connectionError ?? 'Unknown error' }}</code>
                     <p class="text-red-500 dark:text-red-500 text-xs mt-2">Pastikan kredensial RDM sudah dikonfigurasi di
                         file .env server dan database dapat diakses.</p>
                 </div>
             @endif
-        </div>
+        </x-filament::section>
     </div>
 </x-filament-panels::page>
