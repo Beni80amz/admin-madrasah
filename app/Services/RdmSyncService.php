@@ -116,8 +116,8 @@ class RdmSyncService
                     'e_tingkat.tingkat_nama as rdm_tingkat_nama' // e.g. "I", "VI"
                 )
                 ->where('e_siswa.tahunajaran_id', $currentYear) // Validation: Must be this year's student
-                // RDM Structure: 3=Grade 1, 8=Grade 6, 9=Grade 7(Alumni)
-                ->where('e_kelas.tingkat_id', '<=', 8) // Limit to Grade 6 (VI)
+                // RDM Structure: jenjang_id 2 = MI (tingkat_id 3-8 = Kelas I-VI)
+                ->where('e_tingkat.jenjang_id', 2) // ONLY MI students (Grade I-VI)
                 ->where(function ($q) {
                     $q->whereNull('e_siswa.siswa_statuskel')
                         ->orWhere('e_siswa.siswa_statuskel', '')
