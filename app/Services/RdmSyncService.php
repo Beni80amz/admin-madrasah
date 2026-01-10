@@ -110,7 +110,8 @@ class RdmSyncService
                 ->select(
                     'e_siswa.*',
                     'e_kelas.kelas_alias as rdm_kelas_alias', // Explicit alias to avoid collision
-                    'e_kelas.kelas_nama as rdm_kelas_nama'
+                    'e_kelas.kelas_nama as rdm_kelas_nama',
+                    'e_kelas.tingkat_id as rdm_tingkat_id'
                 )
                 ->where('e_siswa.tahunajaran_id', $currentYear) // Validation: Must be this year's student
                 ->where(function ($q) {
@@ -138,12 +139,22 @@ class RdmSyncService
                         }
                     }
 
-                    // Get Class Name (Prioritize Alias "1-A" > Nama "A" > Default "-")
+                    // Get Class Name Logic:
+                    // Priority 1: Use alias IF it looks complete (contains dash, e.g. "1-A")
+                    // Priority 2: Construct from Tingkat + Nama (e.g. "1" + "-" + "A")
+                    // Priority 3: Fallback
                     $kelas = $rdmStudent->rdm_kelas_alias;
-                    if (empty($kelas))
-                        $kelas = $rdmStudent->rdm_kelas_nama;
-                    if (empty($kelas))
-                        $kelas = $rdmStudent->kelas ?? '-';
+
+                    if (empty($kelas) || !str_contains($kelas, '-')) {
+                        if (!empty($rdmStudent->rdm_tingkat_id) && !empty($rdmStudent->rdm_kelas_nama)) {
+                            // Convert Tingkat ID to Grade if needed, usually mapped 1-1 for MI
+                            // If Tingkat > 12 (rare), keep as is.
+                            $kelas = "{$rdmStudent->rdm_tingkat_id}-{$rdmStudent->rdm_kelas_nama}";
+                        } else {
+                            // Fallback if construction fails
+                            $kelas = $rdmStudent->rdm_kelas_nama ?? $rdmStudent->kelas ?? '-';
+                        }
+                    }
 
                     $data = [
                         'rdm_id' => $rdmStudent->siswa_id,
