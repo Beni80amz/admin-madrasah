@@ -1,13 +1,43 @@
-@extends('layouts.frontend')
+<!DOCTYPE html>
+<html class="light" lang="en">
 
-@section('content')
-    <div class="px-4 py-6 max-w-lg mx-auto min-h-screen pb-24">
-        <!-- Header -->
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-900">Izin & Sakit</h1>
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Izin & Sakit</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .font-display {
+            font-family: 'Lexend', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-[#f6f8f6] text-[#0d1b0f] min-h-screen flex flex-col font-display">
+    <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="{{ route('dashboard.index') }}" class="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            <h1 class="font-bold text-lg">Izin & Sakit</h1>
+            <div class="w-10"></div>
+        </div>
+    </header>
+
+    <main class="flex-1 w-full max-w-md mx-auto pt-24 px-4 pb-8 flex flex-col gap-4">
+        <!-- Sub Header with Button -->
+        <div class="flex justify-between items-center mb-2">
+            <h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Daftar Pengajuan</h2>
             <a href="{{ route('leave.create') }}"
-                class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-md hover:bg-green-700 transition-colors flex items-center">
-                <span class="material-symbols-outlined text-sm mr-1">add</span> Buat
+                class="bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:bg-green-700 transition-colors flex items-center gap-1">
+                <span class="material-symbols-outlined text-lg">add</span> Buat Baru
             </a>
         </div>
 
@@ -52,14 +82,17 @@
                                     <span
                                         class="bg-yellow-50 text-yellow-600 px-2 py-1 rounded-lg text-xs font-bold">Menunggu</span>
                                 @elseif($req->status == 'approved')
-                                    <span class="bg-green-50 text-green-600 px-2 py-1 rounded-lg text-xs font-bold">Disetujui</span>
+                                    <span
+                                        class="bg-green-50 text-green-600 px-2 py-1 rounded-lg text-xs font-bold">Disetujui</span>
                                 @else
                                     <span class="bg-red-50 text-red-600 px-2 py-1 rounded-lg text-xs font-bold">Ditolak</span>
                                 @endif
                             </div>
                         </div>
-                        <h3 class="font-semibold text-gray-800">{{ \Carbon\Carbon::parse($req->start_date)->format('d M') }} -
-                            {{ \Carbon\Carbon::parse($req->end_date)->format('d M Y') }}</h3>
+                        <h3 class="font-semibold text-gray-800">{{ \Carbon\Carbon::parse($req->start_date)->format('d M') }}
+                            -
+                            {{ \Carbon\Carbon::parse($req->end_date)->format('d M Y') }}
+                        </h3>
                         <p class="text-sm text-gray-500 mt-1 line-clamp-2">{{ $req->reason }}</p>
 
                         @if($req->status == 'rejected' && $req->rejection_note)
@@ -141,5 +174,8 @@
                 </div>
             @endif
         </div>
-    </div>
-@endsection
+        </div>
+    </main>
+</body>
+
+</html>

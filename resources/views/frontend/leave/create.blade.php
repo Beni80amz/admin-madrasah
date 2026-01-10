@@ -1,14 +1,39 @@
-@extends('layouts.frontend')
+<!DOCTYPE html>
+<html class="light" lang="en">
 
-@section('content')
-    <div class="px-4 py-6 max-w-lg mx-auto">
-        <!-- Header -->
-        <div class="flex items-center mb-6">
-            <a href="{{ route('leave.index') }}" class="mr-4 p-2 rounded-full hover:bg-gray-100">
-                <span class="material-symbols-outlined text-gray-600">arrow_back</span>
-            </a>
-            <h1 class="text-xl font-bold text-gray-900">Buat Pengajuan</h1>
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Buat Pengajuan</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .font-display {
+            font-family: 'Lexend', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-[#f6f8f6] text-[#0d1b0f] min-h-screen flex flex-col font-display">
+    <header class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('leave.index') }}" class="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </a>
+                <h1 class="font-bold text-lg">Buat Pengajuan</h1>
+            </div>
+            <div class="w-10"></div>
         </div>
+    </header>
+
+    <main class="flex-1 w-full max-w-md mx-auto pt-24 px-4 pb-8 flex flex-col gap-4">
 
         @if(session('error'))
             <div class="bg-red-50 text-red-600 p-4 rounded-xl mb-4 text-sm">
@@ -99,74 +124,77 @@
                 Kirim Pengajuan
             </button>
         </form>
-    </div>
+        </div>
 
-    <script>
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                compressImage(file);
-            }
-        }
-
-        function compressImage(file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-
-            reader.onload = function (event) {
-                const img = new Image();
-                img.src = event.target.result;
-
-                img.onload = function () {
-                    const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
-
-                    // Max dimensions
-                    const MAX_WIDTH = 1200;
-                    const MAX_HEIGHT = 1200;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    // Compress to JPEG with 0.7 quality
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-
-                    // Checking size
-                    const head = 'data:image/jpeg;base64,';
-                    const size = Math.round((dataUrl.length - head.length) * 3 / 4);
-                    const sizeInMB = (size / (1024 * 1024)).toFixed(2);
-
-                    // Update UI
-                    document.getElementById('imagePreview').src = dataUrl;
-                    document.getElementById('attachmentBase64').value = dataUrl;
-                    document.getElementById('uploadPlaceholder').classList.add('hidden');
-                    document.getElementById('imagePreviewContainer').classList.remove('hidden');
-                    document.getElementById('fileSizeInfo').innerText = `Ukuran: ${sizeInMB} MB`;
+        <script>
+            function handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    compressImage(file);
                 }
             }
-        }
 
-        function resetImage() {
-            document.getElementById('cameraInput').value = '';
-            document.getElementById('attachmentBase64').value = '';
-            document.getElementById('uploadPlaceholder').classList.remove('hidden');
-            document.getElementById('imagePreviewContainer').classList.add('hidden');
-        }
-    </script>
-@endsection
+            function compressImage(file) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+
+                reader.onload = function (event) {
+                    const img = new Image();
+                    img.src = event.target.result;
+
+                    img.onload = function () {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        // Max dimensions
+                        const MAX_WIDTH = 1200;
+                        const MAX_HEIGHT = 1200;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Compress to JPEG with 0.7 quality
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+
+                        // Checking size
+                        const head = 'data:image/jpeg;base64,';
+                        const size = Math.round((dataUrl.length - head.length) * 3 / 4);
+                        const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+
+                        // Update UI
+                        document.getElementById('imagePreview').src = dataUrl;
+                        document.getElementById('attachmentBase64').value = dataUrl;
+                        document.getElementById('uploadPlaceholder').classList.add('hidden');
+                        document.getElementById('imagePreviewContainer').classList.remove('hidden');
+                        document.getElementById('fileSizeInfo').innerText = `Ukuran: ${sizeInMB} MB`;
+                    }
+                }
+            }
+
+            function resetImage() {
+                document.getElementById('cameraInput').value = '';
+                document.getElementById('attachmentBase64').value = '';
+                document.getElementById('uploadPlaceholder').classList.remove('hidden');
+                document.getElementById('imagePreviewContainer').classList.add('hidden');
+            }
+        </script>
+    </main>
+</body>
+
+</html>
