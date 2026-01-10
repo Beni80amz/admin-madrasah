@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\LeaveRequestResource\Pages;
 
-use App\Filament\Resources\LeaveRequestResource;
+use App\Filament\Resources\LeaveRequestResource\LeaveRequestResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
