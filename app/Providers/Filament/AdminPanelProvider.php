@@ -157,6 +157,9 @@ class AdminPanelProvider extends PanelProvider
                 'Master Data',
                 'Data Pendukung',
             ])
+            ->resources([
+                \App\Filament\Resources\LeaveRequests\LeaveRequestResource::class,
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

@@ -21,7 +21,7 @@ class LeaveRequestResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $navigationLabel = 'Permohonan Izin';
+    protected static ?string $navigationLabel = 'Permohonan Izin (Fix)';
     protected static ?string $pluralModelLabel = 'Permohonan Izin';
     protected static ?string $modelLabel = 'Permohonan Izin';
 
