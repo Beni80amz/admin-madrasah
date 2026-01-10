@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\LeaveRequests\Pages\CreateLeaveRequest;
-use App\Filament\Resources\LeaveRequests\Pages\EditLeaveRequest;
-use App\Filament\Resources\LeaveRequests\Pages\ListLeaveRequests;
-use App\Filament\Resources\LeaveRequests\Schemas\LeaveRequestForm;
-use App\Filament\Resources\LeaveRequests\Tables\LeaveRequestsTable;
+use App\Filament\Resources\LeaveRequestResource\Pages\CreateLeaveRequest;
+use App\Filament\Resources\LeaveRequestResource\Pages\EditLeaveRequest;
+use App\Filament\Resources\LeaveRequestResource\Pages\ListLeaveRequests;
+use App\Filament\Resources\LeaveRequestResource\Schemas\LeaveRequestForm;
+use App\Filament\Resources\LeaveRequestResource\Tables\LeaveRequestsTable;
 use App\Models\LeaveRequest;
 use BackedEnum;
 use Filament\Resources\Resource;
