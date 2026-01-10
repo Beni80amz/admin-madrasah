@@ -5,7 +5,8 @@ namespace App\Filament\Resources\UserAccounts\Tables;
 use App\Models\User;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\BulkAction;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
 use Illuminate\Database\Eloquent\Collection;
 use Filament\Tables\Actions\Action;
 
@@ -45,7 +46,7 @@ class UserAccountsTable
                 // No edit/delete needed for now, just view
             ])
             ->bulkActions([
-                \Filament\Actions\BulkActionGroup::make([
+                BulkActionGroup::make([
                     BulkAction::make('export_csv')
                         ->label('Export ke CSV')
                         ->icon('heroicon-o-arrow-down-tray')
