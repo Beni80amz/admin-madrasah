@@ -155,13 +155,31 @@ class RdmSyncService
                             $stats['updated']++;
                         } else {
                             // Last check for NISN to prevent unique error
-                            $existingByNisn = Student::where('nisn', $data['nisn'])->first();
+                            $existingByNisn = null;
+                            if (!empty($data['nisn']) && $data['nisn'] !== '-') {
+                                $existingByNisn = Student::where('nisn', $data['nisn'])
+                                    ->whereNull('rdm_id')
+                                    ->first();
+                            }
+
                             if ($existingByNisn) {
                                 $existingByNisn->update($data);
                                 $stats['updated']++;
                             } else {
-                                Student::create($data);
-                                $stats['created']++;
+                                // FINAL FALLBACK: Check by Name AND Date of Birth
+                                // This handles cases where NIS/NISN might be missing or different format
+                                $existingByNameDob = Student::where('nama_lengkap', 'LIKE', $rdmStudent->siswa_nama)
+                                    ->where('tanggal_lahir', $rdmStudent->siswa_tgllahir)
+                                    ->whereNull('rdm_id')
+                                    ->first();
+
+                                if ($existingByNameDob) {
+                                    $existingByNameDob->update($data);
+                                    $stats['updated']++;
+                                } else {
+                                    Student::create($data);
+                                    $stats['created']++;
+                                }
                             }
                         }
                     }
