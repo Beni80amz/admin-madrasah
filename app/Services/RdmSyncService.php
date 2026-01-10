@@ -109,8 +109,8 @@ class RdmSyncService
                 ->join('e_kelas', 'e_siswa.kelas_id', '=', 'e_kelas.kelas_id') // Inner Join to enforce class existence
                 ->select(
                     'e_siswa.*',
-                    'e_kelas.kelas_alias',
-                    'e_kelas.kelas_nama'
+                    'e_kelas.kelas_alias as rdm_kelas_alias', // Explicit alias to avoid collision
+                    'e_kelas.kelas_nama as rdm_kelas_nama'
                 )
                 ->where('e_siswa.tahunajaran_id', $currentYear) // Validation: Must be this year's student
                 ->where(function ($q) {
@@ -138,11 +138,12 @@ class RdmSyncService
                         }
                     }
 
-                    // Get Class Name (Prioritize Alias "1-A")
-                    $kelas = $rdmStudent->kelas_alias
-                        ?? $rdmStudent->kelas_nama
-                        ?? $rdmStudent->kelas
-                        ?? '-';
+                    // Get Class Name (Prioritize Alias "1-A" > Nama "A" > Default "-")
+                    $kelas = $rdmStudent->rdm_kelas_alias;
+                    if (empty($kelas))
+                        $kelas = $rdmStudent->rdm_kelas_nama;
+                    if (empty($kelas))
+                        $kelas = $rdmStudent->kelas ?? '-';
 
                     $data = [
                         'rdm_id' => $rdmStudent->siswa_id,
