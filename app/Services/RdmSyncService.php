@@ -92,28 +92,34 @@ class RdmSyncService
                     // Find by rdm_id or create new
                     $student = Student::where('rdm_id', $rdmStudent->siswa_id)->first();
 
-                    // Map gender
+                    // Map gender to match Enum ['Laki-laki', 'Perempuan']
                     $gender = null;
                     if (!empty($rdmStudent->siswa_gender)) {
                         $genderLower = strtolower($rdmStudent->siswa_gender);
                         if (str_contains($genderLower, 'laki') || $genderLower === 'l') {
-                            $gender = 'L';
+                            $gender = 'Laki-laki';
                         } elseif (str_contains($genderLower, 'perempuan') || $genderLower === 'p') {
-                            $gender = 'P';
+                            $gender = 'Perempuan';
                         }
                     }
+
+                    // Get or guess Class/Rombel
+                    // You might need to adjust this depending on RDM schema (e.g. siswa_kelas or rombel columns)
+                    $kelas = $rdmStudent->kelas ?? '-';
 
                     $data = [
                         'rdm_id' => $rdmStudent->siswa_id,
                         'nama_lengkap' => $rdmStudent->siswa_nama,
                         'nis_lokal' => $rdmStudent->siswa_nis,
-                        'nisn' => $rdmStudent->siswa_nisn,
+                        'nisn' => $rdmStudent->siswa_nisn ?? '-', // Fallback if missing
                         'gender' => $gender,
                         'tempat_lahir' => $rdmStudent->siswa_tempat,
                         'tanggal_lahir' => $rdmStudent->siswa_tgllahir,
                         'nama_ayah' => $rdmStudent->nama_ayah,
                         'nama_ibu' => $rdmStudent->nama_ibu,
                         'alamat_domisili' => $rdmStudent->siswa_alamat,
+                        'alamat_kk' => $rdmStudent->siswa_alamat, // Use domisili as fallback for KK
+                        'kelas' => $kelas, // Required field
                         'is_active' => true,
                         'status' => 'aktif',
                     ];
@@ -132,12 +138,20 @@ class RdmSyncService
                             ->whereNull('rdm_id')
                             ->first();
 
+                        // Check equality to avoid unique violation on NISN if checking by NIS
                         if ($existingByNis) {
                             $existingByNis->update($data);
                             $stats['updated']++;
                         } else {
-                            Student::create($data);
-                            $stats['created']++;
+                            // Last check for NISN to prevent unique error
+                            $existingByNisn = Student::where('nisn', $data['nisn'])->first();
+                            if ($existingByNisn) {
+                                $existingByNisn->update($data);
+                                $stats['updated']++;
+                            } else {
+                                Student::create($data);
+                                $stats['created']++;
+                            }
                         }
                     }
                 } catch (\Exception $e) {
