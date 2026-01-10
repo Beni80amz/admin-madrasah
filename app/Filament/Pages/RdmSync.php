@@ -13,7 +13,7 @@ class RdmSync extends Page
 {
     protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-arrow-path';
 
-    protected static string $view = 'filament.pages.rdm-sync';
+    protected string $view = 'filament.pages.rdm-sync';
 
     protected static ?string $navigationLabel = 'Sinkronisasi RDM';
 
