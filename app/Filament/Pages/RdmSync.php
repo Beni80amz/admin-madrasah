@@ -6,22 +6,35 @@ use App\Services\RdmSyncService;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
-use BackedEnum;
-use UnitEnum;
 
 class RdmSync extends Page
 {
-    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-arrow-path';
-
     protected string $view = 'filament.pages.rdm-sync';
 
-    protected static ?string $navigationLabel = 'Sinkronisasi RDM';
+    public static function getNavigationIcon(): ?string
+    {
+        return 'heroicon-o-arrow-path';
+    }
 
-    protected static UnitEnum|string|null $navigationGroup = 'Setting';
+    public static function getNavigationLabel(): string
+    {
+        return 'Sinkronisasi RDM';
+    }
 
-    protected static ?int $navigationSort = 100;
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Setting';
+    }
 
-    protected static ?string $title = 'Sinkronisasi Data RDM';
+    public static function getNavigationSort(): ?int
+    {
+        return 100;
+    }
+
+    public function getTitle(): string
+    {
+        return 'Sinkronisasi Data RDM';
+    }
 
     protected function getHeaderActions(): array
     {
