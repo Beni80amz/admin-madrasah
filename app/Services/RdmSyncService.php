@@ -319,6 +319,134 @@ class RdmSyncService
     }
 
     /**
+     * Sync alumni from RDM database (students with kelas_id = -1)
+     */
+    public function syncAlumniFromRdm(): array
+    {
+        set_time_limit(300);
+        $batchId = 'alumni_' . now()->format('YmdHis');
+        $stats = ['created' => 0, 'updated' => 0, 'errors' => 0, 'error_details' => [], 'batch_id' => $batchId];
+
+        try {
+            // GET JENJANG FROM PROFILE
+            $profile = \App\Models\ProfileMadrasah::getActive();
+            $jenjangId = $profile?->jenjang_id ?? 2;
+            $jenjangNames = [1 => 'RA', 2 => 'MI', 3 => 'MTs', 4 => 'MA'];
+            $jenjangName = $jenjangNames[$jenjangId] ?? 'Unknown';
+            Log::info("RDM Alumni Sync: Using Jenjang ID: {$jenjangId} ({$jenjangName})");
+
+            // Query RDM for alumni (kelas_id = -1)
+            $rdmAlumni = DB::connection('rdm')
+                ->table('e_siswa')
+                ->where('e_siswa.kelas_id', -1)
+                ->where('e_siswa.tingkat_id', -1) // Double check: also tingkat_id = -1
+                ->get();
+
+            Log::info("RDM Alumni Sync: Found {$rdmAlumni->count()} alumni records.");
+
+            foreach ($rdmAlumni as $rdmStudent) {
+                try {
+                    // Check if already exists in alumni table by RDM siswa_id
+                    // We'll use nis_lokal as identifier since alumni table doesn't have rdm_id
+                    $alumni = \App\Models\Alumni::where('nis_lokal', $rdmStudent->siswa_nis)->first();
+
+                    // Map gender
+                    $gender = null;
+                    if (!empty($rdmStudent->siswa_gender)) {
+                        $genderLower = strtolower($rdmStudent->siswa_gender);
+                        if (str_contains($genderLower, 'laki') || $genderLower === 'l') {
+                            $gender = 'Laki-laki';
+                        } elseif (str_contains($genderLower, 'perempuan') || $genderLower === 'p') {
+                            $gender = 'Perempuan';
+                        }
+                    }
+
+                    // Extract tahun lulus from tahunajaran_id if available
+                    // e.g., tahunajaran_id = 2025 means graduated in 2025
+                    $tahunLulus = $rdmStudent->tahunajaran_id ?? null;
+
+                    $data = [
+                        'nama_lengkap' => $rdmStudent->siswa_nama,
+                        'nis_lokal' => $rdmStudent->siswa_nis,
+                        'nisn' => $rdmStudent->siswa_nisn ?? null,
+                        'nik' => $rdmStudent->siswa_nik ?? null,
+                        'gender' => $gender,
+                        'kelas_terakhir' => 'VI', // Alumni from MI are usually from Grade 6
+                        'tempat_lahir' => $rdmStudent->siswa_tempat ?? null,
+                        'tanggal_lahir' => $rdmStudent->siswa_tgllahir ?? null,
+                        'nama_ibu' => $rdmStudent->nama_ibu ?? null,
+                        'nama_ayah' => $rdmStudent->nama_ayah ?? null,
+                        'tahun_lulus' => $tahunLulus,
+                        'alamat' => $rdmStudent->siswa_alamat ?? null,
+                        'nomor_mobile' => $rdmStudent->siswa_hp ?? null,
+                    ];
+
+                    // Handle photo if exists
+                    if (!empty($rdmStudent->siswa_foto)) {
+                        $data['photo'] = $rdmStudent->siswa_foto;
+                    }
+
+                    if ($alumni) {
+                        $alumni->update($data);
+                        $stats['updated']++;
+                    } else {
+                        // Check if exists by name + tanggal_lahir to avoid duplicates
+                        $existingByNameDob = \App\Models\Alumni::where('nama_lengkap', $rdmStudent->siswa_nama)
+                            ->where('tanggal_lahir', $rdmStudent->siswa_tgllahir)
+                            ->first();
+
+                        if ($existingByNameDob) {
+                            $existingByNameDob->update($data);
+                            $stats['updated']++;
+                        } else {
+                            \App\Models\Alumni::create($data);
+                            $stats['created']++;
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    $alumniName = $rdmStudent->siswa_nama ?? 'N/A';
+                    $alumniNis = $rdmStudent->siswa_nis ?? 'N/A';
+                    $errorMsg = $e->getMessage();
+
+                    Log::error('RDM Alumni Sync Error: ' . $errorMsg, [
+                        'siswa_id' => $rdmStudent->siswa_id ?? 'N/A',
+                        'siswa_nama' => $alumniName
+                    ]);
+
+                    $stats['errors']++;
+
+                    // Save to error log
+                    try {
+                        \App\Models\SyncErrorLog::create([
+                            'sync_type' => 'alumni',
+                            'batch_id' => $batchId,
+                            'rdm_id' => $rdmStudent->siswa_id ?? null,
+                            'nama' => $alumniName,
+                            'nis_nip' => $alumniNis,
+                            'kelas' => 'Alumni',
+                            'error_type' => \App\Models\SyncErrorLog::parseErrorType($errorMsg),
+                            'error_column' => \App\Models\SyncErrorLog::parseErrorColumn($errorMsg),
+                            'error_message' => substr($errorMsg, 0, 500),
+                        ]);
+                    } catch (\Throwable $logError) {
+                        // Silently fail
+                    }
+
+                    if (count($stats['error_details']) < 10) {
+                        $stats['error_details'][] = "{$alumniName}: {$errorMsg}";
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::error('RDM Alumni Fatal Error: ' . $e->getMessage());
+            $stats['errors']++;
+            $stats['message'] = $e->getMessage();
+        }
+
+        return $stats;
+    }
+
+    /**
      * Ensure a User account exists for the given model
      */
     private function ensureUserExists($model, string $role, string $username): void

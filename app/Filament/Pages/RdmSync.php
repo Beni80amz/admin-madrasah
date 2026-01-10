@@ -144,6 +144,50 @@ class RdmSync extends Page
                             ->send();
                     }
                 }),
+
+            Action::make('syncAlumni')
+                ->label('Sync Alumni')
+                ->icon('heroicon-o-academic-cap')
+                ->color('warning')
+                ->requiresConfirmation()
+                ->modalHeading('Sinkronisasi Alumni')
+                ->modalDescription('Ini akan men-sync data Alumni (siswa dengan kelas_id = -1) dari RDM ke tabel Alumni. Lanjutkan?')
+                ->action(function () {
+                    try {
+                        $service = new RdmSyncService();
+                        $results = $service->syncAlumniFromRdm();
+
+                        // Build notification body with error details if any
+                        $body = sprintf(
+                            "%d baru, %d diperbarui, %d error",
+                            $results['created'],
+                            $results['updated'],
+                            $results['errors']
+                        );
+
+                        if (!empty($results['error_details'])) {
+                            $body .= "\n\n📋 Detail Error:\n• " . implode("\n• ", $results['error_details']);
+                            if ($results['errors'] > count($results['error_details'])) {
+                                $body .= "\n... dan " . ($results['errors'] - count($results['error_details'])) . " error lainnya";
+                            }
+                        }
+
+                        Notification::make()
+                            ->title('Sinkronisasi Alumni Berhasil!')
+                            ->body($body)
+                            ->success()
+                            ->duration(10000)
+                            ->send();
+
+                    } catch (\Throwable $e) {
+                        \Illuminate\Support\Facades\Log::error('Alumni Sync Error: ' . $e->getMessage());
+                        Notification::make()
+                            ->title('Gagal Sinkronisasi Alumni')
+                            ->body('Error: ' . $e->getMessage())
+                            ->danger()
+                            ->send();
+                    }
+                }),
         ];
     }
 }
