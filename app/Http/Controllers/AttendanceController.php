@@ -182,10 +182,7 @@ class AttendanceController extends Controller
 
         $filename = 'Lap. Absensi_' . $teacherName . '_' . $year . str_pad($month, 2, '0', STR_PAD_LEFT) . now()->format('d') . '.pdf';
 
-        return response()->streamDownload(
-            fn() => print ($pdf->output()),
-            $filename
-        );
+        return $pdf->download($filename);
     }
 
     public function verify(Request $request)
