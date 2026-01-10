@@ -107,14 +107,17 @@ class RdmSyncService
             $rdmStudents = DB::connection('rdm')
                 ->table('e_siswa')
                 ->join('e_kelas', 'e_siswa.kelas_id', '=', 'e_kelas.kelas_id') // Inner Join to enforce class existence
+                ->leftJoin('e_tingkat', 'e_kelas.tingkat_id', '=', 'e_tingkat.tingkat_id') // Join to get Roman Grade Name
                 ->select(
                     'e_siswa.*',
                     'e_kelas.kelas_alias as rdm_kelas_alias', // Explicit alias to avoid collision
                     'e_kelas.kelas_nama as rdm_kelas_nama',
-                    'e_kelas.tingkat_id as rdm_tingkat_id'
+                    'e_kelas.tingkat_id as rdm_tingkat_id',
+                    'e_tingkat.tingkat_nama as rdm_tingkat_nama' // e.g. "I", "VI"
                 )
                 ->where('e_siswa.tahunajaran_id', $currentYear) // Validation: Must be this year's student
-                ->where('e_kelas.tingkat_id', '<=', 6) // STRICT FILTER: Only Grade 1-6 (MI)
+                // RDM Structure: 3=Grade 1, 8=Grade 6, 9=Grade 7(Alumni)
+                ->where('e_kelas.tingkat_id', '<=', 8) // Limit to Grade 6 (VI)
                 ->where(function ($q) {
                     $q->whereNull('e_siswa.siswa_statuskel')
                         ->orWhere('e_siswa.siswa_statuskel', '')
@@ -123,6 +126,24 @@ class RdmSyncService
                 ->get();
 
             Log::info("RDM Sync: Found {$rdmStudents->count()} active students after filter.");
+
+            // Helper for Roman to Arabic
+            $romanToArabic = function ($roman) {
+                $romans = ['I' => 1, 'V' => 5, 'X' => 10, 'L' => 50, 'C' => 100];
+                $roman = strtoupper(trim($roman));
+                $result = 0;
+                $length = strlen($roman);
+                for ($i = 0; $i < $length; $i++) {
+                    $current = $romans[$roman[$i]] ?? 0;
+                    $next = ($i + 1 < $length) ? ($romans[$roman[$i + 1]] ?? 0) : 0;
+                    if ($current < $next) {
+                        $result -= $current;
+                    } else {
+                        $result += $current;
+                    }
+                }
+                return $result > 0 ? (string) $result : $roman;
+            };
 
             foreach ($rdmStudents as $rdmStudent) {
                 try {
@@ -142,16 +163,20 @@ class RdmSyncService
 
                     // Get Class Name Logic:
                     // Priority 1: Use alias IF it looks complete (contains dash, e.g. "1-A")
-                    // Priority 2: Construct from Tingkat + Nama (e.g. "1" + "-" + "A")
+                    // Priority 2: Construct from Tingkat Roman Name (e.g. "VI" -> "6" + "-" + "A" -> "6-A")
                     // Priority 3: Fallback
                     $kelas = $rdmStudent->rdm_kelas_alias;
 
                     if (empty($kelas) || !str_contains($kelas, '-')) {
-                        // Use !is_null because tingkat_id might be 0 or '0'
-                        if (!is_null($rdmStudent->rdm_tingkat_id) && !empty($rdmStudent->rdm_kelas_nama)) {
-                            // Convert Tingkat ID to Grade if needed, usually mapped 1-1 for MI
-                            // If Tingkat > 12 (rare), keep as is.
-                            $kelas = "{$rdmStudent->rdm_tingkat_id}-{$rdmStudent->rdm_kelas_nama}";
+                        // Use Roman Name (e.g. "VI") if available
+                        if (!empty($rdmStudent->rdm_tingkat_nama) && !empty($rdmStudent->rdm_kelas_nama)) {
+                            // Convert Roman "VI" to "6"
+                            $gradeArabic = $romanToArabic($rdmStudent->rdm_tingkat_nama);
+                            $kelas = "{$gradeArabic}-{$rdmStudent->rdm_kelas_nama}";
+                        } elseif (!is_null($rdmStudent->rdm_tingkat_id)) {
+                            // Fallback to ID-based logic if Roman name missing (ID 3 = Grade 1)
+                            $grade = max(1, $rdmStudent->rdm_tingkat_id - 2);
+                            $kelas = "{$grade}-{$rdmStudent->rdm_kelas_nama}";
                         } else {
                             // Fallback if construction fails
                             $kelas = $rdmStudent->rdm_kelas_nama ?? $rdmStudent->kelas ?? '-';
