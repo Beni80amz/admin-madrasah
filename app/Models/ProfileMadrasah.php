@@ -11,6 +11,7 @@ class ProfileMadrasah extends Model
 
     protected $fillable = [
         'nama_madrasah',
+        'jenjang_id', // 1=RA, 2=MI, 3=MTs, 4=MA
         'motto',
         'nsm',
         'npsn',

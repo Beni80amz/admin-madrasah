@@ -29,6 +29,17 @@ class ProfileMadrasahForm
                         TextInput::make('nama_madrasah')
                             ->label('Nama Madrasah')
                             ->required(),
+                        \Filament\Forms\Components\Select::make('jenjang_id')
+                            ->label('Jenjang Pendidikan')
+                            ->options([
+                                1 => 'RA (Raudhatul Athfal)',
+                                2 => 'MI (Madrasah Ibtidaiyah)',
+                                3 => 'MTs (Madrasah Tsanawiyah)',
+                                4 => 'MA (Madrasah Aliyah)',
+                            ])
+                            ->default(2)
+                            ->required()
+                            ->helperText('Pilih jenjang untuk filter sinkronisasi RDM'),
                         TextInput::make('motto')
                             ->label('Motto Madrasah')
                             ->placeholder('Contoh: Membangun Generasi Islami Berprestasi')

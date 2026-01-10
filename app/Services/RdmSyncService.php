@@ -97,6 +97,13 @@ class RdmSyncService
         $stats = ['created' => 0, 'updated' => 0, 'errors' => 0];
 
         try {
+            // GET JENJANG FROM PROFILE
+            $profile = \App\Models\ProfileMadrasah::getActive();
+            $jenjangId = $profile?->jenjang_id ?? 2; // Default to MI if not set
+            $jenjangNames = [1 => 'RA', 2 => 'MI', 3 => 'MTs', 4 => 'MA'];
+            $jenjangName = $jenjangNames[$jenjangId] ?? 'Unknown';
+            Log::info("RDM Sync: Using Jenjang ID: {$jenjangId} ({$jenjangName})");
+
             // DETERMINE CURRENT ACADEMIC YEAR
             $currentYear = DB::connection('rdm')->table('e_siswa')->max('tahunajaran_id');
             Log::info("RDM Sync: Detected Current Year: {$currentYear}");
@@ -116,8 +123,8 @@ class RdmSyncService
                     'e_tingkat.tingkat_nama as rdm_tingkat_nama' // e.g. "I", "VI"
                 )
                 ->where('e_siswa.tahunajaran_id', $currentYear) // Validation: Must be this year's student
-                // RDM Structure: jenjang_id 2 = MI (tingkat_id 3-8 = Kelas I-VI)
-                ->where('e_tingkat.jenjang_id', 2) // ONLY MI students (Grade I-VI)
+                // Filter by Jenjang from Profile (1=RA, 2=MI, 3=MTs, 4=MA)
+                ->where('e_tingkat.jenjang_id', $jenjangId)
                 ->where(function ($q) {
                     $q->whereNull('e_siswa.siswa_statuskel')
                         ->orWhere('e_siswa.siswa_statuskel', '')
