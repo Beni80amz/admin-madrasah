@@ -44,7 +44,28 @@ class UserAccountsTable
                     ->label('Filter Role'),
             ])
             ->actions([
-                // No edit/delete needed for now, just view
+                Action::make('editRole')
+                    ->label('Ubah Role')
+                    ->icon('heroicon-o-pencil-square')
+                    ->color('warning')
+                    ->modalHeading('Ubah Role Pengguna')
+                    ->modalDescription(fn(User $record) => 'Mengubah role untuk: ' . ($record->teacher?->nama_lengkap ?? $record->student?->nama_lengkap ?? $record->name))
+                    ->form([
+                        \Filament\Forms\Components\Select::make('roles')
+                            ->label('Role')
+                            ->multiple()
+                            ->options(\Spatie\Permission\Models\Role::pluck('name', 'name'))
+                            ->default(fn(User $record) => $record->roles->pluck('name')->toArray())
+                            ->required(),
+                    ])
+                    ->action(function (User $record, array $data) {
+                        $record->syncRoles($data['roles']);
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Role berhasil diubah')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
