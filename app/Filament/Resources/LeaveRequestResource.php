@@ -24,7 +24,7 @@ class LeaveRequestResource extends Resource
     protected static ?string $pluralModelLabel = 'Permohonan Izin';
     protected static ?string $modelLabel = 'Permohonan Izin';
 
-    // protected static ?string $navigationGroup = 'Akademik';
+    protected static ?string $navigationGroup = 'Akademik';
 
     public static function canViewAny(): bool
     {
