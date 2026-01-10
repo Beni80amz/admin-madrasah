@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\LeaveRequests\Pages;
+namespace App\Filament\Resources\LeaveRequestResource\Pages;
 
-use App\Filament\Resources\LeaveRequests\LeaveRequestResource;
+use App\Filament\Resources\LeaveRequestResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\LeaveRequests\Schemas;
+namespace App\Filament\Resources\LeaveRequestResource\Schemas;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;

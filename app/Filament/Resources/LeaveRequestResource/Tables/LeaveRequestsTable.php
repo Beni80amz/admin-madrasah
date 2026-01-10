@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\LeaveRequests\Tables;
+namespace App\Filament\Resources\LeaveRequestResource\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
