@@ -8,7 +8,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Illuminate\Database\Eloquent\Collection;
-use Filament\Tables\Actions\Action;
+use Filament\Actions\Action;
 
 class UserAccountsTable
 {
