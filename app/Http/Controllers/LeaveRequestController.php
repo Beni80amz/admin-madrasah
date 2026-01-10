@@ -18,17 +18,21 @@ class LeaveRequestController extends Controller
 
     public function index()
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        // 1. My Requests History
-        $myRequests = LeaveRequest::where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+            // 1. My Requests History
+            $myRequests = LeaveRequest::where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-        // 2. Pending Approvals (if eligible)
-        $pendingApprovals = $this->leaveService->getPendingRequestsFor($user);
+            // 2. Pending Approvals (if eligible)
+            $pendingApprovals = $this->leaveService->getPendingRequestsFor($user);
 
-        return view('frontend.leave.index', compact('myRequests', 'pendingApprovals'));
+            return view('frontend.leave.index', compact('myRequests', 'pendingApprovals'));
+        } catch (\Exception $e) {
+            dd($e->getMessage(), $e->getTraceAsString());
+        }
     }
 
     public function create()
