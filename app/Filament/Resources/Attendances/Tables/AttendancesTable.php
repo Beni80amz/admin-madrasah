@@ -63,6 +63,7 @@ class AttendancesTable
                         $year = $data['year'];
                         $userId = $data['user_id'] ?? null;
 
+
                         $query = \App\Models\Attendance::query()
                             ->whereMonth('date', $month)
                             ->whereYear('date', $year);
@@ -71,7 +72,7 @@ class AttendancesTable
                             $query->where('user_id', $userId);
                         }
 
-                        $attendances = $query->with('user')->orderBy('date')->get();
+                        $attendances = $query->with(['user.teacher'])->orderBy('date')->get();
 
                         if ($data['format'] === 'excel') {
                             return \Maatwebsite\Excel\Facades\Excel::download(

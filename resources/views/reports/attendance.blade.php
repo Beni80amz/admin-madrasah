@@ -162,7 +162,7 @@
                     @if(!$user)
                         {{-- Attempt to find teacher name if lazy loaded, otherwise fallback to user name --}}
                         @php
-                            $tName = $row->user->name ?? '-';
+                            $tName = $row->user->teacher->nama_lengkap ?? $row->user->name ?? '-';
                         @endphp
                         <td>{{ $tName }}</td>
                     @endif
