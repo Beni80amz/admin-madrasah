@@ -83,3 +83,23 @@ Route::middleware(['auth'])->group(function () {
     Route::view('/inbox', 'frontend.features.inbox')->name('inbox.index');
     Route::view('/profil-user', 'frontend.features.profil')->name('profil.user');
 });
+
+Route::get('/debug-class-data', function () {
+    try {
+        $student = DB::connection('rdm')
+            ->table('e_siswa')
+            ->join('e_kelas', 'e_siswa.kelas_id', '=', 'e_kelas.kelas_id')
+            ->where('e_siswa.siswa_nama', 'like', '%Arsakha%')
+            ->select(
+                'e_siswa.siswa_nama',
+                'e_kelas.kelas_id',
+                'e_kelas.kelas_nama',
+                'e_kelas.kelas_alias',
+                'e_kelas.tingkat_id'
+            )
+            ->first();
+        return response()->json($student);
+    } catch (\Throwable $e) {
+        return $e->getMessage();
+    }
+});
