@@ -99,7 +99,11 @@ class AttendancesTable
                                 'alpha' => $attendances->where('status', 'alpha')->count(),
                             ];
 
-                            $qrData = "Validasi Dokumen\nPeriode: $month/$year\nPegawai: $teacherName\nGenerated: " . now()->format('Y-m-d H:i:s');
+                            $qrData = route('attendance.verify', [
+                                'period' => "$month-$year",
+                                'user' => $user ? $user->id : 'all',
+                                'timestamp' => now()->timestamp
+                            ]);
 
                             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.attendance', [
                                 'attendances' => $attendances,

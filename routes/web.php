@@ -69,6 +69,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/riwayat', [App\Http\Controllers\AttendanceController::class, 'history'])->name('riwayat.index');
     Route::get('/riwayat/export', [App\Http\Controllers\AttendanceController::class, 'downloadPdf'])->name('riwayat.export');
+    Route::get('/verifikasi-absensi', [App\Http\Controllers\AttendanceController::class, 'verify'])->name('attendance.verify');
 
     Route::view('/jadwal', 'frontend.features.jadwal')->name('jadwal.index');
     Route::view('/tugas', 'frontend.features.tugas')->name('tugas.index');

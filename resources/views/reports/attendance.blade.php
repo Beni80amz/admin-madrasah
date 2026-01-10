@@ -28,7 +28,7 @@
 
         .header h1 {
             margin: 0;
-            font-size: 18px;
+            font-size: 16px;
             text-transform: uppercase;
         }
 
@@ -37,8 +37,17 @@
             font-size: 11px;
         }
 
+        .header-title {
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
         .meta {
-            margin-bottom: 15px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .meta table {
@@ -71,10 +80,11 @@
         }
 
         .summary {
-            width: 300px;
-            margin-bottom: 20px;
+            width: 100%;
             border: 1px solid #000;
             padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
         }
 
         .footer {
@@ -90,7 +100,7 @@
         }
 
         .qr-code-container {
-            margin-bottom: 10px;
+            margin: 10px 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -110,6 +120,7 @@
             {{-- <img src="{{ public_path('storage/' . $profile->logo) }}" class="logo"> --}}
         @endif
 
+        <div class="header-title">LAPORAN ABSENSI</div>
         <h1>{{ $profile->nama_madrasah ?? 'MADRASAH' }}</h1>
         <p>{{ $profile->alamat ?? 'Alamat Madrasah' }}</p>
         <p>
@@ -119,16 +130,10 @@
     </div>
 
     <div class="meta">
-        <table>
+        <table style="width: 100%;">
             <tr>
-                <td width="15%"><strong>Periode</strong></td>
-                <td width="2%">:</td>
-                <td>{{ $period }}</td>
-            </tr>
-            <tr>
-                <td><strong>Nama</strong></td>
-                <td>:</td>
-                <td>{{ $teacherName }}</td>
+                <td width="50%"><strong>Periode:</strong> {{ $period }}</td>
+                <td width="50%" style="text-align: right;"><strong>Nama:</strong> {{ $teacherName }}</td>
             </tr>
         </table>
     </div>
@@ -158,8 +163,6 @@
                         {{-- Attempt to find teacher name if lazy loaded, otherwise fallback to user name --}}
                         @php
                             $tName = $row->user->name ?? '-';
-                            // If we can access teacher relation through user, we could display it here
-                            // Ideally we should eager load teacher in controller
                         @endphp
                         <td>{{ $tName }}</td>
                     @endif
@@ -174,28 +177,30 @@
     </table>
 
     <div class="summary">
-        <strong>Rekapitulasi:</strong><br>
-        Hadir: {{ $summary['hadir'] }}<br>
-        Telat: {{ $summary['telat'] }}<br>
-        Izin: {{ $summary['izin'] }}<br>
-        Sakit: {{ $summary['sakit'] }}<br>
-        Alpha: {{ $summary['alpha'] }}
+        <strong>Rekapitulasi:</strong>
+        <div style="margin-top: 5px;">
+            <span style="margin-right: 20px;">Hadir: {{ $summary['hadir'] }}</span>
+            <span style="margin-right: 20px;">Telat: {{ $summary['telat'] }}</span>
+            <span style="margin-right: 20px;">Izin: {{ $summary['izin'] }}</span>
+            <span style="margin-right: 20px;">Sakit: {{ $summary['sakit'] }}</span>
+            <span>Alpha: {{ $summary['alpha'] }}</span>
+        </div>
     </div>
 
     <div class="footer">
         <div class="signature-box">
-            {{-- QR Code Positioned Above --}}
-            <div class="qr-code-container">
-                <img
-                    src="data:image/svg+xml;base64, {{ base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(90)->generate($qrData)) }}">
-            </div>
-
             <p>
                 Depok, {{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM Y') }} <br>
                 Mengetahui,<br>
                 Kepala Madrasah
             </p>
-            <br><br><br>
+
+            {{-- QR Code Positioned Between Title and Name --}}
+            <div class="qr-code-container">
+                <img
+                    src="data:image/svg+xml;base64, {{ base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(70)->generate($qrData)) }}">
+            </div>
+
             <p><strong>{{ $profile->nama_kepala_madrasah ?? '______________________' }}</strong></p>
             @if(isset($profile->nip_kepala_madrasah))
                 <p>NIP. {{ $profile->nip_kepala_madrasah }}</p>

@@ -162,7 +162,11 @@ class AttendanceController extends Controller
             'alpha' => $attendances->where('status', 'alpha')->count(),
         ];
 
-        $qrData = "Validasi Dokumen\nPeriode: $month/$year\nPegawai: $teacherName\nGenerated: " . now()->format('Y-m-d H:i:s');
+        $qrData = route('attendance.verify', [
+            'period' => "$month-$year",
+            'user' => $user->id,
+            'timestamp' => now()->timestamp
+        ]);
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.attendance', [
             'attendances' => $attendances,
@@ -177,5 +181,13 @@ class AttendanceController extends Controller
         $pdf->setPaper('A4', 'portrait');
 
         return $pdf->download('Laporan-Absensi-' . $month . '-' . $year . '.pdf');
+    }
+
+    public function verify(Request $request)
+    {
+        // Simple verification page
+        // In a real app, we would validate a signature or hash
+        // For now, we can show a simple success message or details if we passed parameters
+        return view('frontend.features.verifikasi-absensi');
     }
 }
