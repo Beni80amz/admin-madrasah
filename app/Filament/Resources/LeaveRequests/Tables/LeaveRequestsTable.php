@@ -16,7 +16,9 @@ class LeaveRequestsTable
             ->columns([
                 TextColumn::make('user.name')
                     ->label('Nama Pemohon')
-                    ->searchable()
+                    ->description(fn($record) => $record->user?->name)
+                    ->formatStateUsing(fn($state, $record) => $record->user?->teacher?->nama_lengkap ?? $record->user?->name)
+                    ->searchable(['user.name', 'user.teacher.nama_lengkap'])
                     ->sortable(),
                 TextColumn::make('type')
                     ->label('Jenis')
