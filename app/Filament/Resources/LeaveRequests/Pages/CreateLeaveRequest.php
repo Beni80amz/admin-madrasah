@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\LeaveRequestResource\Pages;
+namespace App\Filament\Resources\LeaveRequests\Pages;
 
-use App\Filament\Resources\LeaveRequestResource;
+use App\Filament\Resources\LeaveRequests\LeaveRequestResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateLeaveRequest extends CreateRecord
