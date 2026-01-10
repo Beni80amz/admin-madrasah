@@ -26,7 +26,8 @@
             </div>
             <h1 class="text-white text-2xl font-bold">Dokumen Valid</h1>
             <!-- Nama Madrasah sebagai Link -->
-            <a href="{{ url('/admin') }}"
+            <!-- Nama Madrasah sebagai Link -->
+            <a href="{{ url('/') }}"
                 class="text-green-100 opacity-90 mt-2 block hover:underline hover:text-white transition-colors text-sm font-medium">
                 {{ $profile->nama_madrasah ?? 'Madrasah' }}
             </a>
