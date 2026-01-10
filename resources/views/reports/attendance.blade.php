@@ -187,6 +187,10 @@
         </div>
     </div>
 
+    <div style="text-align: right; font-size: 9px; font-style: italic; margin-bottom: 5px; margin-top: 5px;">
+        Dokumen ini dicetak pada {{ now()->locale('id')->isoFormat('D MMMM Y HH:mm') }} WIB
+    </div>
+
     <div class="footer">
         <div class="signature-box">
             <p>
@@ -205,10 +209,6 @@
             @if(isset($profile->nip_kepala_madrasah))
                 <p>NIP. {{ $profile->nip_kepala_madrasah }}</p>
             @endif
-
-            <p style="margin-top: 10px; font-size: 9px; font-style: italic;">
-                Dokumen ini dicetak pada {{ now()->locale('id')->isoFormat('D MMMM Y HH:mm') }} WIB
-            </p>
         </div>
         <div class="clear"></div>
     </div>
