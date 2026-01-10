@@ -30,7 +30,7 @@ class LeaveRequestController extends Controller
             $pendingApprovals = $this->leaveService->getPendingRequestsFor($user);
 
             return view('frontend.leave.index', compact('myRequests', 'pendingApprovals'));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             dd($e->getMessage(), $e->getTraceAsString());
         }
     }
