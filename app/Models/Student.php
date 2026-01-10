@@ -57,8 +57,26 @@ class Student extends Model
         'alamat_domisili',
         'is_active',
         'status',
+        'status',
         'user_id',
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::deleted(function (Student $student) {
+            // Check by user_id link first
+            if ($student->user_id) {
+                \App\Models\User::find($student->user_id)?->delete();
+            }
+            // Fallback: Check by NIS as email/username
+            elseif ($student->nis_lokal) {
+                \App\Models\User::where('email', $student->nis_lokal)->delete();
+            }
+        });
+    }
 
     protected $casts = [
         'tanggal_lahir' => 'date',

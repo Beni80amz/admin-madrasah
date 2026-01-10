@@ -27,8 +27,26 @@ class Teacher extends Model
         'status',
         'sertifikasi',
         'is_active',
+        'is_active',
         'user_id',
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::deleted(function (Teacher $teacher) {
+            // Check by user_id link first
+            if ($teacher->user_id) {
+                \App\Models\User::find($teacher->user_id)?->delete();
+            }
+            // Fallback: Check by NIP as email (common pattern)
+            elseif ($teacher->nip) {
+                \App\Models\User::where('email', $teacher->nip)->delete();
+            }
+        });
+    }
 
     protected $casts = [
         'is_active' => 'boolean',
