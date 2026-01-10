@@ -96,14 +96,16 @@ class RdmSyncService
         $stats = ['created' => 0, 'updated' => 0, 'errors' => 0];
 
         try {
-            // Get all active students from RDM with Class Name
-            // Joining e_siswa with e_kelas (assuming e_kelas table exists and has kelas_id)
+            // DEBUGGING: Get one student to inspect structure
+            // We revert to simple query first to ensure we get data
             $rdmStudents = DB::connection('rdm')
                 ->table('e_siswa')
-                ->join('e_kelas', 'e_siswa.kelas_id', '=', 'e_kelas.kelas_id')
-                ->where('e_siswa.siswa_aktif', 1)
-                ->select('e_siswa.*', 'e_kelas.kelas_nama as nama_kelas_real')
+                ->where('siswa_aktif', 1)
                 ->get();
+
+            if ($rdmStudents->count() > 0) {
+                Log::info('RDM Student Sample:', (array) $rdmStudents->first());
+            }
 
             foreach ($rdmStudents as $rdmStudent) {
                 try {
@@ -121,8 +123,8 @@ class RdmSyncService
                         }
                     }
 
-                    // Get Class Name from JOIN result
-                    $kelas = $rdmStudent->nama_kelas_real ?? $rdmStudent->kelas ?? '-';
+                    // Get Class Name fallback
+                    $kelas = $rdmStudent->kelas ?? '-';
 
                     $data = [
                         'rdm_id' => $rdmStudent->siswa_id,
