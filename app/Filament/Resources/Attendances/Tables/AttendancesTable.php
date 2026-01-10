@@ -117,7 +117,11 @@ class AttendancesTable
 
                             $filename = 'Lap. Absensi_' . $teacherName . '_' . $year . str_pad($month, 2, '0', STR_PAD_LEFT) . now()->format('d') . '.pdf';
 
-                            return $pdf->download($filename);
+                            return response()->streamDownload(
+                                fn() => print ($pdf->output()),
+                                $filename,
+                                ['Content-Type' => 'application/pdf']
+                            );
                         }
                     }),
             ])
