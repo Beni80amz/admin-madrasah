@@ -6,6 +6,7 @@ use App\Services\RdmSyncService;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
+use UnitEnum;
 
 class RdmSync extends Page
 {
@@ -15,7 +16,7 @@ class RdmSync extends Page
 
     protected static ?string $navigationLabel = 'Sinkronisasi RDM';
 
-    protected static ?string $navigationGroup = 'Setting';
+    protected static UnitEnum|string|null $navigationGroup = 'Setting';
 
     protected static ?int $navigationSort = 100;
 
