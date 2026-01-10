@@ -38,6 +38,7 @@ class Student extends Model
     }
 
     protected $fillable = [
+        'rdm_id',
         'photo',
         'nama_lengkap',
         'nis_lokal',
@@ -56,6 +57,7 @@ class Student extends Model
         'alamat_domisili',
         'is_active',
         'status',
+        'user_id',
     ];
 
     protected $casts = [

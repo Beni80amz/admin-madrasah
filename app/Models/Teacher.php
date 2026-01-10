@@ -12,6 +12,7 @@ class Teacher extends Model
     use HasFactory;
 
     protected $fillable = [
+        'rdm_id',
         'photo',
         'nama_lengkap',
         'nip',
@@ -26,6 +27,7 @@ class Teacher extends Model
         'status',
         'sertifikasi',
         'is_active',
+        'user_id',
     ];
 
     protected $casts = [

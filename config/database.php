@@ -113,6 +113,23 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        // RDM Database Connection for Sync
+        'rdm' => [
+            'driver' => 'mysql',
+            'host' => env('RDM_DB_HOST', '127.0.0.1'),
+            'port' => env('RDM_DB_PORT', '3306'),
+            'database' => env('RDM_DB_DATABASE', 'rdm_miamz'),
+            'username' => env('RDM_DB_USERNAME', 'rdm_miamz'),
+            'password' => env('RDM_DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+        ],
+
     ],
 
     /*
@@ -148,7 +165,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 
