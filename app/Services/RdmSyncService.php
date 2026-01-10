@@ -96,23 +96,32 @@ class RdmSyncService
         $stats = ['created' => 0, 'updated' => 0, 'errors' => 0];
 
         try {
-            // DEBUGGING: Get one student to inspect structure
-            // We revert to simple query first to ensure we get data
+            // FIXED QUERY:
+            // 1. Join 'e_kelas' to get 'kelas_alias' (e.g. "1-A")
+            // 2. Filter Active: 'siswa_statuskel' usually contains "Lulus"/"Mutasi". Active = NULL or Empty.
             $rdmStudents = DB::connection('rdm')
                 ->table('e_siswa')
-                ->where('siswa_aktif', 1)
+                ->join('e_kelas', 'e_siswa.kelas_id', '=', 'e_kelas.kelas_id')
+                ->select(
+                    'e_siswa.*',
+                    'e_kelas.kelas_alias',
+                    'e_kelas.kelas_nama'
+                )
+                ->where(function ($q) {
+                    $q->whereNull('e_siswa.siswa_statuskel')
+                        ->orWhere('e_siswa.siswa_statuskel', '')
+                        ->orWhere('e_siswa.siswa_statuskel', '0'); // Just in case '0' is used
+                })
                 ->get();
 
-            if ($rdmStudents->count() > 0) {
-                Log::info('RDM Student Sample:', (array) $rdmStudents->first());
-            }
+            Log::info("RDM Sync: Found {$rdmStudents->count()} active students after filter.");
 
             foreach ($rdmStudents as $rdmStudent) {
                 try {
                     // Find by rdm_id or create new
                     $student = Student::where('rdm_id', $rdmStudent->siswa_id)->first();
 
-                    // Map gender to match Enum ['Laki-laki', 'Perempuan']
+                    // Map gender
                     $gender = null;
                     if (!empty($rdmStudent->siswa_gender)) {
                         $genderLower = strtolower($rdmStudent->siswa_gender);
@@ -123,8 +132,11 @@ class RdmSyncService
                         }
                     }
 
-                    // Get Class Name fallback
-                    $kelas = $rdmStudent->kelas ?? '-';
+                    // Get Class Name (Prioritize Alias "1-A")
+                    $kelas = $rdmStudent->kelas_alias
+                        ?? $rdmStudent->kelas_nama
+                        ?? $rdmStudent->kelas
+                        ?? '-';
 
                     $data = [
                         'rdm_id' => $rdmStudent->siswa_id,
