@@ -44,6 +44,7 @@ class RdmSyncService
                     if ($teacher) {
                         $teacher->update($data);
                         $stats['updated']++;
+                        $this->ensureUserExists($teacher, 'guru', $teacher->nip);
                     } else {
                         // Check if teacher exists by NIP to avoid duplicates
                         $existingTeacher = null;
@@ -64,9 +65,11 @@ class RdmSyncService
                         if ($existingTeacher) {
                             $existingTeacher->update($data);
                             $stats['updated']++;
+                            $this->ensureUserExists($existingTeacher, 'guru', $existingTeacher->nip);
                         } else {
-                            Teacher::create($data);
+                            $newTeacher = Teacher::create($data);
                             $stats['created']++;
+                            $this->ensureUserExists($newTeacher, 'guru', $newTeacher->nip);
                         }
                     }
                 } catch (\Exception $e) {
@@ -144,6 +147,7 @@ class RdmSyncService
                     if ($student) {
                         $student->update($data);
                         $stats['updated']++;
+                        $this->ensureUserExists($student, 'siswa', $student->nis_lokal);
                     } else {
                         // Check if student exists by NIS to avoid duplicates
                         $existingByNis = Student::where('nis_lokal', $rdmStudent->siswa_nis)
@@ -154,6 +158,7 @@ class RdmSyncService
                         if ($existingByNis) {
                             $existingByNis->update($data);
                             $stats['updated']++;
+                            $this->ensureUserExists($existingByNis, 'siswa', $existingByNis->nis_lokal);
                         } else {
                             // Last check for NISN to prevent unique error
                             $existingByNisn = null;
@@ -166,6 +171,7 @@ class RdmSyncService
                             if ($existingByNisn) {
                                 $existingByNisn->update($data);
                                 $stats['updated']++;
+                                $this->ensureUserExists($existingByNisn, 'siswa', $existingByNisn->nis_lokal);
                             } else {
                                 // FINAL FALLBACK: Check by Name AND Date of Birth
                                 // This handles cases where NIS/NISN might be missing or different format
@@ -177,9 +183,11 @@ class RdmSyncService
                                 if ($existingByNameDob) {
                                     $existingByNameDob->update($data);
                                     $stats['updated']++;
+                                    $this->ensureUserExists($existingByNameDob, 'siswa', $existingByNameDob->nis_lokal);
                                 } else {
-                                    Student::create($data);
+                                    $newStudent = Student::create($data);
                                     $stats['created']++;
+                                    $this->ensureUserExists($newStudent, 'siswa', $newStudent->nis_lokal);
                                 }
                             }
                         }
@@ -209,5 +217,41 @@ class RdmSyncService
             'teachers' => $this->syncTeachersFromRdm(),
             'students' => $this->syncStudentsFromRdm(),
         ];
+    }
+
+    /**
+     * Ensure a User account exists for the given model
+     */
+    private function ensureUserExists($model, string $role, string $username): void
+    {
+        if (empty($username) || $username === '-')
+            return;
+
+        // Create Role if not exists
+        $roleModel = \Spatie\Permission\Models\Role::firstOrCreate(['name' => $role]);
+
+        // Find or Create User
+        // Check by email (username)
+        $user = \App\Models\User::where('email', $username)->first();
+
+        if (!$user) {
+            $user = \App\Models\User::create([
+                'name' => $model->nama_lengkap ?? $username,
+                'email' => $username,
+                'password' => \Illuminate\Support\Facades\Hash::make($username), // Default password = username
+                'email_verified_at' => now(),
+            ]);
+        }
+
+        // Assign Role
+        if (!$user->hasRole($role)) {
+            $user->assignRole($role);
+        }
+
+        // Link to Model if not already linked
+        if ($model->user_id !== $user->id) {
+            $model->user_id = $user->id;
+            $model->saveQuietly(); // Avoid triggering observers again
+        }
     }
 }
