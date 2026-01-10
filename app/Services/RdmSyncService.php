@@ -93,9 +93,10 @@ class RdmSyncService
         $stats = ['created' => 0, 'updated' => 0, 'errors' => 0];
 
         try {
-            // Get all students from RDM
+            // Get all active students from RDM
             $rdmStudents = DB::connection('rdm')
                 ->table('e_siswa')
+                ->where('siswa_aktif', 1)
                 ->get();
 
             foreach ($rdmStudents as $rdmStudent) {
