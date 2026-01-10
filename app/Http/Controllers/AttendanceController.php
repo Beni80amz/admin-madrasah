@@ -180,7 +180,12 @@ class AttendanceController extends Controller
 
         $pdf->setPaper('A4', 'portrait');
 
-        return $pdf->download('Laporan-Absensi-' . $month . '-' . $year . '.pdf');
+        $filename = 'Lap. Absensi_' . $teacherName . '_' . $year . str_pad($month, 2, '0', STR_PAD_LEFT) . now()->format('d') . '.pdf';
+
+        return response()->streamDownload(
+            fn() => print ($pdf->output()),
+            $filename
+        );
     }
 
     public function verify(Request $request)

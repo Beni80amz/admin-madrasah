@@ -115,9 +115,11 @@ class AttendancesTable
                                 'qrData' => $qrData,
                             ]);
 
+                            $filename = 'Lap. Absensi_' . $teacherName . '_' . $year . str_pad($month, 2, '0', STR_PAD_LEFT) . now()->format('d') . '.pdf';
+
                             return response()->streamDownload(
                                 fn() => print ($pdf->output()),
-                                'Laporan-Absensi-' . $month . '-' . $year . '.pdf'
+                                $filename
                             );
                         }
                     }),

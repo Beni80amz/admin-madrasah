@@ -205,6 +205,10 @@
             @if(isset($profile->nip_kepala_madrasah))
                 <p>NIP. {{ $profile->nip_kepala_madrasah }}</p>
             @endif
+
+            <p style="margin-top: 10px; font-size: 9px; font-style: italic;">
+                Dokumen ini dicetak pada {{ now()->locale('id')->isoFormat('D MMMM Y HH:mm') }} WIB
+            </p>
         </div>
         <div class="clear"></div>
     </div>
