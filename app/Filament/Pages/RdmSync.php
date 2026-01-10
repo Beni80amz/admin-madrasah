@@ -6,11 +6,12 @@ use App\Services\RdmSyncService;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
+use BackedEnum;
 use UnitEnum;
 
 class RdmSync extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-path';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-arrow-path';
 
     protected static string $view = 'filament.pages.rdm-sync';
 
