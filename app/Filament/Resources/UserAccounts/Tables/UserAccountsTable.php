@@ -18,7 +18,8 @@ class UserAccountsTable
             ->columns([
                 TextColumn::make('name')
                     ->label('Nama Lengkap')
-                    ->description(fn(User $record) => $record->teacher?->nama_lengkap ?? ($record->student?->nama_lengkap ?? ''))
+                    ->formatStateUsing(fn(User $record) => $record->teacher?->nama_lengkap ?? $record->student?->nama_lengkap ?? $record->name)
+                    ->description(fn(User $record) => $record->teacher ? $record->name : ($record->student ? $record->name : ''))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('email')
