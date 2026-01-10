@@ -25,7 +25,13 @@
                 <span class="material-symbols-outlined text-4xl text-green-600">verified_user</span>
             </div>
             <h1 class="text-white text-2xl font-bold">Dokumen Valid</h1>
-            <p class="text-green-100 mt-1 text-sm">Validasi Laporan Absensi Digital</p>
+            <!-- Nama Madrasah sebagai Link -->
+            <a href="{{ url('/admin') }}"
+                class="text-green-100 opacity-90 mt-2 block hover:underline hover:text-white transition-colors text-sm font-medium">
+                {{ $profile->nama_madrasah ?? 'Madrasah' }}
+            </a>
+
+            <p class="text-green-100 mt-6 text-sm">Validasi Laporan Absensi Digital</p>
         </div>
 
         <div class="p-6 space-y-4">
@@ -38,25 +44,41 @@
             </div>
 
             <div class="space-y-3">
-                <!-- In a real implementation, we would pass params here -->
                 <div class="flex justify-between border-b border-gray-100 pb-2">
                     <span class="text-gray-500 text-sm">Jenis Dokumen</span>
                     <span class="font-medium text-gray-800 text-sm">Laporan Absensi</span>
                 </div>
                 <div class="flex justify-between border-b border-gray-100 pb-2">
                     <span class="text-gray-500 text-sm">Tanggal Verifikasi</span>
-                    <span
-                        class="font-medium text-gray-800 text-sm">{{ now()->locale('id')->isoFormat('D MMMM Y') }}</span>
+                    <span class="font-medium text-gray-800 text-sm">{{ $verificationDate }}</span>
                 </div>
+
+                <!-- Verifikator -->
+                <div class="flex justify-between border-b border-gray-100 pb-2">
+                    <span class="text-gray-500 text-sm">Verifikator</span>
+                    <span
+                        class="font-medium text-gray-800 text-sm text-right">{{ $profile->nama_kepala_madrasah ?? '-' }}</span>
+                </div>
+
+                <!-- Tanda Tangan -->
+                @if($profile->tanda_tangan_kepala_madrasah)
+                    <div class="py-4 text-center border-b border-gray-100">
+                        <p class="text-xs text-gray-400 mb-2">Tanda Tangan Elektronik</p>
+                        <img src="{{ asset('storage/' . $profile->tanda_tangan_kepala_madrasah) }}" alt="Tanda Tangan"
+                            class="h-16 mx-auto object-contain">
+                    </div>
+                @endif
+
                 <div class="flex justify-between pt-1">
                     <span class="text-gray-500 text-sm">Penerbit</span>
-                    <span class="font-medium text-gray-800 text-sm">Sistem Administrasi Madrasah</span>
+                    <span
+                        class="font-medium text-gray-800 text-sm text-right">{{ $profile->nama_madrasah ?? 'Sistem Administrasi Madrasah' }}</span>
                 </div>
             </div>
         </div>
 
         <div class="bg-gray-50 p-4 text-center border-t border-gray-100">
-            <p class="text-xs text-gray-400">© {{ date('Y') }} Sistem Administrasi Madrasah</p>
+            <p class="text-xs text-gray-400">© {{ date('Y') }} Absensi Digital</p>
         </div>
     </div>
 

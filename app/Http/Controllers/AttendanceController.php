@@ -187,9 +187,15 @@ class AttendanceController extends Controller
 
     public function verify(Request $request)
     {
-        // Simple verification page
-        // In a real app, we would validate a signature or hash
-        // For now, we can show a simple success message or details if we passed parameters
-        return view('frontend.features.verifikasi-absensi');
+        $profile = \App\Models\ProfileMadrasah::first();
+
+        // Retrieve parameters for display (though they might be null if not passed in query string)
+        $period = $request->query('period');
+        $userId = $request->query('user');
+        $timestamp = $request->query('timestamp');
+
+        $verificationDate = $timestamp ? \Carbon\Carbon::createFromTimestamp($timestamp)->locale('id')->isoFormat('D MMMM Y') : now()->locale('id')->isoFormat('D MMMM Y');
+
+        return view('frontend.features.verifikasi-absensi', compact('profile', 'period', 'userId', 'verificationDate'));
     }
 }
