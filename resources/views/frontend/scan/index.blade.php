@@ -499,8 +499,8 @@
                     // Stop scanning on success
                     if (this.html5QrCode) {
                         this.html5QrCode.stop().then(() => {
-                           this.html5QrCode.clear(); 
-                        }).catch(err => {});
+                            this.html5QrCode.clear();
+                        }).catch(err => { });
                     }
                     this.submitAttendance('qr', decodedText);
                 },
@@ -562,7 +562,7 @@
                                 errorMessage = error.message.replace(/<[^>]*>?/gm, '').substring(0, 100); // Strip HTML tags and limit length
                             }
 
-                            this.showAlert('error', 'Error Sistem', errorMessage);
+                            this.showAlert('error', 'Informasi!', errorMessage);
                         });
                 },
 
