@@ -302,6 +302,7 @@
 
                 capturedImage: null,
                 html5QrcodeScanner: null,
+                html5QrCode: null,
                 submitting: false,
                 alert: { show: false, type: 'success', title: '', message: '' },
 
@@ -389,7 +390,13 @@
 
                 switchCameraMode(mode) {
                     if (this.html5QrcodeScanner) {
+                        // Legacy cleanup if any
                         this.html5QrcodeScanner.clear().catch(err => { });
+                    }
+                    if (this.html5QrCode && this.html5QrCode.isScanning) {
+                        this.html5QrCode.stop().then(() => {
+                            this.html5QrCode.clear();
+                        }).catch(err => console.error(err));
                     }
                     const video = document.getElementById('selfie-video');
                     if (video && video.srcObject) {
@@ -406,11 +413,37 @@
                 },
 
                 startQrScanner() {
-                    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
                     if (!document.getElementById("reader")) return;
 
-                    this.html5QrcodeScanner = new Html5QrcodeScanner("reader", config, false);
-                    this.html5QrcodeScanner.render(this.onScanSuccess.bind(this), this.onScanFailure.bind(this));
+                    // Use Html5Qrcode directly for more control and auto-start
+                    if (this.html5QrcodeScanner) {
+                        // If instance exists (from Scanner class potentially), legacy cleanup
+                        // But now we use Html5Qrcode class. Let's assume this.html5QrCode is the var
+                    }
+
+                    // Create instance if not exists
+                    if (!this.html5QrCode) {
+                        this.html5QrCode = new Html5Qrcode("reader");
+                    }
+
+                    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+                    // Prefer back camera
+                    const startConfig = { facingMode: "environment" };
+
+                    this.html5QrCode.start(
+                        startConfig,
+                        config,
+                        (decodedText, decodedResult) => {
+                            this.onScanSuccess(decodedText, decodedResult);
+                        },
+                        (errorMessage) => {
+                            // parse error, ignore
+                        }
+                    ).catch(err => {
+                        console.error("Error starting QR scanner", err);
+                        this.showAlert('error', 'Kamera Error', 'Gagal membuka kamera QR. Pastikan izin diberikan.');
+                    });
                 },
 
                 startSelfieCamera() {
@@ -463,7 +496,12 @@
                 },
 
                 onScanSuccess(decodedText, decodedResult) {
-                    this.html5QrcodeScanner.clear();
+                    // Stop scanning on success
+                    if (this.html5QrCode) {
+                        this.html5QrCode.stop().then(() => {
+                           this.html5QrCode.clear(); 
+                        }).catch(err => {});
+                    }
                     this.submitAttendance('qr', decodedText);
                 },
 
