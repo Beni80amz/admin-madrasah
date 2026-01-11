@@ -89,6 +89,12 @@
                                 Nama Lengkap</th>
                             <th
                                 class="text-left py-4 px-4 text-text-secondary-light dark:text-text-secondary-dark text-xs font-medium uppercase tracking-wider">
+                                NISN</th>
+                            <th
+                                class="text-left py-4 px-4 text-text-secondary-light dark:text-text-secondary-dark text-xs font-medium uppercase tracking-wider">
+                                Nama Ibu</th>
+                            <th
+                                class="text-left py-4 px-4 text-text-secondary-light dark:text-text-secondary-dark text-xs font-medium uppercase tracking-wider">
                                 Tahun Lulus</th>
                             <th
                                 class="text-left py-4 px-4 text-text-secondary-light dark:text-text-secondary-dark text-xs font-medium uppercase tracking-wider min-w-[200px]">
@@ -120,8 +126,16 @@
                                 </td>
                                 <td class="py-4 px-4">
                                     <span
+                                        class="text-text-primary-light dark:text-text-primary-dark text-sm">{{ $item->nisn ?? '-' }}</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span
+                                        class="text-text-primary-light dark:text-text-primary-dark text-sm">{{ $item->nama_ibu ?? '-' }}</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span
                                         class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                                        {{ $item->tahun_lulus }}
+                                        {{ $item->tahun_lulus ?? '-' }}
                                     </span>
                                 </td>
                                 <td class="py-4 px-4">
@@ -138,7 +152,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="py-12 text-center">
+                                <td colspan="8" class="py-12 text-center">
                                     <div class="flex flex-col items-center gap-3">
                                         <div class="size-16 rounded-full bg-white/5 flex items-center justify-center">
                                             <span class="material-symbols-outlined text-gray-500 text-3xl">search_off</span>
