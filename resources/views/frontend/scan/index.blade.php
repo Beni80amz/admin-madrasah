@@ -228,28 +228,27 @@
 
     <!-- 5. Bottom Navigation Buttons -->
     <div
-        class="fixed bottom-0 left-0 w-full bg-white dark:bg-surface-dark border-t border-gray-100 dark:border-gray-800 p-4 z-50 rounded-t-[2rem] shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
-        <div class="max-w-md mx-auto grid grid-cols-2 gap-4">
+        class="fixed bottom-0 left-0 w-full bg-white dark:bg-surface-dark border-t border-gray-100 dark:border-gray-800 p-3 z-50 rounded-t-[1.5rem] shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+        <div class="max-w-md mx-auto grid grid-cols-2 gap-3">
 
             <!-- Scan Masuk -->
             <button @click="setAction('masuk')"
-                class="flex flex-col items-center justify-center gap-1.5 py-4 rounded-2xl transition-all duration-300"
-                :class="activeAction === 'masuk' ? 'bg-primary text-text-main shadow-lg shadow-primary/30 scale-[1.02]' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'">
-                <div class="size-10 rounded-full bg-black/5 flex items-center justify-center mb-1">
-                    <span class="material-symbols-outlined font-bold transform rotate-180">logout</span>
-                    <!-- Login icon usually arrow pointing in, logout arrow pointing out. 'login' icon exists. 'logout' with rotate looks like 'in' -->
+                class="flex flex-row items-center justify-center gap-2 py-3 rounded-xl transition-all duration-300"
+                :class="activeAction === 'masuk' ? 'bg-green-500 text-white shadow-lg shadow-green-500/30 scale-[1.02]' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'">
+                <div class="size-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined font-bold text-lg transform rotate-180">logout</span>
                 </div>
-                <span class="font-black text-sm tracking-wide">SCAN MASUK</span>
+                <span class="font-bold text-sm tracking-wide">MASUK</span>
             </button>
 
             <!-- Scan Pulang -->
             <button @click="setAction('pulang')"
-                class="flex flex-col items-center justify-center gap-1.5 py-4 rounded-2xl transition-all duration-300"
-                :class="activeAction === 'pulang' ? 'bg-primary text-text-main shadow-lg shadow-primary/30 scale-[1.02]' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'">
-                <div class="size-10 rounded-full bg-black/5 flex items-center justify-center mb-1">
-                    <span class="material-symbols-outlined font-bold">logout</span>
+                class="flex flex-row items-center justify-center gap-2 py-3 rounded-xl transition-all duration-300"
+                :class="activeAction === 'pulang' ? 'bg-red-500 text-white shadow-lg shadow-red-500/30 scale-[1.02]' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'">
+                <div class="size-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined font-bold text-lg">logout</span>
                 </div>
-                <span class="font-black text-sm tracking-wide">SCAN PULANG</span>
+                <span class="font-bold text-sm tracking-wide">PULANG</span>
             </button>
 
         </div>
@@ -499,8 +498,7 @@
                     // Stop scanning on success
                     if (this.html5QrCode) {
                         this.html5QrCode.stop().then(() => {
-                            this.html5QrCode.clear();
-                        }).catch(err => { });
+                             this.html5QrCode.clear();                        }).catch(err => {  });
                     }
                     this.submitAttendance('qr', decodedText);
                 },
