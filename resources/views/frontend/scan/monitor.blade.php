@@ -37,7 +37,11 @@
                 </p>
             </div>
 
-            <div class="mt-10">
+            <div class="mt-8">
+                <!-- Dynamic School Name -->
+                <h2 class="text-2xl font-bold text-white mb-2 uppercase">{{ $profile->nama_madrasah ?? 'Madrasah App' }}
+                </h2>
+
                 <div class="text-7xl font-black text-white tracking-tighter" x-text="time">00:00</div>
                 <div class="text-xl text-green-100 font-medium mt-2" x-text="date">Senin, 1 Januari 2024</div>
             </div>
@@ -45,6 +49,11 @@
             <div class="mt-10 flex items-center gap-3 text-sm text-green-200">
                 <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
                 <span>System Online • Auto Refresh (30s)</span>
+            </div>
+
+            <!-- Hardcoded Footer -->
+            <div class="mt-auto pt-8">
+                <p class="text-white font-bold text-lg tracking-wide opacity-90">KKMI Sukmajaya</p>
             </div>
         </div>
 

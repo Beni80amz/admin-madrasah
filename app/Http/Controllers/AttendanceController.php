@@ -22,7 +22,8 @@ class AttendanceController extends Controller
 
     public function monitor()
     {
-        return view('frontend.scan.monitor');
+        $profile = \App\Models\ProfileMadrasah::first();
+        return view('frontend.scan.monitor', compact('profile'));
     }
 
     public function store(Request $request)
