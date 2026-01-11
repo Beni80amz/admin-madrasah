@@ -54,6 +54,8 @@ class StudentExport implements FromCollection, WithHeadings, WithStyles, WithEve
             'NISN',
             'NIK',
             'Gender',
+            'Tempat Lahir',
+            'Tanggal Lahir',
             'Kelas',
             'Nama Ibu',
             'Nama Ayah',
@@ -61,8 +63,6 @@ class StudentExport implements FromCollection, WithHeadings, WithStyles, WithEve
             'Nomor PIP',
             'Alamat KK',
             'Alamat Domisili',
-            'Tempat Lahir',
-            'Tanggal Lahir',
         ];
     }
 
@@ -74,7 +74,7 @@ class StudentExport implements FromCollection, WithHeadings, WithStyles, WithEve
 
                 // Set column formats as TEXT for numeric columns
                 $sheet->getStyle('C:E')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
-                $sheet->getStyle('J:K')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+                $sheet->getStyle('L:M')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
 
                 $row = 2;
                 foreach ($this->students as $index => $student) {
@@ -86,15 +86,15 @@ class StudentExport implements FromCollection, WithHeadings, WithStyles, WithEve
                     $sheet->setCellValueExplicit('D' . $row, (string) $student->nisn, DataType::TYPE_STRING);
                     $sheet->setCellValueExplicit('E' . $row, (string) $student->nik, DataType::TYPE_STRING);
                     $sheet->setCellValue('F' . $row, $student->gender);
-                    $sheet->setCellValue('G' . $row, $student->kelas);
-                    $sheet->setCellValue('H' . $row, $student->nama_ibu);
-                    $sheet->setCellValue('I' . $row, $student->nama_ayah);
-                    $sheet->setCellValueExplicit('J' . $row, (string) $student->nomor_mobile, DataType::TYPE_STRING);
-                    $sheet->setCellValueExplicit('K' . $row, (string) $student->nomor_pip, DataType::TYPE_STRING);
-                    $sheet->setCellValue('L' . $row, $student->alamat_kk);
-                    $sheet->setCellValue('M' . $row, $student->alamat_domisili);
-                    $sheet->setCellValue('N' . $row, $student->tempat_lahir);
-                    $sheet->setCellValue('O' . $row, $student->tanggal_lahir?->format('Y-m-d'));
+                    $sheet->setCellValue('G' . $row, $student->tempat_lahir);
+                    $sheet->setCellValue('H' . $row, $student->tanggal_lahir?->format('Y-m-d'));
+                    $sheet->setCellValue('I' . $row, $student->kelas);
+                    $sheet->setCellValue('J' . $row, $student->nama_ibu);
+                    $sheet->setCellValue('K' . $row, $student->nama_ayah);
+                    $sheet->setCellValueExplicit('L' . $row, (string) $student->nomor_mobile, DataType::TYPE_STRING);
+                    $sheet->setCellValueExplicit('M' . $row, (string) $student->nomor_pip, DataType::TYPE_STRING);
+                    $sheet->setCellValue('N' . $row, $student->alamat_kk);
+                    $sheet->setCellValue('O' . $row, $student->alamat_domisili);
 
                     $row++;
                 }
@@ -120,15 +120,15 @@ class StudentExport implements FromCollection, WithHeadings, WithStyles, WithEve
         $sheet->getColumnDimension('D')->setWidth(15);  // NISN
         $sheet->getColumnDimension('E')->setWidth(20);  // NIK
         $sheet->getColumnDimension('F')->setWidth(12);  // Gender
-        $sheet->getColumnDimension('G')->setWidth(10);  // Kelas
-        $sheet->getColumnDimension('H')->setWidth(15);  // Nama Ibu
-        $sheet->getColumnDimension('I')->setWidth(15);  // Nama Ayah
-        $sheet->getColumnDimension('J')->setWidth(15);  // Nomor Mobile
-        $sheet->getColumnDimension('K')->setWidth(18);  // Nomor PIP
-        $sheet->getColumnDimension('L')->setWidth(25);  // Alamat KK
-        $sheet->getColumnDimension('M')->setWidth(25);  // Alamat Domisili
-        $sheet->getColumnDimension('N')->setWidth(12);  // Tempat Lahir
-        $sheet->getColumnDimension('O')->setWidth(12);  // Tanggal Lahir
+        $sheet->getColumnDimension('G')->setWidth(12);  // Tempat Lahir
+        $sheet->getColumnDimension('H')->setWidth(12);  // Tanggal Lahir
+        $sheet->getColumnDimension('I')->setWidth(10);  // Kelas
+        $sheet->getColumnDimension('J')->setWidth(15);  // Nama Ibu
+        $sheet->getColumnDimension('K')->setWidth(15);  // Nama Ayah
+        $sheet->getColumnDimension('L')->setWidth(15);  // Nomor Mobile
+        $sheet->getColumnDimension('M')->setWidth(18);  // Nomor PIP
+        $sheet->getColumnDimension('N')->setWidth(25);  // Alamat KK
+        $sheet->getColumnDimension('O')->setWidth(25);  // Alamat Domisili
 
         return [];
     }
