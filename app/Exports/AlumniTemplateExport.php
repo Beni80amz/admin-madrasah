@@ -13,16 +13,21 @@ class AlumniTemplateExport implements FromArray, WithHeadings, WithStyles
     {
         // Sample data for template
         return [
-            ['Ahmad Fadillah', '2024', 'Jl. Merdeka No. 15, Depok', '081234567890'],
-            ['Siti Aisyah', '2024', 'Jl. Kemerdekaan No. 20, Depok', '082345678901'],
-            ['Muhammad Rizky', '2023', 'Jl. Veteran No. 8, Depok', '083456789012'],
+            ['123456', 'Ahmad Fadillah', '0012345678', 'Jakarta', '2005-01-01', 'Laki-laki', 'Siti', 'Budi', '2024', 'Jl. Merdeka No. 15, Depok', '081234567890'],
         ];
     }
 
     public function headings(): array
     {
         return [
+            'nis_lokal',
             'nama_lengkap',
+            'nisn',
+            'tempat_lahir',
+            'tanggal_lahir',
+            'gender',
+            'nama_ibu',
+            'nama_ayah',
             'tahun_lulus',
             'alamat',
             'nomor_mobile',
