@@ -138,15 +138,15 @@
         </button>
     </header>
 
-    <main class="flex-1 w-full max-w-md mx-auto px-6 flex flex-col items-center gap-6 pb-24">
+    <main class="flex-1 w-full max-w-md mx-auto px-6 flex flex-col items-center gap-4 pb-24">
 
         <!-- 2. Clock & Date -->
-        <div class="text-center mt-4">
+        <div class="text-center mt-2">
             <div
-                class="text-6xl font-black tracking-tight text-text-main dark:text-white flex items-baseline justify-center gap-1">
+                class="text-5xl font-black tracking-tight text-text-main dark:text-white flex items-baseline justify-center gap-1">
                 <span x-text="time">00:00</span>
             </div>
-            <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1" x-text="date">Senin, 1 Januari 2024</p>
+            <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1" x-text="date">Senin, 1 Januari 2024</p>
         </div>
 
         <!-- 3. Location Status -->
@@ -498,7 +498,8 @@
                     // Stop scanning on success
                     if (this.html5QrCode) {
                         this.html5QrCode.stop().then(() => {
-                             this.html5QrCode.clear();                        }).catch(err => {  });
+                            this.html5QrCode.clear();
+                        }).catch(err => { });
                     }
                     this.submitAttendance('qr', decodedText);
                 },
