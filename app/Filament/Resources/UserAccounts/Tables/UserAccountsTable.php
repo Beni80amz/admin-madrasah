@@ -19,7 +19,11 @@ class UserAccountsTable
                 TextColumn::make('name')
                     ->label('Nama Lengkap')
                     ->formatStateUsing(fn(User $record) => $record->teacher?->nama_lengkap ?? $record->student?->nama_lengkap ?? $record->name)
-                    ->description(fn(User $record) => $record->teacher ? $record->name : ($record->student ? $record->name : ''))
+                    ->description(fn(User $record): string => match (true) {
+                        !is_null($record->teacher) => $record->teacher->nip ?? $record->teacher->nuptk ?? '-',
+                        !is_null($record->student) => $record->student->nis_lokal ?? $record->student->nisn ?? $record->student->nik ?? '-',
+                        default => $record->email // Fallback to email/username if not linked
+                    })
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('email')
