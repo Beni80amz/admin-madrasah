@@ -20,6 +20,11 @@ class AttendanceController extends Controller
         return view('frontend.scan.index');
     }
 
+    public function monitor()
+    {
+        return view('frontend.scan.monitor');
+    }
+
     public function store(Request $request)
     {
         // 1. Validate Input
