@@ -383,8 +383,23 @@
 
                 setAction(action) {
                     this.activeAction = action;
-                    // Optional: Reset captured image when switching actions? 
-                    // this.capturedImage = null;
+
+                    // Warm up speech synthesis on user interaction (Click)
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                        let utterance = new SpeechSynthesisUtterance('');
+                        utterance.volume = 0;
+                        window.speechSynthesis.speak(utterance);
+                    }
+
+                    if (this.html5QrCode && this.html5QrCode.isScanning) {
+                        return; // Already scanning
+                    }
+                    if (this.mode === 'qr') { // Changed activeTab to mode
+                        setTimeout(() => {
+                            this.startQrScanner();
+                        }, 500);
+                    }
                 },
 
                 switchCameraMode(mode) {
@@ -506,54 +521,69 @@
 
                 onScanFailure(error) { },
 
-                submitAttendance(type, qrContent = null) {
-                    if (!this.latitude || !this.longitude) {
-                        this.showAlert('error', 'Lokasi Belum Siap', 'Tunggu sampai lokasi terkunci (hijau). Akurasi: ' + (this.accuracy ? this.accuracy + 'm' : 'Menunggu...'));
-                        return;
-                    }
-
+                submitAttendance(type, dataContent) {
+                    if (this.submitting) return;
                     this.submitting = true;
+                    this.alert.show = false; // Hide previous alerts
 
                     const formData = new FormData();
+                    formData.append('_token', '{{ csrf_token() }}');
                     formData.append('latitude', this.latitude);
                     formData.append('longitude', this.longitude);
+                    formData.append('action_status', this.activeAction);
                     formData.append('type', type);
-                    formData.append('action_status', this.activeAction); // 'masuk' or 'pulang'
 
-                    if (qrContent) formData.append('qr_content', qrContent);
-                    if (type === 'selfie' && this.capturedImage) formData.append('image', this.capturedImage);
+                    // Add Device ID
+                    let deviceId = localStorage.getItem('device_id');
+                    if (!deviceId) {
+                        deviceId = crypto.randomUUID();
+                        localStorage.setItem('device_id', deviceId);
+                    }
+                    formData.append('device_id', deviceId);
 
-                    formData.append('_token', '{{ csrf_token() }}');
+                    if (type === 'qr') {
+                        formData.append('qr_content', dataContent);
+                    } else {
+                        formData.append('image', dataContent);
+                    }
 
                     fetch('{{ route("scan.store") }}', {
                         method: 'POST',
-                        headers: { 'Accept': 'application/json' },
-                        body: formData
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json',
+                            // 'Content-Type': 'multipart/form-data' // Let browser set it
+                        }
                     })
-                        .then(response => {
+                        .then(async response => {
+                            const isJson = response.headers.get('content-type')?.includes('application/json');
+                            const data = isJson ? await response.json() : null;
+
                             if (!response.ok) {
-                                return response.text().then(text => { throw new Error(text || 'Server Error'); });
+                                // Throw error object with message
+                                const error = (data && data.message) || response.statusText;
+                                throw new Error(error);
                             }
-                            return response.json();
+                            return data;
                         })
                         .then(data => {
                             this.submitting = false;
                             if (data.status === 'success') {
-                                // Play Voice Notification
-                                if (data.type === 'in') {
-                                    this.speak('Alhamdulillah!, Anda telah berhasil melakukan absen masuk. Selamat Bekerja dan Bismillah.');
-                                } else if (data.type === 'out') {
-                                    this.speak('Alhamdulillah!, anda telah berhasil melakukan absen pulang. Hati-hati dijalan dan terima kasih.');
-                                }
 
-                                // Show Success Alert
+                                // Play Voice Notification
+                                const message = data.type === 'in'
+                                    ? 'Alhamdulillah!, Anda telah berhasil melakukan absen masuk. Selamat Bekerja dan Bismillah.'
+                                    : 'Alhamdulillah!, anda telah berhasil melakukan absen pulang. Hati-hati dijalan dan terima kasih.';
+
+                                this.speak(message);
+
                                 this.showAlert('success', 'Berhasil!', data.message);
 
-                                // Reset State
                                 setTimeout(() => {
                                     window.location.href = "{{ route('dashboard.index') }}";
-                                }, 2000); // Wait a bit for the voice to start
+                                }, 2500);
                             } else {
+                                // Logic success:false but 200 OK (rare but possible in some APIS, standard Laravel sends 400 usually)
                                 this.showAlert('error', 'Gagal!', data.message);
                                 if (type === 'qr') setTimeout(() => this.startQrScanner(), 2000);
                             }
@@ -561,27 +591,32 @@
                         .catch(error => {
                             this.submitting = false;
                             console.error('Submission Error:', error);
+                            // Display the clean error message
+                            this.showAlert('error', 'Informasi!', error.message || 'Terjadi kesalahan sistem.');
 
-                            // Parse JSON error if possible
-                            let errorMessage = 'Terjadi kesalahan pada server.';
-                            if (error.response && error.response.data && error.response.data.message) {
-                                errorMessage = error.response.data.message;
-                            } else if (error.message) {
-                                errorMessage = error.message.replace(/<[^>]*>?/gm, '').substring(0, 100);
-                            }
-
-                            this.showAlert('error', 'Informasi!', errorMessage);
+                            // Restart scanner after error
+                            if (type === 'qr') setTimeout(() => this.startQrScanner(), 2000);
                         });
                 },
 
                 speak(text) {
-                    if ('speechSynthesis' in window) {
-                        const utterance = new SpeechSynthesisUtterance(text);
-                        utterance.lang = 'id-ID'; // Set language to Indonesian
-                        utterance.rate = 0.9; // Slightly slower for better clarity
-                        utterance.pitch = 1;
-                        window.speechSynthesis.speak(utterance);
-                    }
+                    if (!('speechSynthesis' in window)) return;
+
+                    // Cancel previous
+                    window.speechSynthesis.cancel();
+
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'id-ID';
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1;
+                    utterance.volume = 1; // Explicit volume
+
+                    // Try to find a good Indonesian voice if available
+                    const voices = window.speechSynthesis.getVoices();
+                    const idVoice = voices.find(v => v.lang.includes('id-ID')) || voices.find(v => v.lang.includes('id'));
+                    if (idVoice) utterance.voice = idVoice;
+
+                    window.speechSynthesis.speak(utterance);
                 },
 
                 showAlert(type, title, message) {
