@@ -33,6 +33,7 @@ class RdmSyncService
                         'nama_lengkap' => $rdmTeacher->guru_nama,
                         'nip' => $rdmTeacher->guru_nip,
                         'nuptk' => $rdmTeacher->guru_nuptk,
+                        'npk_peg_id' => $rdmTeacher->guru_nip, // Map guru_nip to npk_peg_id as well
                         'is_active' => $rdmTeacher->guru_aktif == 1,
                     ];
 
