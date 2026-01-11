@@ -7,9 +7,25 @@ use App\Models\AttendanceSetting;
 use App\Models\OperationalHour;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Services\QrCodeService;
 
 class AttendanceService
 {
+    protected $qrCodeService;
+
+    public function __construct(QrCodeService $qrCodeService)
+    {
+        $this->qrCodeService = $qrCodeService;
+    }
+
+    public function validateQr($token)
+    {
+        if (!$this->qrCodeService->validateQrToken($token)) {
+            throw new \Exception('QR Code tidak valid atau sudah kadaluarsa. Silakan scan ulang QR terbaru.');
+        }
+        return true;
+    }
+
     public function validateLocation($lat, $long)
     {
         $settings = $this->getSettings();
@@ -96,6 +112,27 @@ class AttendanceService
         // Use updateOrCreate to allow re-scanning if needed (though usually check-in is once)
         // But requirements say "check-in", imply creating a record.
 
+        // Device Binding Validation
+        $deviceId = $data['device_id'] ?? null;
+
+        if (empty($deviceId)) {
+            // Opsional: Jika device_id kosong/tidak dikirim frontend, tolak?
+            // throw new \Exception('Device ID tidak terdeteksi. Pastikan Anda menggunakan Aplikasi Resmi.');
+            // Untuk fase transisi, mungkin loose dulu atau log warning. 
+        }
+
+        if ($deviceId) {
+            if (!$user->device_id) {
+                // First time binding
+                $user->update(['device_id' => $deviceId]);
+            } else {
+                // Validate match
+                if ($user->device_id !== $deviceId) {
+                    throw new \Exception('Anda hanya dapat melakukan absensi menggunakan perangkat yang terdaftar (HP Pertama). Hubungi Admin untuk reset jika ganti HP.');
+                }
+            }
+        }
+
         $attendance = Attendance::updateOrCreate(
             ['user_id' => $user->id, 'date' => $date],
             [
@@ -105,7 +142,7 @@ class AttendanceService
                 'lat_in' => $data['lat'] ?? null,
                 'long_in' => $data['long'] ?? null,
                 'photo_in' => $data['photo'] ?? null,
-                'device_id' => $data['device_id'] ?? null,
+                'device_id' => $deviceId, // Use verified deviceId
             ]
         );
 

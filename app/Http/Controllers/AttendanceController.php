@@ -46,6 +46,18 @@ class AttendanceController extends Controller
             ], 400);
         }
 
+        // 2b. Validate QR Code (if type == qr)
+        if ($request->type === 'qr') {
+            try {
+                $this->attendanceService->validateQr($request->qr_content);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage()
+                ], 400);
+            }
+        }
+
         // Handle Image Upload
         $imagePath = null;
         if ($request->input('image')) {
@@ -78,7 +90,7 @@ class AttendanceController extends Controller
                     'lat' => $lat,
                     'long' => $long,
                     'photo' => $imagePath,
-                    // 'device_id' => ... (can take from request header or auth)
+                    'device_id' => $request->device_id, // Pass device_id from request
                 ];
 
                 $this->attendanceService->checkIn($user, $data);
@@ -197,5 +209,17 @@ class AttendanceController extends Controller
         $verificationDate = $timestamp ? \Carbon\Carbon::createFromTimestamp($timestamp)->locale('id')->isoFormat('D MMMM Y') : now()->locale('id')->isoFormat('D MMMM Y');
 
         return view('frontend.features.verifikasi-absensi', compact('profile', 'period', 'userId', 'verificationDate'));
+    }
+
+    public function generateQr(Request $request)
+    {
+        // This endpoint will be called by the admin/monitor screen via AJAX
+        $qrService = app(\App\Services\QrCodeService::class);
+        $token = $qrService->generateQrToken();
+
+        return response()->json([
+            'status' => 'success',
+            'token' => $token
+        ]);
     }
 }
