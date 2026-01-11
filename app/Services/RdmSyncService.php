@@ -335,11 +335,24 @@ class RdmSyncService
             $jenjangName = $jenjangNames[$jenjangId] ?? 'Unknown';
             Log::info("RDM Alumni Sync: Using Jenjang ID: {$jenjangId} ({$jenjangName})");
 
-            // Query RDM for alumni (kelas_id = -1)
+            // Map jenjang to alumni tingkat_id (the grade level at graduation)
+            // MI graduates from Grade VI (tingkat_id = 8)
+            // MTs graduates from Grade IX (tingkat_id = 11)
+            // MA graduates from Grade XII (tingkat_id = 14)
+            $alumniTingkatMap = [
+                1 => 2,   // RA: Kelompok B (tingkat_id 2)
+                2 => 8,   // MI: Grade VI (tingkat_id 8)
+                3 => 11,  // MTs: Grade IX (tingkat_id 11)
+                4 => 14,  // MA: Grade XII (tingkat_id 14)
+            ];
+            $alumniTingkatId = $alumniTingkatMap[$jenjangId] ?? 8;
+            Log::info("RDM Alumni Sync: Looking for alumni with tingkat_id = {$alumniTingkatId} and kelas_id = -1");
+
+            // Query RDM for alumni (kelas_id = -1 and appropriate tingkat_id)
             $rdmAlumni = DB::connection('rdm')
                 ->table('e_siswa')
                 ->where('e_siswa.kelas_id', -1)
-                ->where('e_siswa.tingkat_id', -1) // Double check: also tingkat_id = -1
+                ->where('e_siswa.tingkat_id', $alumniTingkatId)
                 ->get();
 
             Log::info("RDM Alumni Sync: Found {$rdmAlumni->count()} alumni records.");
