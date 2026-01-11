@@ -22,7 +22,14 @@ class AlumniExport implements FromCollection, WithHeadings, WithMapping, WithSty
     {
         return [
             'No',
+            'NIS Lokal',
             'Nama Lengkap',
+            'NISN',
+            'Tempat Lahir',
+            'Tanggal Lahir',
+            'Gender',
+            'Nama Ibu',
+            'Nama Ayah',
             'Tahun Lulus',
             'Alamat',
             'Nomor Mobile',
@@ -36,10 +43,17 @@ class AlumniExport implements FromCollection, WithHeadings, WithMapping, WithSty
 
         return [
             $no,
+            $alumni->nis_lokal ?? '-',
             $alumni->nama_lengkap,
-            $alumni->tahun_lulus,
-            $alumni->alamat,
-            $alumni->nomor_mobile,
+            $alumni->nisn ?? '-',
+            $alumni->tempat_lahir ?? '-',
+            $alumni->tanggal_lahir ? $alumni->tanggal_lahir->format('d-m-Y') : '-',
+            $alumni->gender ?? '-',
+            $alumni->nama_ibu ?? '-',
+            $alumni->nama_ayah ?? '-',
+            $alumni->tahun_lulus ?? '-',
+            $alumni->alamat ?? '-',
+            $alumni->nomor_mobile ?? '-',
         ];
     }
 
