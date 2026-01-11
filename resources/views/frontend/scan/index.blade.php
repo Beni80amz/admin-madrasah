@@ -539,12 +539,22 @@
                         .then(data => {
                             this.submitting = false;
                             if (data.status === 'success') {
-                                this.showAlert('success', 'Berhasil', data.message);
+                                // Play Voice Notification
+                                if (data.type === 'in') {
+                                    this.speak('Alhamdulillah!, Anda telah berhasil melakukan absen masuk. Selamat Bekerja dan Bismillah.');
+                                } else if (data.type === 'out') {
+                                    this.speak('Alhamdulillah!, anda telah berhasil melakukan absen pulang. Hati-hati dijalan dan terima kasih.');
+                                }
+
+                                // Show Success Alert
+                                this.showAlert('success', 'Berhasil!', data.message);
+
+                                // Reset State
                                 setTimeout(() => {
-                                    window.location.href = '{{ route("dashboard.index") }}';
-                                }, 2000);
+                                    window.location.href = "{{ route('dashboard.index') }}";
+                                }, 2000); // Wait a bit for the voice to start
                             } else {
-                                this.showAlert('error', 'Gagal', data.message);
+                                this.showAlert('error', 'Gagal!', data.message);
                                 if (type === 'qr') setTimeout(() => this.startQrScanner(), 2000);
                             }
                         })
@@ -553,16 +563,25 @@
                             console.error('Submission Error:', error);
 
                             // Parse JSON error if possible
-                            let errorMessage = 'Terjadi kesalahan jaringan atau server.';
-                            try {
-                                const errorObj = JSON.parse(error.message);
-                                if (errorObj.message) errorMessage = errorObj.message;
-                            } catch (e) {
-                                errorMessage = error.message.replace(/<[^>]*>?/gm, '').substring(0, 100); // Strip HTML tags and limit length
+                            let errorMessage = 'Terjadi kesalahan pada server.';
+                            if (error.response && error.response.data && error.response.data.message) {
+                                errorMessage = error.response.data.message;
+                            } else if (error.message) {
+                                errorMessage = error.message.replace(/<[^>]*>?/gm, '').substring(0, 100);
                             }
 
                             this.showAlert('error', 'Informasi!', errorMessage);
                         });
+                },
+
+                speak(text) {
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.lang = 'id-ID'; // Set language to Indonesian
+                        utterance.rate = 0.9; // Slightly slower for better clarity
+                        utterance.pitch = 1;
+                        window.speechSynthesis.speak(utterance);
+                    }
                 },
 
                 showAlert(type, title, message) {
