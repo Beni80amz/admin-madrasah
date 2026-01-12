@@ -11,6 +11,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
         body {
             font-family: 'Outfit', sans-serif;
@@ -49,17 +53,25 @@
             display: none !important;
         }
 
-        /* Force generated QR code to be responsive */
+        /* Force generated QR code to be responsive and KEEP ASPECT RATIO */
         #qrcode img,
         #qrcode canvas {
             width: 100% !important;
-            height: auto !important;
+            height: 100% !important;
+            object-fit: contain !important;
             display: block !important;
         }
     </style>
 </head>
 
 <body class="bg-gray-950 text-white h-screen w-screen overflow-hidden flex flex-col" x-data="qrMonitor()">
+
+    <!-- Fullscreen Toggle (Hidden / Floating) -->
+    <button @click="toggleFullscreen" class="fixed top-4 right-4 z-[9999] bg-black/50 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm opacity-0 hover:opacity-100 transition-opacity duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+        </svg>
+    </button>
 
     <!-- Main Content Area (Split Screen) -->
     <div class="flex-1 flex overflow-hidden">
@@ -89,10 +101,13 @@
 
                             <!-- YouTube Slide -->
                             <template x-if="slide.type === 'youtube'">
-                                <iframe
-                                    :src="'https://www.youtube.com/embed/' + slide.url + '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + slide.url"
-                                    class="absolute inset-0 w-full h-full object-cover" frameborder="0"
-                                    allow="autoplay; encrypted-media"></iframe>
+                                <div class="absolute inset-0 w-full h-full pointer-events-none">
+                                    <!-- pointer-events-none disables interaction/hover UI -->
+                                    <iframe
+                                        :src="'https://www.youtube.com/embed/' + slide.url + '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + slide.url + '&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3'"
+                                        class="absolute inset-0 w-full h-full object-cover" frameborder="0"
+                                        allow="autoplay; encrypted-media"></iframe>
+                                </div>
                             </template>
 
                             <!-- Caption Overlay -->
@@ -218,10 +233,7 @@
                 {{ $profile->running_text ?? 'Selamat Datang di Sistem Informasi Madrasah Digital. Silakan lakukan scan QR Code untuk melakukan absensi.' }}
             </div>
         </div>
-        <!-- Digital Clock Small (Optional duplicate for visibility) -->
-        <div class="bg-slate-900/50 px-[2vh] h-full flex items-center z-10 border-l border-white/10 hidden md:flex">
-            <div class="text-[2vh] font-bold text-gray-300" x-text="time"></div>
-        </div>
+        <!-- Digital Clock Small - REMOVED TO FIX BLACK BOX ISSUE -->
     </div>
 
     <script>
@@ -292,26 +304,29 @@
                         .finally(() => { setTimeout(() => { this.loading = false; }, 500); });
                 },
 
-                renderQr(text) {
                     const container = document.getElementById("qrcode");
                     container.innerHTML = "";
-
-                    // We generate a large QR code and let CSS scale it down
+                    
+                    // Generate square QR code
                     new QRCode(container, {
                         text: text,
-                        width: 1000,
+                        width: 1000, // High res
                         height: 1000,
                         colorDark: "#000000",
                         colorLight: "#ffffff",
                         correctLevel: QRCode.CorrectLevel.H
                     });
+                },
 
-                    // Force the generated image to fit the container responsively
-                    const qrImage = container.querySelector("img");
-                    if (qrImage) {
-                        qrImage.style.width = "100%";
-                        qrImage.style.height = "100%";
-                        qrImage.style.display = "block";
+                toggleFullscreen() {
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen().catch(err => {
+                            console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                        });
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        }
                     }
                 }
             }
