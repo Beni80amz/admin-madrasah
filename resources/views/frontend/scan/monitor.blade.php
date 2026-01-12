@@ -13,8 +13,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
         body {
             font-family: 'Outfit', sans-serif;
@@ -313,8 +311,8 @@
                     // Generate square QR code
                     new QRCode(container, {
                         text: text,
-                        width: 1000,
-                        height: 1000,
+                        width: 500, // Optimized res
+                        height: 500,
                         colorDark: "#000000",
                         colorLight: "#ffffff",
                         correctLevel: QRCode.CorrectLevel.H
