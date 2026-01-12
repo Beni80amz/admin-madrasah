@@ -35,6 +35,7 @@ class ProfileMadrasah extends Model
         'kata_pengantar',
         'tanda_tangan_kepala_madrasah',
         'stempel_madrasah',
+        'running_text',
     ];
 
     /**
