@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class MonitorSlideResource extends Resource
 {
@@ -22,7 +23,7 @@ class MonitorSlideResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    protected static ?string $navigationGroup = 'Setting';
+    protected static UnitEnum|string|null $navigationGroup = 'Setting';
 
     public static function form(Schema $schema): Schema
     {
