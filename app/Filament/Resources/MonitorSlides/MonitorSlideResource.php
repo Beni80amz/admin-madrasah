@@ -22,6 +22,8 @@ class MonitorSlideResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    protected static ?string $navigationGroup = 'Setting';
+
     public static function form(Schema $schema): Schema
     {
         return MonitorSlideForm::configure($schema);
