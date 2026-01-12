@@ -8,9 +8,11 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class UsersExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
+class UsersExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithColumnFormatting
 {
     protected $records;
 
@@ -54,9 +56,16 @@ class UsersExport implements FromCollection, WithHeadings, WithMapping, WithStyl
         return [
             $no,
             $user->name,
-            $user->email,
+            "'" . $user->email, // Force text format for numeric usernames
             $roleDisplay,
             $realName,
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'C' => NumberFormat::FORMAT_TEXT,
         ];
     }
 
