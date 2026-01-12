@@ -156,11 +156,11 @@ class AttendanceService
         $date = $now->toDateString();
         $time = $now->toTimeString();
 
-        $attendance = Attendance::where('user_id', $user->id)->where('date', $date)->first();
-
-        if (!$attendance) {
-            throw new \Exception('Belum melakukan check-in hari ini.');
-        }
+        // Allow checkout even if no checkin (create new record if needed)
+        $attendance = Attendance::firstOrNew([
+            'user_id' => $user->id,
+            'date' => $date
+        ]);
 
         // Get daily schedule
         $schedule = $this->getDailySchedule($now);
@@ -190,13 +190,19 @@ class AttendanceService
             $lembur = (int) abs($now->diffInMinutes($workEndTime));
         }
 
-        $attendance->update([
-            'time_out' => $time,
-            'lembur' => $lembur,
-            'lat_out' => $data['lat'] ?? null,
-            'long_out' => $data['long'] ?? null,
-            'photo_out' => $data['photo'] ?? null,
-        ]);
+        // Update fields
+        $attendance->time_out = $time;
+        $attendance->lembur = $lembur;
+        $attendance->lat_out = $data['lat'] ?? null;
+        $attendance->long_out = $data['long'] ?? null;
+        $attendance->photo_out = $data['photo'] ?? null;
+
+        // If newly created or previously alpha, set to hadir
+        if (!$attendance->exists || $attendance->status === 'alpha') {
+            $attendance->status = 'hadir';
+        }
+
+        $attendance->save();
 
         return $attendance;
     }
