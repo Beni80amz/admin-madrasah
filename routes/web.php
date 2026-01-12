@@ -58,12 +58,14 @@ Route::post('/logout', [App\Http\Controllers\Auth\CustomAuthController::class, '
 
 
 
+// Public Monitor Routes
+Route::get('/scan/monitor', [App\Http\Controllers\AttendanceController::class, 'monitor'])->name('scan.monitor');
+Route::get('/scan/generate-qr', [App\Http\Controllers\AttendanceController::class, 'generateQr'])->name('attendance.generate-qr');
+
 // Frontend Dashboard & Attendance
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/scan', [App\Http\Controllers\AttendanceController::class, 'index'])->name('scan.index');
-    Route::get('/scan/monitor', [App\Http\Controllers\AttendanceController::class, 'monitor'])->name('scan.monitor'); // New Monitor Route
-    Route::get('/scan/generate-qr', [App\Http\Controllers\AttendanceController::class, 'generateQr'])->name('attendance.generate-qr');
     Route::post('/scan/store', [App\Http\Controllers\AttendanceController::class, 'store'])->name('scan.store');
 
     // Placeholder Routes for Menu Items
