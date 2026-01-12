@@ -109,14 +109,9 @@ class AttendanceController extends Controller
                 ]);
 
             } elseif ($actionStatus === 'pulang') {
-                if (!$todayAttendance) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Anda belum melakukan absen masuk hari ini.'
-                    ], 400);
-                }
+                // Modified: Allow checking out even if not checked in today
 
-                if ($todayAttendance->time_out) {
+                if ($todayAttendance && $todayAttendance->time_out) {
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Anda sudah melakukan absen pulang hari ini.'
