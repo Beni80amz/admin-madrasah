@@ -54,12 +54,15 @@
         }
 
         /* Force generated QR code to be responsive and KEEP ASPECT RATIO */
-        #qrcode img,
-        #qrcode canvas {
+        #qrcode img {
             width: 100% !important;
             height: 100% !important;
             object-fit: contain !important;
             display: block !important;
+        }
+
+        #qrcode canvas {
+            display: none !important; /* Fix duplicate QR issue by hiding canvas */
         }
     </style>
 </head>
@@ -67,12 +70,9 @@
 <body class="bg-gray-950 text-white h-screen w-screen overflow-hidden flex flex-col" x-data="qrMonitor()">
 
     <!-- Fullscreen Toggle (Hidden / Floating) -->
-    <button @click="toggleFullscreen"
-        class="fixed top-4 right-4 z-[9999] bg-black/50 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm opacity-0 hover:opacity-100 transition-opacity duration-300">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+    <button @click="toggleFullscreen" class="fixed top-4 right-4 z-[9999] bg-black/50 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm opacity-0 hover:opacity-100 transition-opacity duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
         </svg>
     </button>
 
@@ -107,7 +107,7 @@
                                 <div class="absolute inset-0 w-full h-full pointer-events-none">
                                     <iframe
                                         :src="'https://www.youtube.com/embed/' + slide.url + '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + slide.url + '&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3'"
-                                        class="absolute inset-0 w-full h-full object-cover scale-[1.35]" frameborder="0"
+                                        class="absolute inset-0 w-full h-full object-cover" frameborder="0"
                                         allow="autoplay; encrypted-media"></iframe>
                                 </div>
                             </template>
@@ -308,7 +308,9 @@
 
                 renderQr(text) {
                     const container = document.getElementById("qrcode");
-                    container.innerHTML = "";  // Generate square QR code
+                    container.innerHTML = "";
+                    
+                    // Generate square QR code
                     new QRCode(container, {
                         text: text,
                         width: 1000,
@@ -334,5 +336,4 @@
         }
     </script>
 </body>
-
 </html>
