@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class ProfileMadrasah extends Model
 {
@@ -59,7 +60,9 @@ class ProfileMadrasah extends Model
                     $user->password = \Illuminate\Support\Facades\Hash::make($profile->nip_kepala_madrasah); // NIP as default password
                     $user->save();
 
-                    $user->assignRole('teacher');
+                    // Ensure role exists before assigning
+                    $role = Role::firstOrCreate(['name' => 'teacher']);
+                    $user->assignRole($role);
                 } else {
                     // Update name if user exists but name might be different? 
                     // Let's just insure the name is updated if it matches the NIP
