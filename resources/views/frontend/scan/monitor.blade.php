@@ -32,7 +32,7 @@
         .marquee-content {
             display: inline-block;
             padding-left: 100%;
-            animation: marquee 30s linear infinite;
+            animation: marquee 60s linear infinite; // Slower speed
         }
 
         @keyframes marquee {
@@ -132,7 +132,8 @@
                     @endif
                     <div>
                         <h1 class="text-2xl font-bold text-white leading-tight uppercase tracking-wider">
-                            {{ $profile->nama_madrasah ?? 'Madrasah Digital' }}</h1>
+                            {{ $profile->nama_madrasah ?? 'Madrasah Digital' }}
+                        </h1>
                         <p class="text-green-400 text-sm font-medium tracking-wide">Sistem Absensi Digital Terpadu</p>
                     </div>
                 </div>
@@ -214,9 +215,7 @@
                 loading: true,
                 progress: 100,
                 refreshInterval: 30, // seconds
-                timeLeft: 30,
-
-                // Slideshow Logic
+                timeLeft: 30,  // Slideshow Logic
                 activeSlide: 0,
                 slideInterval: 10000, // 10 seconds per slide
                 slides: @json($slides->map(function ($s) {
@@ -279,7 +278,7 @@
                 renderQr(text) {
                     const container = document.getElementById("qrcode");
                     container.innerHTML = "";
-                    new QRCode(container, {
+                   new QRCode(container, {
                         text: text,
                         width: 280,
                         height: 280,
