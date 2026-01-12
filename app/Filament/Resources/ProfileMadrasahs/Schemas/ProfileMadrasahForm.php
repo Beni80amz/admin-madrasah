@@ -55,6 +55,12 @@ class ProfileMadrasahForm
                             ->label('Alamat Madrasah')
                             ->rows(3)
                             ->columnSpanFull(),
+                        Textarea::make('running_text')
+                            ->label('Teks Berjalan (Monitor)')
+                            ->placeholder('Contoh: Selamat Datang di MIS Al-Islamiyah AMZ • Jagalah Kebersihan • ...')
+                            ->helperText('Teks ini akan muncul berjalan di bagian bawah halaman Monitor Absensi.')
+                            ->rows(2)
+                            ->columnSpanFull(),
                         Textarea::make('google_maps_embed')
                             ->label('Google Maps Embed Code')
                             ->rows(5)
