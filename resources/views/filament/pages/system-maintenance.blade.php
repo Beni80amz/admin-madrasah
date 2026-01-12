@@ -1,7 +1,7 @@
 <x-filament-panels::page>
-    <div class="space-y-8">
+    <div style="display: flex; flex-direction: column; gap: 2.5rem;">
 
-        {{-- System Info & Version - 2 Columns with smaller text --}}
+        {{-- System Info & Version - 2 Columns --}}
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;">
             {{-- Version Info --}}
             <x-filament::section compact>
@@ -112,8 +112,9 @@
             </x-filament::section>
         </div>
 
-        {{-- Main Actions - 3 Columns --}}
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+        {{-- Main Actions & Tools - Unified 3 Column Grid --}}
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; align-items: start;">
+
             {{-- Update Aplikasi --}}
             <x-filament::section compact>
                 <x-slot name="heading">
@@ -213,10 +214,7 @@
                     @endif
                 </div>
             </x-filament::section>
-        </div>
 
-        {{-- Cache & Database - 3 Columns --}}
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
             {{-- Cache --}}
             <x-filament::section compact>
                 <x-slot name="heading">
