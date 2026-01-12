@@ -104,10 +104,10 @@
 
                             <!-- YouTube Slide -->
                             <template x-if="slide.type === 'youtube'">
-                                <div class="absolute inset-0 w-full h-full">
+                                <div class="absolute inset-0 w-full h-full pointer-events-none">
                                     <iframe
                                         :src="'https://www.youtube.com/embed/' + slide.url + '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + slide.url + '&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3'"
-                                        class="absolute inset-0 w-full h-full object-cover" frameborder="0"
+                                        class="absolute inset-0 w-full h-full object-cover scale-[1.35]" frameborder="0"
                                         allow="autoplay; encrypted-media"></iframe>
                                 </div>
                             </template>
@@ -179,8 +179,9 @@
 
                 <!-- QR Code Card -->
                 <div class="flex flex-col items-center justify-center flex-grow-[2]">
-                    <div
-                        class="relative group p-[0.5vh] bg-gradient-to-br from-green-500 to-blue-600 rounded-[2vh] shadow-2xl w-[70%] max-w-[400px] aspect-square">
+                    <!-- Added style aspect-ratio: 1/1 explicitly and max-height constraints -->
+                    <div style="aspect-ratio: 1/1;"
+                        class="relative group p-[0.5vh] bg-gradient-to-br from-green-500 to-blue-600 rounded-[2vh] shadow-2xl w-auto h-auto max-w-[80%] max-h-[45vh]">
                         <div class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
                             <div id="qrcode" class="w-full h-full"></div>
                         </div>
@@ -307,9 +308,7 @@
 
                 renderQr(text) {
                     const container = document.getElementById("qrcode");
-                    container.innerHTML = "";
-
-                    // Generate square QR code
+                    container.innerHTML = "";  // Generate square QR code
                     new QRCode(container, {
                         text: text,
                         width: 1000,
