@@ -75,7 +75,7 @@ class UserAccountsTable
                 BulkActionGroup::make([
                     BulkAction::make('export_csv')
                         ->label('Export ke CSV')
-                        ->icon('heroicon-o-arrow-down-tray')
+                        ->icon('heroicon-o-document-text')
                         ->action(function (Collection $records) {
                             return response()->streamDownload(function () use ($records) {
                                 echo "Nama Lengkap,Username/Email,Role,Nama Asli (Jika Guru/Siswa)\n";
@@ -86,6 +86,16 @@ class UserAccountsTable
                                     echo "\"{$record->name}\",\"{$record->email}\",\"{$role}\",\"{$realName}\"\n";
                                 }
                             }, 'users_export_' . date('Y-m-d_H-i-s') . '.csv');
+                        })
+                        ->deselectRecordsAfterCompletion(),
+                    BulkAction::make('export_excel')
+                        ->label('Export ke Excel')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->action(function (Collection $records) {
+                            return \Maatwebsite\Excel\Facades\Excel::download(
+                                new \App\Exports\UsersExport($records),
+                                'users_export_' . date('Y-m-d_H-i-s') . '.xlsx'
+                            );
                         })
                         ->deselectRecordsAfterCompletion(),
                 ]),
