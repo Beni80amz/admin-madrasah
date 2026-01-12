@@ -218,7 +218,7 @@
                         <p class="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">
                             Masuk</p>
                         <p class="text-2xl font-bold text-text-main dark:text-white tabular-nums">
-                            {{ $todayAttendance ? \Carbon\Carbon::parse($todayAttendance->time_in)->format('H:i') : '--:--' }}
+                            {{ ($todayAttendance && $todayAttendance->time_in) ? \Carbon\Carbon::parse($todayAttendance->time_in)->format('H:i') : '--:--' }}
                         </p>
                     </div>
                     <div
@@ -326,12 +326,12 @@
                                     <span
                                         class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase">{{ $day }}</span>
                                     <div class="size-12 sm:size-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm transition-transform hover:scale-105
-                                                {{ $data['color'] == 'green' ? 'bg-green-100 dark:bg-green-900/30 text-green-600' : '' }}
-                                                {{ $data['color'] == 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600' : '' }}
-                                                {{ $data['color'] == 'red' ? 'bg-red-100 dark:bg-red-900/30 text-red-600' : '' }}
-                                                {{ $data['color'] == 'blue' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' : '' }}
-                                                {{ $data['color'] == 'gray' ? 'bg-gray-50 dark:bg-white/5 text-gray-300' : '' }}
-                                            ">
+                                                    {{ $data['color'] == 'green' ? 'bg-green-100 dark:bg-green-900/30 text-green-600' : '' }}
+                                                    {{ $data['color'] == 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600' : '' }}
+                                                    {{ $data['color'] == 'red' ? 'bg-red-100 dark:bg-red-900/30 text-red-600' : '' }}
+                                                    {{ $data['color'] == 'blue' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600' : '' }}
+                                                    {{ $data['color'] == 'gray' ? 'bg-gray-50 dark:bg-white/5 text-gray-300' : '' }}
+                                                ">
                                         @if($data['color'] == 'green') <span class="material-symbols-outlined">check</span>
                                         @elseif($data['color'] == 'yellow') <span
                                             class="material-symbols-outlined">sick</span>
@@ -343,12 +343,12 @@
                                         @endif
                                     </div>
                                     <span class="text-[10px] sm:text-xs font-bold
-                                                {{ $data['color'] == 'green' ? 'text-green-600' : '' }}
-                                                {{ $data['color'] == 'yellow' ? 'text-yellow-600' : '' }}
-                                                {{ $data['color'] == 'red' ? 'text-red-600' : '' }}
-                                                {{ $data['color'] == 'blue' ? 'text-blue-600' : '' }}
-                                                {{ $data['color'] == 'gray' ? 'text-gray-300' : '' }}
-                                            ">{{ $data['label'] != '-' ? $data['label'] : '--' }}</span>
+                                                    {{ $data['color'] == 'green' ? 'text-green-600' : '' }}
+                                                    {{ $data['color'] == 'yellow' ? 'text-yellow-600' : '' }}
+                                                    {{ $data['color'] == 'red' ? 'text-red-600' : '' }}
+                                                    {{ $data['color'] == 'blue' ? 'text-blue-600' : '' }}
+                                                    {{ $data['color'] == 'gray' ? 'text-gray-300' : '' }}
+                                                ">{{ $data['label'] != '-' ? $data['label'] : '--' }}</span>
                                 </div>
                             @endforeach
                         </div>
