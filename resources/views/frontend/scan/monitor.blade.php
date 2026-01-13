@@ -181,12 +181,14 @@
 
                 <!-- QR Codes Container -->
                 <div class="flex items-center justify-center flex-grow-[2] gap-[4vh] w-full px-[4vh]">
-                    
+
                     <!-- 1. Attendance QR -->
-                    <div class="flex flex-col items-center justify-center w-1/2 h-full">
+                    <div
+                        class="flex flex-col items-center justify-center {{ $isPpdbActive ? 'w-1/2' : 'w-full' }} h-full">
                         <div style="aspect-ratio: 1/1;"
-                            class="relative group p-[0.5vh] bg-gradient-to-br from-green-500 to-blue-600 rounded-[2vh] shadow-2xl w-full max-w-[35vh]">
-                            <div class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
+                            class="relative group p-[0.5vh] bg-gradient-to-br from-green-500 to-blue-600 rounded-[2vh] shadow-2xl w-full {{ $isPpdbActive ? 'max-w-[35vh]' : 'max-w-[50vh]' }}">
+                            <div
+                                class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
                                 <div id="qrcode" class="w-full h-full"></div>
                             </div>
 
@@ -198,33 +200,38 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Progress Bar for Attendance -->
                         <div class="mt-[2vh] w-[80%]">
                             <div class="h-[1vh] bg-gray-800 rounded-full overflow-hidden">
                                 <div class="h-full bg-gradient-to-r from-green-500 to-blue-500 transition-all duration-1000 ease-linear"
                                     :style="'width: ' + progress + '%'"></div>
                             </div>
-                            <div class="text-center text-[1.5vh] text-gray-400 mt-[0.5vh] uppercase font-bold tracking-wider">
+                            <div
+                                class="text-center text-[1.5vh] text-gray-400 mt-[0.5vh] uppercase font-bold tracking-wider">
                                 Scan Absensi
                             </div>
                         </div>
                     </div>
 
-                    <!-- 2. PPDB QR -->
-                    <div class="flex flex-col items-center justify-center w-1/2 h-full">
-                        <div style="aspect-ratio: 1/1;"
-                            class="relative group p-[0.5vh] bg-gradient-to-br from-purple-500 to-pink-600 rounded-[2vh] shadow-2xl w-full max-w-[35vh]">
-                            <div class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
-                                <div id="qrcode-ppdb" class="w-full h-full"></div>
+                    @if($isPpdbActive)
+                        <!-- 2. PPDB QR -->
+                        <div class="flex flex-col items-center justify-center w-1/2 h-full">
+                            <div style="aspect-ratio: 1/1;"
+                                class="relative group p-[0.5vh] bg-gradient-to-br from-purple-500 to-pink-600 rounded-[2vh] shadow-2xl w-full max-w-[35vh]">
+                                <div
+                                    class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
+                                    <div id="qrcode-ppdb" class="w-full h-full"></div>
+                                </div>
+                            </div>
+                            <div class="mt-[2vh] w-[80%] text-center">
+                                <div
+                                    class="text-[2vh] font-bold text-white uppercase tracking-wider bg-white/10 py-[0.5vh] rounded-lg">
+                                    Pendaftaran PPDB
+                                </div>
                             </div>
                         </div>
-                         <div class="mt-[2vh] w-[80%] text-center">
-                            <div class="text-[2vh] font-bold text-white uppercase tracking-wider bg-white/10 py-[0.5vh] rounded-lg">
-                                Pendaftaran PPDB
-                            </div>
-                        </div>
-                    </div>
+                    @endif
 
                 </div>
 
@@ -280,7 +287,9 @@
                 init() {
                     this.startClock();
                     this.fetchQr();
-                    this.renderPpdbQr();
+                    @if($isPpdbActive)
+                        this.renderPpdbQr();
+                    @endif
                     this.startSlideshow();
 
                     // Countdown timer for QR

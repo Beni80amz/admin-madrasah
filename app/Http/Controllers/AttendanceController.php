@@ -24,7 +24,8 @@ class AttendanceController extends Controller
     {
         $profile = \App\Models\ProfileMadrasah::first();
         $slides = \App\Models\MonitorSlide::where('is_active', true)->orderBy('order')->get();
-        return view('frontend.scan.monitor', compact('profile', 'slides'));
+        $isPpdbActive = \App\Models\AppSetting::isPpdbActive();
+        return view('frontend.scan.monitor', compact('profile', 'slides', 'isPpdbActive'));
     }
 
     public function store(Request $request)
