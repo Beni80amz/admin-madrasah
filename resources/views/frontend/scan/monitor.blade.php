@@ -89,7 +89,7 @@
             <template x-if="slides.length > 0">
                 <div class="absolute inset-0 w-full h-full">
                     <template x-for="(slide, index) in slides" :key="index">
-                        <div x-show="activeSlide === index" x-transition:enter="transition ease-out duration-1000"
+                        <div :id="'slide-' + index" x-show="activeSlide === index" x-transition:enter="transition ease-out duration-1000"
                             x-transition:enter-start="opacity-0 scale-105"
                             x-transition:enter-end="opacity-100 scale-100"
                             x-transition:leave="transition ease-in duration-1000"
@@ -103,7 +103,7 @@
 
                             <!-- Video Slide -->
                             <template x-if="slide.type === 'video'">
-                                <video :src="slide.url" autoplay muted loop
+                                <video :src="slide.url" autoplay muted
                                     class="absolute inset-0 w-full h-full object-cover"></video>
                             </template>
 
@@ -294,7 +294,11 @@
                     @if($isPpdbActive)
                         this.renderPpdbQr();
                     @endif
-                    this.startSlideshow();
+                    
+                    // Start Slideshow with dynamic logic
+                    if (this.slides.length > 0) {
+                       this.playCurrentSlide();
+                    }
 
                     // Countdown timer for QR
                     setInterval(() => {
@@ -306,12 +310,41 @@
                     }, 1000);
                 },
 
-                startSlideshow() {
-                    if (this.slides.length > 1) {
-                        setInterval(() => {
-                            this.activeSlide = (this.activeSlide + 1) % this.slides.length;
+                playCurrentSlide() {
+                    // Clear previous timer if any
+                    if (this.slideTimer) clearTimeout(this.slideTimer);
+
+                    const slide = this.slides[this.activeSlide];
+
+                    if (slide.type === 'video') {
+                        // Video Logic: Wait for 'ended' event
+                        this.$nextTick(() => {
+                            const container = document.getElementById('slide-' + this.activeSlide);
+                            if (container) {
+                                const video = container.querySelector('video');
+                                if (video) {
+                                    video.currentTime = 0;
+                                    video.play().catch(e => console.log("Autoplay blocked/error:", e));
+                                    video.onended = () => {
+                                        this.nextSlide();
+                                    };
+                                    return; 
+                                }
+                            }
+                            // Fallback if video element not found
+                            this.slideTimer = setTimeout(() => this.nextSlide(), 5000);
+                        });
+                    } else {
+                        // Image or YouTube: Use fixed interval
+                        this.slideTimer = setTimeout(() => {
+                            this.nextSlide();
                         }, this.slideInterval);
                     }
+                },
+
+                nextSlide() {
+                    this.activeSlide = (this.activeSlide + 1) % this.slides.length;
+                    this.playCurrentSlide();
                 },
 
                 startClock() {
