@@ -87,26 +87,3 @@ Route::middleware(['auth'])->group(function () {
     Route::view('/inbox', 'frontend.features.inbox')->name('inbox.index');
     Route::view('/profil-user', 'frontend.features.profil')->name('profil.user');
 });
-
-// TEMPORARY DEBUG ROUTE
-// TEMPORARY DEBUG ROUTE
-Route::get('/debug-ppdb', function () {
-    try {
-        $raw = \App\Models\AppSetting::where('key', 'ppdb_persyaratan')->first();
-        $processed = \App\Models\AppSetting::getPpdbPersyaratan();
-
-        return response()->json([
-            'status' => 'Debug Info',
-            'raw_db_value' => $raw ? $raw->value : 'NULL',
-            'processed_result' => $processed,
-            'php_version' => phpversion(),
-        ]);
-    } catch (\Throwable $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
-        ], 500);
-    }
-});

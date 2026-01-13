@@ -166,11 +166,26 @@
                     </h2>
                     <div class="grid md:grid-cols-2 gap-4">
                         @foreach($ppdbInfo['persyaratan'] as $item)
+                        @php
+                            // Defensive: Handle legacy string data
+                            if (is_string($item)) {
+                                $item = ['item' => $item, 'required' => true];
+                            }
+                            $itemName = $item['item'];
+                            $isRequired = $item['required'] ?? true;
+                        @endphp
                             <div
                                 class="flex items-start gap-3 bg-gray-50 dark:bg-white/5 rounded-xl p-4 border border-border-light dark:border-border-dark">
                                 <span
-                                    class="material-symbols-outlined text-primary text-xl flex-shrink-0 mt-0.5">check_circle</span>
-                                <span class="text-text-primary-light dark:text-text-primary-dark">{{ $item }}</span>
+                                    class="material-symbols-outlined {{ $isRequired ? 'text-primary' : 'text-gray-400' }} text-xl flex-shrink-0 mt-0.5">
+                                    {{ $isRequired ? 'check_circle' : 'info' }}
+                                </span>
+                                <span class="text-text-primary-light dark:text-text-primary-dark">
+                                    {{ $itemName }}
+                                    @if(!$isRequired)
+                                        <span class="text-xs text-text-secondary-light dark:text-text-secondary-dark ml-1">(Opsional)</span>
+                                    @endif
+                                </span>
                             </div>
                         @endforeach
                     </div>
