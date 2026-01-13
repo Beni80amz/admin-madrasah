@@ -81,8 +81,8 @@
     <!-- Main Content Area (Split Screen) -->
     <div class="flex-1 flex overflow-hidden">
 
-        <!-- Left Side: Multimedia Carousel (40%) -->
-        <div class="w-[40%] relative bg-black flex items-center justify-center overflow-hidden">
+        <!-- Left Side: Multimedia Carousel (50%) -->
+        <div class="w-[50%] relative bg-black flex items-center justify-center overflow-hidden">
             <template x-if="slides.length > 0">
                 <div class="absolute inset-0 w-full h-full">
                     <template x-for="(slide, index) in slides" :key="index">
@@ -138,8 +138,8 @@
             </template>
         </div>
 
-        <!-- Right Side: QR & Information (60%) -->
-        <div class="w-[60%] relative flex flex-col">
+        <!-- Right Side: QR & Information (50%) -->
+        <div class="w-[50%] relative flex flex-col">
             <!-- Background Decoration -->
             <div class="absolute inset-0 bg-gray-900 z-0">
                 <div
