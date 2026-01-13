@@ -52,14 +52,17 @@
         }
 
         /* Force generated QR code to be responsive and KEEP ASPECT RATIO */
-        #qrcode img {
+        #qrcode img,
+        #qrcode-ppdb img {
             width: 100% !important;
             height: 100% !important;
             object-fit: contain !important;
             display: block !important;
+            max-width: 100% !important;
         }
 
-        #qrcode canvas {
+        #qrcode canvas,
+        #qrcode-ppdb canvas {
             display: none !important;
             /* Fix duplicate QR issue by hiding canvas */
         }
