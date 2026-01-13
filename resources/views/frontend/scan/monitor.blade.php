@@ -114,7 +114,7 @@
                                 <div class="absolute inset-0 w-full h-full pointer-events-auto">
                                     <!-- Changed pointer-events-none to auto for API interaction if needed, though we control it programmatically -->
                                     <iframe :id="'yt-player-' + index"
-                                        :src="'https://www.youtube.com/embed/' + slide.url + '?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1'"
+                                        :src="'https://www.youtube.com/embed/' + slide.url + '?mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1'"
                                         class="absolute inset-0 w-full h-full object-cover" frameborder="0"
                                         allow="autoplay; encrypted-media"></iframe>
                                 </div>
@@ -367,16 +367,18 @@
                         }, 500); // 500ms delay for transition
                     } else if (slide.type === 'youtube') {
                         // YouTube Logic
-              if (isYoutubeApiReady) {
-                             this.$nextTick(() => {
+                        if (isYoutubeApiReady) {
+                             setTimeout(() => {
                                  const playerId = 'yt-player-' + this.activeSlide;
                                  
-                                 // Check if player exists
                                  if (!this.ytPlayers[this.activeSlide]) {
                                      this.ytPlayers[this.activeSlide] = new YT.Player(playerId, {
                                          events: {
+                                             'onReady': (event) => {
+                                                 event.target.mute();
+                                                 event.target.playVideo();
+                                             },
                                              'onStateChange': (event) => {
-                                                 // YT.PlayerState.ENDED is 0
                                                  if (event.data === 0) {
                                                      this.nextSlide();
                                                  }
@@ -384,17 +386,19 @@
                                          }
                                      });
                                  } else {
-                                     // Player exists, ensure it plays
+                                     // Player exists
                                     const player = this.ytPlayers[this.activeSlide];
                                     if (player && typeof player.playVideo === 'function') {
-                                        // Some browsers block programmatic play if not muted
-                                        // Assuming mute=1 in iframe src handles initial load
+                                        player.mute();
                                         player.seekTo(0);
                                         player.playVideo();
                                     } else {
-                                        // Re-init if broken
                                         this.ytPlayers[this.activeSlide] = new YT.Player(playerId, {
                                             events: {
+                                                'onReady': (event) => {
+                                                     event.target.mute();
+                                                     event.target.playVideo();
+                                                 },
                                                 'onStateChange': (event) => {
                                                     if (event.data === 0) {
                                                         this.nextSlide();
@@ -404,7 +408,7 @@
                                         });
                                     }
                                  }
-                             });
+                             }, 500);
                          } else {
                              // API not ready yet, fallback to timer
                              this.slideTimer = setTimeout(() => this.nextSlide(), 10000);
