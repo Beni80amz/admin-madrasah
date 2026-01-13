@@ -89,23 +89,24 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // TEMPORARY DEBUG ROUTE
+// TEMPORARY DEBUG ROUTE
 Route::get('/debug-ppdb', function () {
     try {
-        \ = \App\Models\AppSetting::where('key', 'ppdb_persyaratan')->first();
-        \ = \App\Models\AppSetting::getPpdbPersyaratan();
-        
+        $raw = \App\Models\AppSetting::where('key', 'ppdb_persyaratan')->first();
+        $processed = \App\Models\AppSetting::getPpdbPersyaratan();
+
         return response()->json([
             'status' => 'Debug Info',
-            'raw_db_value' => \ ? \->value : 'NULL',
-            'processed_result' => \,
+            'raw_db_value' => $raw ? $raw->value : 'NULL',
+            'processed_result' => $processed,
             'php_version' => phpversion(),
         ]);
-    } catch (\Throwable \) {
+    } catch (\Throwable $e) {
         return response()->json([
-            'error' => \->getMessage(),
-            'file' => \->getFile(),
-            'line' => \->getLine(),
-            'trace' => \->getTraceAsString()
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
         ], 500);
     }
 });
