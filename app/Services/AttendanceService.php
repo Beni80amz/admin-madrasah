@@ -112,25 +112,38 @@ class AttendanceService
         // Use updateOrCreate to allow re-scanning if needed (though usually check-in is once)
         // But requirements say "check-in", imply creating a record.
 
-        // Device Binding Validation
-        $deviceId = $data['device_id'] ?? null;
+        // Check if attendance already exists for today
+        $existingAttendance = Attendance::where('user_id', $user->id)
+            ->where('date', $date)
+            ->first();
 
-        if (empty($deviceId)) {
-            // Opsional: Jika device_id kosong/tidak dikirim frontend, tolak?
-            // throw new \Exception('Device ID tidak terdeteksi. Pastikan Anda menggunakan Aplikasi Resmi.');
-            // Untuk fase transisi, mungkin loose dulu atau log warning. 
-        }
+        // Only validate device if NO attendance exists (First time check-in)
+        if (!$existingAttendance) {
+            // Device Binding Validation
+            $deviceId = $data['device_id'] ?? null;
 
-        if ($deviceId) {
-            if (!$user->device_id) {
-                // First time binding
-                $user->update(['device_id' => $deviceId]);
-            } else {
-                // Validate match
-                if ($user->device_id !== $deviceId) {
-                    throw new \Exception('Anda hanya dapat melakukan absensi menggunakan perangkat yang terdaftar (HP Pertama). Hubungi Admin untuk reset jika ganti HP.');
+            if (empty($deviceId)) {
+                // Opsional: Jika device_id kosong/tidak dikirim frontend, tolak?
+                // throw new \Exception('Device ID tidak terdeteksi. Pastikan Anda menggunakan Aplikasi Resmi.');
+                // Untuk fase transisi, mungkin loose dulu atau log warning. 
+            }
+
+            if ($deviceId) {
+                if (!$user->device_id) {
+                    // First time binding
+                    $user->update(['device_id' => $deviceId]);
+                } else {
+                    // Validate match
+                    if ($user->device_id !== $deviceId) {
+                        throw new \Exception('Anda hanya dapat melakukan absensi menggunakan perangkat yang terdaftar (HP Pertama). Hubungi Admin untuk reset jika ganti HP.');
+                    }
                 }
             }
+        } else {
+            // If attendance exists, ensure we use the user's stored device_id for consistency
+            // or just keep the passed one? 
+            // Better to keep existing logic flow, just skip the EXCEPTION throw.
+            $deviceId = $data['device_id'] ?? $user->device_id;
         }
 
         $attendance = Attendance::updateOrCreate(
