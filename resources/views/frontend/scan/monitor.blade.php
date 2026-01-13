@@ -60,7 +60,8 @@
         }
 
         #qrcode canvas {
-            display: none !important; /* Fix duplicate QR issue by hiding canvas */
+            display: none !important;
+            /* Fix duplicate QR issue by hiding canvas */
         }
     </style>
 </head>
@@ -68,9 +69,12 @@
 <body class="bg-gray-950 text-white h-screen w-screen overflow-hidden flex flex-col" x-data="qrMonitor()">
 
     <!-- Fullscreen Toggle (Hidden / Floating) -->
-    <button @click="toggleFullscreen" class="fixed top-4 right-4 z-[9999] bg-black/50 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm opacity-0 hover:opacity-100 transition-opacity duration-300">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+    <button @click="toggleFullscreen"
+        class="fixed top-4 right-4 z-[9999] bg-black/50 hover:bg-black/70 text-white p-2 rounded-full backdrop-blur-sm opacity-0 hover:opacity-100 transition-opacity duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
         </svg>
     </button>
 
@@ -175,35 +179,50 @@
                     </div>
                 </div>
 
-                <!-- QR Code Card -->
-                <div class="flex flex-col items-center justify-center flex-grow-[2]">
-                    <!-- Added style aspect-ratio: 1/1 explicitly and max-height constraints -->
-                    <div style="aspect-ratio: 1/1;"
-                        class="relative group p-[0.5vh] bg-gradient-to-br from-green-500 to-blue-600 rounded-[2vh] shadow-2xl w-auto h-auto max-w-[80%] max-h-[45vh]">
-                        <div class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
-                            <div id="qrcode" class="w-full h-full"></div>
+                <!-- QR Codes Container -->
+                <div class="flex flex-col items-center justify-center flex-grow-[2] gap-[2vh] w-full">
+
+                    <!-- 1. Attendance QR -->
+                    <div class="flex flex-col items-center w-full">
+                        <div style="aspect-ratio: 1/1;"
+                            class="relative group p-[0.5vh] bg-gradient-to-br from-green-500 to-blue-600 rounded-[2vh] shadow-2xl w-auto h-auto max-w-[60%] max-h-[22vh]">
+                            <div
+                                class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
+                                <div id="qrcode" class="w-full h-full"></div>
+                            </div>
+
+                            <!-- Loading Overlay -->
+                            <div x-show="loading"
+                                class="absolute inset-0 bg-white/90 rounded-[2vh] flex items-center justify-center backdrop-blur-sm z-20">
+                                <div
+                                    class="w-[3vh] h-[3vh] border-4 border-green-600 border-t-transparent rounded-full animate-spin">
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Loading Overlay -->
-                        <div x-show="loading"
-                            class="absolute inset-0 bg-white/90 rounded-[2vh] flex items-center justify-center backdrop-blur-sm z-20">
-                            <div
-                                class="w-[5vh] h-[5vh] border-4 border-green-600 border-t-transparent rounded-full animate-spin">
+                        <!-- Progress Bar for Attendance -->
+                        <div class="mt-[1vh] w-[40%] max-w-[200px]">
+                            <div class="h-[0.5vh] bg-gray-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-green-500 to-blue-500 transition-all duration-1000 ease-linear"
+                                    :style="'width: ' + progress + '%'"></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-[3vh] w-[70%] max-w-[400px]">
-                        <div
-                            class="flex justify-between text-[1.5vh] text-gray-400 mb-[1vh] uppercase font-semibold tracking-wider">
-                            <span>Scan Me</span>
-                            <span>Auto Refresh (<span x-text="timeLeft">30</span>s)</span>
+                    <!-- 2. PPDB QR -->
+                    <div class="flex flex-col items-center w-full">
+                        <div style="aspect-ratio: 1/1;"
+                            class="relative group p-[0.5vh] bg-gradient-to-br from-purple-500 to-pink-600 rounded-[2vh] shadow-2xl w-auto h-auto max-w-[60%] max-h-[22vh]">
+                            <div
+                                class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
+                                <div id="qrcode-ppdb" class="w-full h-full"></div>
+                            </div>
                         </div>
-                        <div class="h-[0.8vh] bg-gray-800 rounded-full overflow-hidden">
-                            <div class="h-full bg-gradient-to-r from-green-500 to-blue-500 transition-all duration-1000 ease-linear"
-                                :style="'width: ' + progress + '%'"></div>
+                        <div class="mt-[0.5vh] text-[1.5vh] font-bold text-white uppercase tracking-wider">
+                            Pendaftaran PPDB
                         </div>
                     </div>
+
                 </div>
 
                 <!-- Connection Status -->
@@ -258,6 +277,7 @@
                 init() {
                     this.startClock();
                     this.fetchQr();
+                    this.renderPpdbQr();
                     this.startSlideshow();
 
                     // Countdown timer for QR
@@ -307,10 +327,24 @@
                 renderQr(text) {
                     const container = document.getElementById("qrcode");
                     container.innerHTML = "";
-                    
+
                     // Generate square QR code
                     new QRCode(container, {
                         text: text,
+                        width: 500, // Optimized res
+                        height: 500,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                },
+
+                renderPpdbQr() {
+                    const container = document.getElementById("qrcode-ppdb");
+                    container.innerHTML = "";
+
+                    new QRCode(container, {
+                        text: '{{ url("/ppdb/daftar") }}',
                         width: 500, // Optimized res
                         height: 500,
                         colorDark: "#000000",
@@ -334,4 +368,5 @@
         }
     </script>
 </body>
+
 </html>
