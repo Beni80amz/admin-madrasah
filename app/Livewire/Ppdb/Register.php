@@ -55,7 +55,7 @@ class Register extends Component
 
         $this->agama = 'Islam'; // Default value
 
-        // Load persyaratan from settings
+        // Load persyaratan from settings (now returns array of objects)
         $this->persyaratanDokumen = AppSetting::getPpdbPersyaratan();
 
         // Initialize dokumen array with null values
@@ -155,12 +155,14 @@ class Register extends Component
         $messages = [];
 
         foreach ($this->persyaratanDokumen as $index => $item) {
-            // Make all documents required (you can add "opsional" keyword check if needed)
-            $isOptional = Str::contains(strtolower($item), 'opsional') || Str::contains(strtolower($item), 'jika ada');
-            $rules["dokumen.{$index}"] = ($isOptional ? 'nullable' : 'required') . '|image|max:2048';
-            $messages["dokumen.{$index}.required"] = "Dokumen {$item} wajib diupload.";
-            $messages["dokumen.{$index}.image"] = "Dokumen {$item} harus berupa gambar.";
-            $messages["dokumen.{$index}.max"] = "Dokumen {$item} maksimal 2MB.";
+            // Use 'required' flag from settings
+            $isRequired = $item['required'] ?? true;
+            $itemName = $item['item'];
+
+            $rules["dokumen.{$index}"] = ($isRequired ? 'required' : 'nullable') . '|image|max:2048';
+            $messages["dokumen.{$index}.required"] = "Dokumen {$itemName} wajib diupload.";
+            $messages["dokumen.{$index}.image"] = "Dokumen {$itemName} harus berupa gambar.";
+            $messages["dokumen.{$index}.max"] = "Dokumen {$itemName} maksimal 2MB.";
         }
 
         $this->validate($rules, $messages);
@@ -173,7 +175,7 @@ class Register extends Component
         // Upload Files with dynamic keys
         $documents = [];
         foreach ($this->persyaratanDokumen as $index => $item) {
-            $key = Str::slug($item, '_');
+            $key = Str::slug($item['item'], '_'); // Access 'item' key
             $file = $this->dokumen[$index] ?? null;
             if ($file && is_object($file) && method_exists($file, 'store')) {
                 $documents[$key] = $file->store('ppdb/' . $key, 'public');

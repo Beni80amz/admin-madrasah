@@ -322,13 +322,14 @@
 
                                         @foreach($persyaratanDokumen as $index => $item)
                                             @php
-                                                $isOptional = Str::contains(strtolower($item), 'opsional') || Str::contains(strtolower($item), 'jika ada');
+                                                $itemName = $item['item'];
+                                                $isRequired = $item['required'] ?? true;
                                             @endphp
                                             <div
                                                 class="border-2 border-dashed rounded-xl p-4 transition-all bg-white/50 dark:bg-white/5 {{ isset($dokumen[$index]) && $dokumen[$index] ? 'border-green-500 bg-green-50/50 dark:bg-green-900/20' : 'border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-primary/5' }}">
                                                 <span
-                                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 text-center">{{ $item }}
-                                                    @if(!$isOptional)
+                                                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 text-center">{{ $itemName }}
+                                                    @if($isRequired)
                                                         <span class="text-red-500">*</span>
                                                     @else
                                                         <span class="text-gray-400 text-xs">(Opsional)</span>

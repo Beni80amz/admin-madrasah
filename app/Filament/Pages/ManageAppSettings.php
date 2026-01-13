@@ -64,7 +64,7 @@ class ManageAppSettings extends Page implements HasForms
             'ppdb_kuota' => $ppdbInfo['kuota'],
             'ppdb_biaya' => $ppdbInfo['biaya'],
             'ppdb_alur' => $ppdbInfo['alur'],
-            'ppdb_persyaratan' => collect($ppdbInfo['persyaratan'])->map(fn($item) => ['item' => $item])->toArray(),
+            'ppdb_persyaratan' => $ppdbInfo['persyaratan'],
         ]);
     }
 
@@ -171,7 +171,7 @@ class ManageAppSettings extends Page implements HasForms
                                     ->rows(2)
                                     ->columnSpanFull(),
                             ])
-                            ->columns(3)
+                            ->columns(5)
                             ->defaultItems(5)
                             ->reorderable()
                             ->reorderableWithButtons()
@@ -191,7 +191,13 @@ class ManageAppSettings extends Page implements HasForms
                                     ->label('Persyaratan')
                                     ->required()
                                     ->maxLength(200)
-                                    ->columnSpanFull(),
+                                    ->columnSpan(4),
+
+                                \Filament\Forms\Components\Toggle::make('required')
+                                    ->label('Wajib Diisi')
+                                    ->default(true)
+                                    ->inline(false)
+                                    ->columnSpan(1),
                             ])
                             ->defaultItems(5)
                             ->reorderable()
@@ -229,9 +235,8 @@ class ManageAppSettings extends Page implements HasForms
         AppSetting::setPpdbBiaya($data['ppdb_biaya']);
         AppSetting::setPpdbAlur($data['ppdb_alur']);
 
-        // Transform persyaratan from repeater format to simple array
-        $persyaratan = collect($data['ppdb_persyaratan'])->pluck('item')->toArray();
-        AppSetting::setPpdbPersyaratan($persyaratan);
+        // Save full structure for requirements
+        AppSetting::setPpdbPersyaratan($data['ppdb_persyaratan']);
 
         Notification::make()
             ->title('Pengaturan berhasil disimpan!')

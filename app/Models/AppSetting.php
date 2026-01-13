@@ -124,7 +124,15 @@ class AppSetting extends Model
     {
         $persyaratan = static::getValue('ppdb_persyaratan', null);
         if ($persyaratan) {
-            return json_decode($persyaratan, true) ?? static::getDefaultPersyaratan();
+            $data = json_decode($persyaratan, true) ?? static::getDefaultPersyaratan();
+
+            // Normalize legacy data (array of strings) to new structure
+            return array_map(function ($item) {
+                if (is_string($item)) {
+                    return ['item' => $item, 'required' => true];
+                }
+                return array_merge(['required' => true], $item); // Ensure required key exists
+            }, $data);
         }
         return static::getDefaultPersyaratan();
     }
@@ -135,11 +143,11 @@ class AppSetting extends Model
     private static function getDefaultPersyaratan(): array
     {
         return [
-            'Fotokopi Kartu Keluarga (KK)',
-            'Fotokopi Akta Kelahiran',
-            'Fotokopi Ijazah TK/RA/PAUD (jika ada)',
-            'Pas Foto Berwarna 3x4 (4 lembar)',
-            'Fotokopi KTP Orang Tua/Wali',
+            ['item' => 'Fotokopi Kartu Keluarga (KK)', 'required' => true],
+            ['item' => 'Fotokopi Akta Kelahiran', 'required' => true],
+            ['item' => 'Fotokopi Ijazah TK/RA/PAUD (jika ada)', 'required' => false],
+            ['item' => 'Pas Foto Berwarna 3x4 (4 lembar)', 'required' => true],
+            ['item' => 'Fotokopi KTP Orang Tua/Wali', 'required' => true],
         ];
     }
 
