@@ -81,8 +81,8 @@
     <!-- Main Content Area (Split Screen) -->
     <div class="flex-1 flex overflow-hidden">
 
-        <!-- Left Side: Multimedia Carousel (65%) -->
-        <div class="w-[65%] relative bg-black flex items-center justify-center overflow-hidden">
+        <!-- Left Side: Multimedia Carousel (40%) -->
+        <div class="w-[40%] relative bg-black flex items-center justify-center overflow-hidden">
             <template x-if="slides.length > 0">
                 <div class="absolute inset-0 w-full h-full">
                     <template x-for="(slide, index) in slides" :key="index">
@@ -138,8 +138,8 @@
             </template>
         </div>
 
-        <!-- Right Side: QR & Information (35%) -->
-        <div class="w-[35%] relative flex flex-col">
+        <!-- Right Side: QR & Information (60%) -->
+        <div class="w-[60%] relative flex flex-col">
             <!-- Background Decoration -->
             <div class="absolute inset-0 bg-gray-900 z-0">
                 <div
@@ -180,14 +180,13 @@
                 </div>
 
                 <!-- QR Codes Container -->
-                <div class="flex flex-col items-center justify-center flex-grow-[2] gap-[2vh] w-full">
-
+                <div class="flex items-center justify-center flex-grow-[2] gap-[4vh] w-full px-[4vh]">
+                    
                     <!-- 1. Attendance QR -->
-                    <div class="flex flex-col items-center w-full">
+                    <div class="flex flex-col items-center justify-center w-1/2 h-full">
                         <div style="aspect-ratio: 1/1;"
-                            class="relative group p-[0.5vh] bg-gradient-to-br from-green-500 to-blue-600 rounded-[2vh] shadow-2xl w-auto h-auto max-w-[60%] max-h-[22vh]">
-                            <div
-                                class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
+                            class="relative group p-[0.5vh] bg-gradient-to-br from-green-500 to-blue-600 rounded-[2vh] shadow-2xl w-full max-w-[50vh]">
+                            <div class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
                                 <div id="qrcode" class="w-full h-full"></div>
                             </div>
 
@@ -195,31 +194,35 @@
                             <div x-show="loading"
                                 class="absolute inset-0 bg-white/90 rounded-[2vh] flex items-center justify-center backdrop-blur-sm z-20">
                                 <div
-                                    class="w-[3vh] h-[3vh] border-4 border-green-600 border-t-transparent rounded-full animate-spin">
+                                    class="w-[5vh] h-[5vh] border-4 border-green-600 border-t-transparent rounded-full animate-spin">
                                 </div>
                             </div>
                         </div>
-
+                        
                         <!-- Progress Bar for Attendance -->
-                        <div class="mt-[1vh] w-[40%] max-w-[200px]">
-                            <div class="h-[0.5vh] bg-gray-800 rounded-full overflow-hidden">
+                        <div class="mt-[2vh] w-[80%]">
+                            <div class="h-[1vh] bg-gray-800 rounded-full overflow-hidden">
                                 <div class="h-full bg-gradient-to-r from-green-500 to-blue-500 transition-all duration-1000 ease-linear"
                                     :style="'width: ' + progress + '%'"></div>
+                            </div>
+                            <div class="text-center text-[1.5vh] text-gray-400 mt-[0.5vh] uppercase font-bold tracking-wider">
+                                Scan Absensi
                             </div>
                         </div>
                     </div>
 
                     <!-- 2. PPDB QR -->
-                    <div class="flex flex-col items-center w-full">
+                    <div class="flex flex-col items-center justify-center w-1/2 h-full">
                         <div style="aspect-ratio: 1/1;"
-                            class="relative group p-[0.5vh] bg-gradient-to-br from-purple-500 to-pink-600 rounded-[2vh] shadow-2xl w-auto h-auto max-w-[60%] max-h-[22vh]">
-                            <div
-                                class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
+                            class="relative group p-[0.5vh] bg-gradient-to-br from-purple-500 to-pink-600 rounded-[2vh] shadow-2xl w-full max-w-[50vh]">
+                            <div class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
                                 <div id="qrcode-ppdb" class="w-full h-full"></div>
                             </div>
                         </div>
-                        <div class="mt-[0.5vh] text-[1.5vh] font-bold text-white uppercase tracking-wider">
-                            Pendaftaran PPDB
+                         <div class="mt-[2vh] w-[80%] text-center">
+                            <div class="text-[2vh] font-bold text-white uppercase tracking-wider bg-white/10 py-[0.5vh] rounded-lg">
+                                Pendaftaran PPDB
+                            </div>
                         </div>
                     </div>
 
