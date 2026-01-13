@@ -11,6 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
@@ -109,9 +110,9 @@
 
                             <!-- YouTube Slide -->
                             <template x-if="slide.type === 'youtube'">
-                                <div class="absolute inset-0 w-full h-full pointer-events-none">
-                                    <iframe
-                                        :src="'https://www.youtube.com/embed/' + slide.url + '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + slide.url + '&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3'"
+                                <div class="absolute inset-0 w-full h-full pointer-events-auto"> <!-- Changed pointer-events-none to auto for API interaction if needed, though we control it programmatically -->
+                                    <iframe :id="'yt-player-' + index"
+                                        :src="'https://www.youtube.com/embed/' + slide.url + '?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1'"
                                         class="absolute inset-0 w-full h-full object-cover" frameborder="0"
                                         allow="autoplay; encrypted-media"></iframe>
                                 </div>
@@ -270,6 +271,12 @@
     </div>
 
     <script>
+        // Global YouTube API Ready Callback
+        var isYoutubeApiReady = false;
+        function onYouTubeIframeAPIReady() {
+            isYoutubeApiReady = true;
+        }
+
         function qrMonitor() {
             return {
                 time: '00:00',
@@ -279,7 +286,7 @@
                 refreshInterval: 30, // seconds
                 timeLeft: 30,  // Slideshow Logic
                 activeSlide: 0,
-                slideInterval: 10000, // 10 seconds per slide
+                slideInterval: 10000, // 10 seconds per slide (default/image)
                 slides: @json($slides->map(function ($s) {
                     return [
                         'type' => $s->type,
@@ -287,6 +294,8 @@
                         'title' => $s->title
                     ];
                 })),
+                slideTimer: null,
+                ytPlayers: {}, // Store YT player instances
 
                 init() {
                     this.startClock();
@@ -297,7 +306,8 @@
                     
                     // Start Slideshow with dynamic logic
                     if (this.slides.length > 0) {
-                       this.playCurrentSlide();
+                       // Small delay to ensure DOM is ready for players
+                       setTimeout(() => this.playCurrentSlide(), 1000);
                     }
 
                     // Countdown timer for QR
@@ -328,20 +338,70 @@
                                     video.onended = () => {
                                         this.nextSlide();
                                     };
+                                    // Fallback for safety
+                                    video.onerror = () => {
+                                        console.log("Video error, skipping");
+                                        this.nextSlide();
+                                    }
                                     return; 
                                 }
                             }
                             // Fallback if video element not found
                             this.slideTimer = setTimeout(() => this.nextSlide(), 5000);
                         });
+                    } else if (slide.type === 'youtube') {
+                        // YouTube Logic
+                         if (isYoutubeApiReady) {
+                             this.$nextTick(() => {
+                                 const playerId = 'yt-player-' + this.activeSlide;
+                                 
+                                 // Check if player exists
+                                 if (!this.ytPlayers[this.activeSlide]) {
+                                     this.ytPlayers[this.activeSlide] = new YT.Player(playerId, {
+                                         events: {
+                                             'onStateChange': (event) => {
+                                                 // YT.PlayerState.ENDED is 0
+                                                 if (event.data === 0) {
+                                                     this.nextSlide();
+                                                 }
+                                             }
+                                         }
+                                     });
+                                 } else {
+                                     // Player exists, ensure it plays
+                                    const player = this.ytPlayers[this.activeSlide];
+                                    if (player && typeof player.playVideo === 'function') {
+                                        // Some browsers block programmatic play if not muted
+                                        // Assuming mute=1 in iframe src handles initial load
+                                        player.seekTo(0);
+                                        player.playVideo();
+                                    } else {
+                                        // Re-init if broken
+                                        this.ytPlayers[this.activeSlide] = new YT.Player(playerId, {
+                                            events: {
+                                                'onStateChange': (event) => {
+                                                    if (event.data === 0) {
+                                                        this.nextSlide();
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                 }
+                             });
+                         } else {
+                             // API not ready yet, fallback to timer
+                             this.slideTimer = setTimeout(() => this.nextSlide(), 10000);
+                         }
+
                     } else {
-                        // Image or YouTube: Use fixed interval
+                        // Image: Use fixed interval
                         this.slideTimer = setTimeout(() => {
                             this.nextSlide();
                         }, this.slideInterval);
                     }
                 },
-
+                
                 nextSlide() {
                     this.activeSlide = (this.activeSlide + 1) % this.slides.length;
                     this.playCurrentSlide();
