@@ -49,29 +49,5 @@ class ProfileMadrasah extends Model
         return static::first();
     }
 
-    protected static function booted()
-    {
-        static::saved(function ($profile) {
-            if (!empty($profile->nama_kepala_madrasah) && !empty($profile->nip_kepala_madrasah)) {
-                $user = User::firstOrNew(['email' => $profile->nip_kepala_madrasah]);
 
-                if (!$user->exists) {
-                    $user->name = $profile->nama_kepala_madrasah;
-                    $user->password = \Illuminate\Support\Facades\Hash::make($profile->nip_kepala_madrasah); // NIP as default password
-                    $user->save();
-
-                    // Ensure role exists before assigning
-                    $role = Role::firstOrCreate(['name' => 'teacher']);
-                    $user->assignRole($role);
-                } else {
-                    // Update name if user exists but name might be different? 
-                    // Let's just insure the name is updated if it matches the NIP
-                    if ($user->name !== $profile->nama_kepala_madrasah) {
-                        $user->name = $profile->nama_kepala_madrasah;
-                        $user->save();
-                    }
-                }
-            }
-        });
-    }
 }

@@ -24,5 +24,7 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
             return $user->hasRole('Superadmin') ? true : null;
         });
+
+        \App\Models\ProfileMadrasah::observe(\App\Observers\ProfileMadrasahObserver::class);
     }
 }
