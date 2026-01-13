@@ -21,8 +21,6 @@ class TeacherForm
                     ->acceptedFileTypes(['image/jpeg', 'image/png'])
                     ->maxSize(2048)
                     ->directory('teachers')
-                    ->imageEditor()
-                    ->circleCropper()
                     ->columnSpanFull(),
                 TextInput::make('nama_lengkap')
                     ->label('Nama Lengkap')

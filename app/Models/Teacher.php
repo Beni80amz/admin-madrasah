@@ -101,4 +101,48 @@ class Teacher extends Model
         }
         return '-';
     }
+    public function ensureUserExists(): void
+    {
+        try {
+            // If user already linked, skip
+            if ($this->user_id) {
+                return;
+            }
+
+            // Determine password and email
+            $password = $this->nip ?? $this->nik ?? '12345678';
+            $email = $this->nip ? $this->nip . '@teacher.com' : ($this->nik ? $this->nik . '@teacher.com' : uniqid() . '@teacher.com');
+
+            // Check if user already exists
+            $existingUser = \App\Models\User::where('email', $email)->first();
+
+            if (!$existingUser) {
+                // Ensure role exists
+                if (!\Spatie\Permission\Models\Role::where('name', 'teacher')->exists()) {
+                    \Spatie\Permission\Models\Role::create(['name' => 'teacher', 'guard_name' => 'web']);
+                }
+
+                $user = \App\Models\User::create([
+                    'name' => $this->nama_lengkap,
+                    'email' => $email,
+                    'password' => \Illuminate\Support\Facades\Hash::make($password),
+                    'email_verified_at' => now(),
+                ]);
+
+                // Assign role
+                $user->assignRole('teacher');
+
+                // Link user to teacher
+                $this->user_id = $user->id;
+                $this->save();
+
+            } else {
+                // If user exists, try to link it
+                $this->user_id = $existingUser->id;
+                $this->save();
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Auto Create User Error: ' . $e->getMessage());
+        }
+    }
 }

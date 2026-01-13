@@ -30,6 +30,8 @@ class EditTeacher extends EditRecord
 
     protected function afterSave(): void
     {
+        $this->record->ensureUserExists();
+
         $this->dispatch('swal:success', [
             'title' => 'Data Diperbarui!',
             'text' => 'Data guru berhasil diperbarui.',
