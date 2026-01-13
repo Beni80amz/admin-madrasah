@@ -322,6 +322,10 @@
 
                                         @foreach($persyaratanDokumen as $index => $item)
                                             @php
+                                                // Defensive: Handle legacy string data
+                                                if (is_string($item)) {
+                                                    $item = ['item' => $item, 'required' => true];
+                                                }
                                                 $itemName = $item['item'];
                                                 $isRequired = $item['required'] ?? true;
                                             @endphp

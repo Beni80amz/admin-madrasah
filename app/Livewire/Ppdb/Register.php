@@ -155,6 +155,11 @@ class Register extends Component
         $messages = [];
 
         foreach ($this->persyaratanDokumen as $index => $item) {
+            // Defensive: Handle legacy string data if cache isn't cleared
+            if (is_string($item)) {
+                $item = ['item' => $item, 'required' => true];
+            }
+
             // Use 'required' flag from settings
             $isRequired = $item['required'] ?? true;
             $itemName = $item['item'];
@@ -175,6 +180,9 @@ class Register extends Component
         // Upload Files with dynamic keys
         $documents = [];
         foreach ($this->persyaratanDokumen as $index => $item) {
+            if (is_string($item)) {
+                $item = ['item' => $item, 'required' => true];
+            }
             $key = Str::slug($item['item'], '_'); // Access 'item' key
             $file = $this->dokumen[$index] ?? null;
             if ($file && is_object($file) && method_exists($file, 'store')) {
