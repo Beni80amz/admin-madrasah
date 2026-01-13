@@ -32,14 +32,14 @@ class TeacherForm
                     ->rules([
                         'required',
                         'numeric',
-                        'digits_between:3,16',
+                        'digits_between:3,18',
                     ])
                     ->unique(table: 'teachers', column: 'nip', ignoreRecord: true)
                     ->validationMessages([
                         'required' => 'NIP/NIK wajib diisi.',
                         'unique' => 'NIP/NIK sudah digunakan.',
                         'numeric' => 'NIP/NIK harus berupa angka.',
-                        'digits_between' => 'NIP/NIK harus berisi antara 3 sampai 16 digit angka.',
+                        'digits_between' => 'NIP/NIK harus berisi antara 3 sampai 18 digit angka.',
                     ]),
                 TextInput::make('nuptk')
                     ->label('NUPTK')
