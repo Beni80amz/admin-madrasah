@@ -90,7 +90,8 @@
             <template x-if="slides.length > 0">
                 <div class="absolute inset-0 w-full h-full">
                     <template x-for="(slide, index) in slides" :key="index">
-                        <div :id="'slide-' + index" x-show="activeSlide === index" x-transition:enter="transition ease-out duration-1000"
+                        <div :id="'slide-' + index" x-show="activeSlide === index"
+                            x-transition:enter="transition ease-out duration-1000"
                             x-transition:enter-start="opacity-0 scale-105"
                             x-transition:enter-end="opacity-100 scale-100"
                             x-transition:leave="transition ease-in duration-1000"
@@ -104,13 +105,14 @@
 
                             <!-- Video Slide -->
                             <template x-if="slide.type === 'video'">
-                                <video :src="slide.url" autoplay muted
+                                <video :src="slide.url" muted playsinline
                                     class="absolute inset-0 w-full h-full object-cover"></video>
                             </template>
 
                             <!-- YouTube Slide -->
                             <template x-if="slide.type === 'youtube'">
-                                <div class="absolute inset-0 w-full h-full pointer-events-auto"> <!-- Changed pointer-events-none to auto for API interaction if needed, though we control it programmatically -->
+                                <div class="absolute inset-0 w-full h-full pointer-events-auto">
+                                    <!-- Changed pointer-events-none to auto for API interaction if needed, though we control it programmatically -->
                                     <iframe :id="'yt-player-' + index"
                                         :src="'https://www.youtube.com/embed/' + slide.url + '?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&enablejsapi=1'"
                                         class="absolute inset-0 w-full h-full object-cover" frameborder="0"
@@ -328,30 +330,44 @@
 
                     if (slide.type === 'video') {
                         // Video Logic: Wait for 'ended' event
-                        this.$nextTick(() => {
-                            const container = document.getElementById('slide-' + this.activeSlide);
-                            if (container) {
-                                const video = container.querySelector('video');
-                                if (video) {
-                                    video.currentTime = 0;
-                                    video.play().catch(e => console.log("Autoplay blocked/error:", e));
-                                    video.onended = () => {
-                                        this.nextSlide();
-                                    };
-                                    // Fallback for safety
-                                    video.onerror = () => {
-                                        console.log("Video error, skipping");
-                                        this.nextSlide();
-                                    }
-                                    return; 
-                                }
-                            }
-                            // Fallback if video element not found
-                            this.slideTimer = setTimeout(() => this.nextSlide(), 5000);
-                        });
+                        // Delay to allow x-transition to start/render
+                        setTimeout(() => {
+                             const container = document.getElementById('slide-' + this.activeSlide);
+                             if (container) {
+                                 const video = container.querySelector('video');
+                                 if (video) {
+                                     video.muted = true; // Ensure muted for autoplay policy
+                                     video.loop = false;
+                                     video.currentTime = 0;
+                                     
+                                     // Remove existing listeners to avoid duplicates if reused (though x-if recreates?)
+                                     // Actually x-for keeps elements map. 
+                                     video.onended = () => {
+                                         console.log('Video ended, next slide');
+                                         this.nextSlide();
+                                     };
+                                     
+                                     video.onerror = (e) => {
+                                         console.log('Video error', e);
+                                         this.nextSlide();
+                                     };
+
+                                     var playPromise = video.play();
+                                     if (playPromise !== undefined) {
+                                         playPromise.catch(error => {
+                                             console.log("Autoplay prevented:", error);
+                                             // If autoplay prevented, maybe force next slide after 5s?
+                                             this.slideTimer = setTimeout(() => this.nextSlide(), 5000);
+                                         });
+                                     }
+                                 } else {
+                                     this.nextSlide();
+                                 }
+                             }
+                        }, 500); // 500ms delay for transition
                     } else if (slide.type === 'youtube') {
                         // YouTube Logic
-                         if (isYoutubeApiReady) {
+              if (isYoutubeApiReady) {
                              this.$nextTick(() => {
                                  const playerId = 'yt-player-' + this.activeSlide;
                                  
