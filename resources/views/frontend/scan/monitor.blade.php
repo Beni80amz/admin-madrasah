@@ -79,11 +79,11 @@
     </button>
 
     <!-- Main Content Area (Split Screen) -->
-    <div class="flex-1 flex flex-col xl:flex-row overflow-hidden">
+    <div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
 
         <!-- Left Side: Multimedia Carousel (50%) -->
         <div
-            class="w-full h-[35vh] xl:w-[50%] xl:h-full relative bg-black flex items-center justify-center overflow-hidden shrink-0">
+            class="w-full h-[35vh] lg:w-[50%] lg:h-full relative bg-black flex items-center justify-center overflow-hidden shrink-0">
             <template x-if="slides.length > 0">
                 <div class="absolute inset-0 w-full h-full">
                     <template x-for="(slide, index) in slides" :key="index">
@@ -141,7 +141,7 @@
         </div>
 
         <!-- Right Side: QR & Information (50%) -->
-        <div class="w-full flex-1 xl:w-[50%] xl:h-full relative flex flex-col">
+        <div class="w-full flex-1 lg:w-[50%] lg:h-full relative flex flex-col">
             <!-- Background Decoration -->
             <div class="absolute inset-0 bg-gray-900 z-0">
                 <div
@@ -188,7 +188,7 @@
                     <div
                         class="flex flex-col items-center justify-center {{ $isPpdbActive ? 'w-1/2' : 'w-full' }} h-full">
                         <div style="aspect-ratio: 1/1;"
-                            class="relative group p-[0.5vh] bg-gradient-to-br from-green-500 to-blue-600 rounded-[2vh] shadow-2xl w-full {{ $isPpdbActive ? 'max-w-[35vh]' : 'max-w-[50vh]' }}">
+                            class="relative group p-[0.5vh] bg-gradient-to-br from-green-500 to-blue-600 rounded-[2vh] shadow-2xl w-full {{ $isPpdbActive ? 'max-w-[25vh] lg:max-w-[30vh]' : 'max-w-[40vh] lg:max-w-[45vh]' }}">
                             <div
                                 class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
                                 <div id="qrcode" class="w-full h-full"></div>
@@ -220,7 +220,7 @@
                         <!-- 2. PPDB QR -->
                         <div class="flex flex-col items-center justify-center w-1/2 h-full">
                             <div style="aspect-ratio: 1/1;"
-                                class="relative group p-[0.5vh] bg-gradient-to-br from-purple-500 to-pink-600 rounded-[2vh] shadow-2xl w-full max-w-[35vh]">
+                                class="relative group p-[0.5vh] bg-gradient-to-br from-purple-500 to-pink-600 rounded-[2vh] shadow-2xl w-full max-w-[25vh] lg:max-w-[30vh]">
                                 <div
                                     class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
                                     <div id="qrcode-ppdb" class="w-full h-full"></div>
