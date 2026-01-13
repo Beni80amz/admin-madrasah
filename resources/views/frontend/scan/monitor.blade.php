@@ -79,10 +79,11 @@
     </button>
 
     <!-- Main Content Area (Split Screen) -->
-    <div class="flex-1 flex overflow-hidden">
+    <div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
 
         <!-- Left Side: Multimedia Carousel (50%) -->
-        <div class="w-[50%] relative bg-black flex items-center justify-center overflow-hidden">
+        <div
+            class="w-full h-[35vh] lg:w-[50%] lg:h-full relative bg-black flex items-center justify-center overflow-hidden shrink-0">
             <template x-if="slides.length > 0">
                 <div class="absolute inset-0 w-full h-full">
                     <template x-for="(slide, index) in slides" :key="index">
@@ -116,8 +117,9 @@
 
                             <!-- Caption Overlay -->
                             <div
-                                class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-[3vh] pt-[8vh]">
-                                <h2 class="text-[3vh] font-bold text-white shadow-sm" x-text="slide.title"></h2>
+                                class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-[2vh] lg:p-[3vh] pt-[8vh]">
+                                <h2 class="text-[2.5vh] lg:text-[3vh] font-bold text-white shadow-sm"
+                                    x-text="slide.title"></h2>
                             </div>
                         </div>
                     </template>
@@ -127,8 +129,8 @@
             <!-- Fallback if no slides -->
             <template x-if="slides.length === 0">
                 <div class="flex flex-col items-center justify-center text-gray-500">
-                    <svg class="w-[10vh] h-[10vh] mb-[2vh] opacity-50" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                    <svg class="w-[8vh] h-[8vh] lg:w-[10vh] lg:h-[10vh] mb-[2vh] opacity-50" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                         </path>
@@ -139,7 +141,7 @@
         </div>
 
         <!-- Right Side: QR & Information (50%) -->
-        <div class="w-[50%] relative flex flex-col">
+        <div class="w-full flex-1 lg:w-[50%] lg:h-full relative flex flex-col">
             <!-- Background Decoration -->
             <div class="absolute inset-0 bg-gray-900 z-0">
                 <div
