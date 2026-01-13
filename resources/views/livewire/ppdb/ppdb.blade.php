@@ -19,7 +19,7 @@
                 Tahun Ajaran {{ $ppdbInfo['tahun_ajaran'] }}
             </div>
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4">
-                Penerimaan Peserta Didik Baru
+                Sistem Penerimaan Murid Baru (SPMB)
             </h1>
             <p class="text-xl text-white/80 max-w-2xl mx-auto mb-8">
                 {{ $siteProfile->nama_madrasah ?? 'Madrasah' }} membuka pendaftaran siswa baru.

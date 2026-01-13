@@ -11,7 +11,7 @@ use App\Models\AppSetting;
 use App\Models\ProfileMadrasah;
 
 #[Layout('components.layouts.public')]
-#[Title('PPDB - Penerimaan Peserta Didik Baru')]
+#[Title('SPMB - Sistem Penerimaan Murid Baru')]
 class Ppdb extends Component
 {
     use WithPagination;
