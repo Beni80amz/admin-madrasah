@@ -79,11 +79,11 @@
     </button>
 
     <!-- Main Content Area (Split Screen) -->
-    <div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+    <div class="flex-1 flex flex-col xl:flex-row overflow-hidden">
 
         <!-- Left Side: Multimedia Carousel (50%) -->
         <div
-            class="w-full h-[35vh] lg:w-[50%] lg:h-full relative bg-black flex items-center justify-center overflow-hidden shrink-0">
+            class="w-full h-[35vh] xl:w-[50%] xl:h-full relative bg-black flex items-center justify-center overflow-hidden shrink-0">
             <template x-if="slides.length > 0">
                 <div class="absolute inset-0 w-full h-full">
                     <template x-for="(slide, index) in slides" :key="index">
@@ -141,7 +141,7 @@
         </div>
 
         <!-- Right Side: QR & Information (50%) -->
-        <div class="w-full flex-1 lg:w-[50%] lg:h-full relative flex flex-col">
+        <div class="w-full flex-1 xl:w-[50%] xl:h-full relative flex flex-col">
             <!-- Background Decoration -->
             <div class="absolute inset-0 bg-gray-900 z-0">
                 <div
