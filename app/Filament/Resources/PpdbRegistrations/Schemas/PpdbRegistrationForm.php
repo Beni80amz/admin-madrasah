@@ -137,10 +137,17 @@ class PpdbRegistrationForm
         $persyaratan = \App\Models\AppSetting::getPpdbPersyaratan();
         $schema = [];
 
-        foreach ($persyaratan as $item) {
+        foreach ($persyaratan as $row) {
+            // Defensive: Handle legacy string data
+            if (is_string($row)) {
+                $row = ['item' => $row, 'required' => true];
+            }
+
+            $item = $row['item'];
             $key = \Illuminate\Support\Str::slug($item, '_');
+
             $schema[] = FileUpload::make("dokumen.{$key}")
-                ->label($item)
+                ->label($item . ($row['required'] ? ' *' : ' (Opsional)'))
                 ->disk('public')
                 ->directory('ppdb/' . $key)
                 ->image()
