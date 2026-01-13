@@ -185,7 +185,7 @@
                     <!-- 1. Attendance QR -->
                     <div class="flex flex-col items-center justify-center w-1/2 h-full">
                         <div style="aspect-ratio: 1/1;"
-                            class="relative group p-[0.5vh] bg-gradient-to-br from-green-500 to-blue-600 rounded-[2vh] shadow-2xl w-full max-w-[50vh]">
+                            class="relative group p-[0.5vh] bg-gradient-to-br from-green-500 to-blue-600 rounded-[2vh] shadow-2xl w-full max-w-[35vh]">
                             <div class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
                                 <div id="qrcode" class="w-full h-full"></div>
                             </div>
@@ -214,7 +214,7 @@
                     <!-- 2. PPDB QR -->
                     <div class="flex flex-col items-center justify-center w-1/2 h-full">
                         <div style="aspect-ratio: 1/1;"
-                            class="relative group p-[0.5vh] bg-gradient-to-br from-purple-500 to-pink-600 rounded-[2vh] shadow-2xl w-full max-w-[50vh]">
+                            class="relative group p-[0.5vh] bg-gradient-to-br from-purple-500 to-pink-600 rounded-[2vh] shadow-2xl w-full max-w-[35vh]">
                             <div class="bg-white p-[1.5vh] rounded-[1.5vh] w-full h-full flex items-center justify-center">
                                 <div id="qrcode-ppdb" class="w-full h-full"></div>
                             </div>
