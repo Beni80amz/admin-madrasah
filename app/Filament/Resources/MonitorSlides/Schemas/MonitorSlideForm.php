@@ -29,6 +29,7 @@ class MonitorSlideForm
                 \Filament\Forms\Components\FileUpload::make('file_path')
                     ->label('Upload File')
                     ->image()
+                    ->disk('public')
                     ->directory('monitor-slides')
                     ->hidden(fn(callable $get) => $get('type') === 'youtube')
                     ->label(fn(callable $get) => $get('type') === 'video' ? 'Upload Video' : 'Upload Gambar')
