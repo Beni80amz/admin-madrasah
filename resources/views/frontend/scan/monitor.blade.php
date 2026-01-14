@@ -100,7 +100,7 @@
 
                             <!-- Image Slide -->
                             <template x-if="slide.type === 'image'">
-                                <img :src="slide.url" class="absolute inset-0 w-full h-full object-cover">
+                                <img :src="slide.url" class="absolute inset-0 w-full h-full object-contain">
                             </template>
 
                             <!-- Video Slide -->
@@ -305,11 +305,11 @@
                     @if($isPpdbActive)
                         this.renderPpdbQr();
                     @endif
-                    
+
                     // Start Slideshow with dynamic logic
                     if (this.slides.length > 0) {
-                       // Small delay to ensure DOM is ready for players
-                       setTimeout(() => this.playCurrentSlide(), 1000);
+                        // Small delay to ensure DOM is ready for players
+                        setTimeout(() => this.playCurrentSlide(), 1000);
                     }
 
                     // Countdown timer for QR
@@ -332,61 +332,61 @@
                         // Video Logic: Wait for 'ended' event
                         // Delay to allow x-transition to start/render
                         setTimeout(() => {
-                             const container = document.getElementById('slide-' + this.activeSlide);
-                             if (container) {
-                                 const video = container.querySelector('video');
-                                 if (video) {
-                                     video.muted = true; // Ensure muted for autoplay policy
-                                     video.loop = false;
-                                     video.currentTime = 0;
-                                     
-                                     // Remove existing listeners to avoid duplicates if reused (though x-if recreates?)
-                                     // Actually x-for keeps elements map. 
-                                     video.onended = () => {
-                                         console.log('Video ended, next slide');
-                                         this.nextSlide();
-                                     };
-                                     
-                                     video.onerror = (e) => {
-                                         console.log('Video error', e);
-                                         this.nextSlide();
-                                     };
+                            const container = document.getElementById('slide-' + this.activeSlide);
+                            if (container) {
+                                const video = container.querySelector('video');
+                                if (video) {
+                                    video.muted = true; // Ensure muted for autoplay policy
+                                    video.loop = false;
+                                    video.currentTime = 0;
 
-                                     var playPromise = video.play();
-                                     if (playPromise !== undefined) {
-                                         playPromise.catch(error => {
-                                             console.log("Autoplay prevented:", error);
-                                             // If autoplay prevented, maybe force next slide after 5s?
-                                             this.slideTimer = setTimeout(() => this.nextSlide(), 5000);
-                                         });
-                                     }
-                                 } else {
-                                     this.nextSlide();
-                                 }
-                             }
+                                    // Remove existing listeners to avoid duplicates if reused (though x-if recreates?)
+                                    // Actually x-for keeps elements map. 
+                                    video.onended = () => {
+                                        console.log('Video ended, next slide');
+                                        this.nextSlide();
+                                    };
+
+                                    video.onerror = (e) => {
+                                        console.log('Video error', e);
+                                        this.nextSlide();
+                                    };
+
+                                    var playPromise = video.play();
+                                    if (playPromise !== undefined) {
+                                        playPromise.catch(error => {
+                                            console.log("Autoplay prevented:", error);
+                                            // If autoplay prevented, maybe force next slide after 5s?
+                                            this.slideTimer = setTimeout(() => this.nextSlide(), 5000);
+                                        });
+                                    }
+                                } else {
+                                    this.nextSlide();
+                                }
+                            }
                         }, 500); // 500ms delay for transition
                     } else if (slide.type === 'youtube') {
                         // YouTube Logic
                         if (isYoutubeApiReady) {
-                             setTimeout(() => {
-                                 const playerId = 'yt-player-' + this.activeSlide;
-                                 
-                                 if (!this.ytPlayers[this.activeSlide]) {
-                                     this.ytPlayers[this.activeSlide] = new YT.Player(playerId, {
-                                         events: {
-                                             'onReady': (event) => {
-                                                 event.target.mute();
-                                                 event.target.playVideo();
-                                             },
-                                             'onStateChange': (event) => {
-                                                 if (event.data === 0) {
-                                                     this.nextSlide();
-                                                 }
-                                             }
-                                         }
-                                     });
-                                 } else {
-                                     // Player exists
+                            setTimeout(() => {
+                                const playerId = 'yt-player-' + this.activeSlide;
+
+                                if (!this.ytPlayers[this.activeSlide]) {
+                                    this.ytPlayers[this.activeSlide] = new YT.Player(playerId, {
+                                        events: {
+                                            'onReady': (event) => {
+                                                event.target.mute();
+                                                event.target.playVideo();
+                                            },
+                                            'onStateChange': (event) => {
+                                                if (event.data === 0) {
+                                                    this.nextSlide();
+                                                }
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    // Player exists
                                     const player = this.ytPlayers[this.activeSlide];
                                     if (player && typeof player.playVideo === 'function') {
                                         player.mute();
@@ -396,9 +396,9 @@
                                         this.ytPlayers[this.activeSlide] = new YT.Player(playerId, {
                                             events: {
                                                 'onReady': (event) => {
-                                                     event.target.mute();
-                                                     event.target.playVideo();
-                                                 },
+                                                    event.target.mute();
+                                                    event.target.playVideo();
+                                                },
                                                 'onStateChange': (event) => {
                                                     if (event.data === 0) {
                                                         this.nextSlide();
@@ -407,12 +407,12 @@
                                             }
                                         });
                                     }
-                                 }
-                             }, 500);
-                         } else {
-                             // API not ready yet, fallback to timer
-                             this.slideTimer = setTimeout(() => this.nextSlide(), 10000);
-                         }
+                                }
+                            }, 500);
+                        } else {
+                            // API not ready yet, fallback to timer
+                            this.slideTimer = setTimeout(() => this.nextSlide(), 10000);
+                        }
 
                     } else {
                         // Image: Use fixed interval
@@ -421,7 +421,7 @@
                         }, this.slideInterval);
                     }
                 },
-                
+
                 nextSlide() {
                     this.activeSlide = (this.activeSlide + 1) % this.slides.length;
                     this.playCurrentSlide();
