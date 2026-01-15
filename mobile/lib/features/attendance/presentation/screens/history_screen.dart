@@ -174,7 +174,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   Widget _buildTimeRow(String label, String? timeString) {
     String time = '--:--';
     if (timeString != null) {
-      time = DateFormat('HH:mm').format(DateTime.parse(timeString));
+      time = _formatTime(timeString);
     }
     return Row(
       children: [
@@ -182,5 +182,25 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         Text(time, style: GoogleFonts.lexend(fontSize: 12, fontWeight: FontWeight.bold)),
       ],
     );
+  }
+
+  String _formatTime(String timeString) {
+    try {
+      if (timeString.isEmpty) return '--:--';
+      
+      // If it's already "HH:mm:ss" or similar (no 'T' or date part)
+      if (!timeString.contains('T') && !timeString.contains('-')) {
+        final parts = timeString.split(':');
+        if (parts.length >= 2) {
+          return '${parts[0]}:${parts[1]}';
+        }
+        return timeString;
+      }
+      
+      // Try full parsing
+      return DateFormat('HH:mm').format(DateTime.parse(timeString));
+    } catch (e) {
+      return timeString; // Fallback to original string if all else fails
+    }
   }
 }
