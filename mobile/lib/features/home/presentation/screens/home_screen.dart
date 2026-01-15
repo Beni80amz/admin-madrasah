@@ -246,21 +246,27 @@ class _DashboardContentState extends ConsumerState<_DashboardContent> {
                 // Stats Row
                 Row(
                   children: [
-                    Expanded(child: _buildStatCard("Masuk", 
-                      today != null && today['time_in'] != null 
-                        ? DateFormat('HH:mm').format(DateTime.parse(today['time_in']))
-                        : '--:--', 
-                      Icons.login_rounded, 
-                      AppTheme.primaryDarkColor
-                    )),
-                    const SizedBox(width: 12),
-                    Expanded(child: _buildStatCard("Pulang", 
-                      today != null && today['time_out'] != null 
-                        ? DateFormat('HH:mm').format(DateTime.parse(today['time_out']))
-                        : '--:--', 
-                      Icons.logout_rounded, 
-                      Colors.orange
-                    )),
+                      Expanded(
+                        child: _buildStatCard(
+                          'Masuk',
+                          today != null && today['time_in'] != null
+                              ? _formatTime(today['time_in'])
+                              : '--:--',
+                          Icons.login_rounded,
+                          AppTheme.primaryDarkColor,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildStatCard(
+                          'Pulang',
+                          today != null && today['time_out'] != null
+                              ? _formatTime(today['time_out'])
+                              : '--:--',
+                          Icons.logout_rounded,
+                          Colors.orange,
+                        ),
+                      ),
                      const SizedBox(width: 12),
                     Expanded(child: _buildStatCard("Status", 
                       today != null ? "Hadir" : "-", // Simplification
@@ -438,5 +444,26 @@ class _DashboardContentState extends ConsumerState<_DashboardContent> {
          Text(status, style: GoogleFonts.lexend(fontSize: 10, color: color, fontWeight: FontWeight.bold)),
        ],
      );
+  }
+
+
+  String _formatTime(String timeString) {
+    try {
+      if (timeString.isEmpty) return '--:--';
+      
+      // If it's already "HH:mm:ss" or similar (no 'T' or date part)
+      if (!timeString.contains('T') && !timeString.contains('-')) {
+        final parts = timeString.split(':');
+        if (parts.length >= 2) {
+          return '${parts[0]}:${parts[1]}';
+        }
+        return timeString;
+      }
+      
+      // Try full parsing
+      return DateFormat('HH:mm').format(DateTime.parse(timeString));
+    } catch (e) {
+      return timeString; // Fallback to original string if all else fails
+    }
   }
 }
