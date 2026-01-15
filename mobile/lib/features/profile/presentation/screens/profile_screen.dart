@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../auth/presentation/auth_controller.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../admin/presentation/screens/user_management_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -47,6 +48,27 @@ class ProfileScreen extends ConsumerWidget {
             _buildInfoTile(Icons.phone, 'No. Telepon', profile?['no_hp'] ?? '-'),
             _buildInfoTile(Icons.location_on, 'Alamat', profile?['alamat'] ?? '-'),
             
+            _buildInfoTile(Icons.location_on, 'Alamat', profile?['alamat'] ?? '-'),
+            
+            // Admin Menu
+            if (userData?['email'] == 'admin@admin.com' || userData?['name'] == 'Administrator') ...[
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const UserManagementScreen()));
+                  },
+                  icon: const Icon(Icons.admin_panel_settings),
+                  label: const Text('Admin: Reset Perangkat User'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueGrey,
+                  ),
+                ),
+              ),
+            ],
+
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,

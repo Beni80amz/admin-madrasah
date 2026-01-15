@@ -36,4 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Leave Requests
     Route::get('leave-request', [ApiLeaveRequestController::class, 'index']);
     Route::post('leave-request', [ApiLeaveRequestController::class, 'store']);
+
+    // Admin Device Reset
+    Route::get('admin/users', [App\Http\Controllers\Api\ApiAdminController::class, 'getUsers']);
+    Route::post('admin/users/{id}/reset-device', [App\Http\Controllers\Api\ApiAdminController::class, 'resetDevice']);
 });
