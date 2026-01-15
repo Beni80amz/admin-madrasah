@@ -135,7 +135,13 @@ class AttendanceRepository {
       );
       
       if (response.data['status'] == 'success') {
-        return response.data['data'] as List<dynamic>;
+        // Backend returns { data: { attendances: [], summary: {} } }
+        final data = response.data['data'];
+        if (data is Map && data.containsKey('attendances')) {
+           return data['attendances'] as List<dynamic>;
+        }
+        // Fallback or if structure allows direct list
+        return data is List ? data : [];
       } else {
         throw Exception(response.data['message'] ?? 'Failed to load history');
       }
@@ -152,7 +158,20 @@ class AttendanceRepository {
       );
       
       if (response.data['status'] == 'success') {
-        return response.data['data'] as List<dynamic>;
+         // Backend returns { data: { timeline: { "Sen": {...}, ... } } }
+         final data = response.data['data'];
+         
+         if (data is Map && data.containsKey('timeline')) {
+            final timeline = data['timeline'];
+            if (timeline is Map) {
+              return timeline.values.toList();
+            } else if (timeline is List) {
+              return timeline;
+            }
+         }
+         
+         if (data is List) return data;
+         return [];
       } else {
         throw Exception(response.data['message'] ?? 'Failed to load weekly timeline');
       }
