@@ -11,6 +11,8 @@ import '../attendance_controller.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../features/settings/presentation/server_settings_screen.dart';
 
+import '../../services/face_detection_service.dart';
+
 class ScanScreen extends ConsumerStatefulWidget {
   const ScanScreen({super.key});
 
@@ -24,6 +26,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen> with SingleTickerProvid
     returnImage: false,
   );
   
+  // Services
+  final FaceDetectionService _faceDetectionService = FaceDetectionService();
+
   // Animation for scanning line
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -87,6 +92,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> with SingleTickerProvid
     WidgetsBinding.instance.removeObserver(this);
     _scannerController.dispose();
     _animationController.dispose();
+    _faceDetectionService.dispose();
     super.dispose();
   }
 
@@ -178,20 +184,48 @@ class _ScanScreenState extends ConsumerState<ScanScreen> with SingleTickerProvid
      final XFile? photo = await picker.pickImage(
        source: ImageSource.camera,
        preferredCameraDevice: CameraDevice.front,
-       maxWidth: 600, // Resize to max 600px width
-       maxHeight: 600, // Resize to max 600px height
-       imageQuality: 50, // Compress to 50% quality
+       maxWidth: 600, 
+       maxHeight: 600, 
+       imageQuality: 50, 
      );
      
      if (photo != null) {
        final File file = File(photo.path);
+       
+       // Face Detection Validation
+       if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(
+           const SnackBar(content: Text('Memvalidasi wajah...')),
+         );
+       }
+       
+       final String? error = await _faceDetectionService.validateFace(file);
+       
+       if (error != null) {
+         if (mounted) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            showDialog(
+              context: context, 
+              builder: (ctx) => AlertDialog(
+                title: const Text('Validasi Gagal'),
+                content: Text(error),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Ulangi'))
+                ],
+              )
+            );
+         }
+         return; // Stop if invalid
+       }
+
        final int sizeInBytes = await file.length();
        final double sizeInKb = sizeInBytes / 1024;
        
        if (mounted) {
+         ScaffoldMessenger.of(context).hideCurrentSnackBar();
          setState(() => _selfieImage = file);
          ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text('Foto diambil. Ukuran: ${sizeInKb.toStringAsFixed(1)} KB')),
+           SnackBar(content: Text('Wajah Valid! Ukuran: ${sizeInKb.toStringAsFixed(1)} KB', style: const TextStyle(color: Colors.white)), backgroundColor: Colors.green),
          );
        }
      }

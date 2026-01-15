@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "id.sch.miamzdepok.absensi.digital.mobile"
-    compileSdk = 33
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
