@@ -178,10 +178,22 @@ class _ScanScreenState extends ConsumerState<ScanScreen> with SingleTickerProvid
      final XFile? photo = await picker.pickImage(
        source: ImageSource.camera,
        preferredCameraDevice: CameraDevice.front,
-       imageQuality: 50,
+       maxWidth: 600, // Resize to max 600px width
+       maxHeight: 600, // Resize to max 600px height
+       imageQuality: 50, // Compress to 50% quality
      );
+     
      if (photo != null) {
-       setState(() => _selfieImage = File(photo.path));
+       final File file = File(photo.path);
+       final int sizeInBytes = await file.length();
+       final double sizeInKb = sizeInBytes / 1024;
+       
+       if (mounted) {
+         setState(() => _selfieImage = file);
+         ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(content: Text('Foto diambil. Ukuran: ${sizeInKb.toStringAsFixed(1)} KB')),
+         );
+       }
      }
   }
 
