@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,12 +14,26 @@ class UserManagementScreen extends ConsumerStatefulWidget {
 
 class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
   final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-    // Load initial empty list or all users
     Future.microtask(() => ref.read(adminControllerProvider.notifier).searchUsers(''));
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      ref.read(adminControllerProvider.notifier).searchUsers(query);
+    });
   }
 
   void _onResetDevice(int userId, String userName) {
@@ -64,6 +79,7 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: _searchController,
+              textInputAction: TextInputAction.search,
               decoration: InputDecoration(
                 hintText: 'Cari Nama / NIP...',
                 prefixIcon: const Icon(Icons.search),
@@ -71,7 +87,9 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
                 filled: true,
                 fillColor: Colors.grey.shade50,
               ),
+              onChanged: _onSearchChanged,
               onSubmitted: (value) {
+                _debounce?.cancel();
                 ref.read(adminControllerProvider.notifier).searchUsers(value);
               },
             ),
@@ -95,7 +113,7 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
                           return ListTile(
                             leading: CircleAvatar(
                               backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
-                              child: Text(displayName[0], style: TextStyle(color: AppTheme.primaryColor)),
+                              child: Text(displayName[0].toUpperCase(), style: TextStyle(color: AppTheme.primaryColor)),
                             ),
                             title: Text(displayName, style: GoogleFonts.lexend(fontWeight: FontWeight.bold)),
                             subtitle: Text(displaySub, style: GoogleFonts.lexend(fontSize: 12, color: Colors.grey)),
