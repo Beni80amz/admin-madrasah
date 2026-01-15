@@ -48,8 +48,7 @@ class ProfileScreen extends ConsumerWidget {
             _buildInfoTile(Icons.phone, 'No. Telepon', profile?['no_hp'] ?? '-'),
             _buildInfoTile(Icons.location_on, 'Alamat', profile?['alamat'] ?? '-'),
             
-            _buildInfoTile(Icons.location_on, 'Alamat', profile?['alamat'] ?? '-'),
-            
+
             // Admin Menu
             if (userData?['email'] == 'admin@admin.com' || userData?['name'] == 'Administrator') ...[
               const SizedBox(height: 32),

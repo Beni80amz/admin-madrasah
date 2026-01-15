@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'admin_repository.dart';
+import '../data/admin_repository.dart';
 
 class AdminState {
   final bool isLoading;
