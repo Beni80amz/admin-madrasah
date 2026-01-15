@@ -6,7 +6,7 @@ import '../../auth/data/auth_repository.dart';
 
 // Provider
 final adminRepositoryProvider = Provider<AdminRepository>((ref) {
-  final dio = ref.watch(dioProvider); 
+  final dio = Dio(); 
   return AdminRepository(dio, ref);
 });
 
