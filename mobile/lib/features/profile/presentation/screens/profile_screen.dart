@@ -50,7 +50,7 @@ class ProfileScreen extends ConsumerWidget {
             
 
             // Admin Menu
-            if (userData?['email'] == 'admin@admin.com' || userData?['name'] == 'Administrator') ...[
+            if (userData?['email'] == 'admin@admin.com' || userData?['name'] == 'Administrator' || userData?['email'] == 'admin@madrasah.sch.id') ...[
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
