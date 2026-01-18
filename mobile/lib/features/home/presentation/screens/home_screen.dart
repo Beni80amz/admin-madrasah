@@ -302,7 +302,15 @@ class _DashboardContentState extends ConsumerState<_DashboardContent> {
                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                    children: [
                      Text("Rekap Minggu Ini", style: GoogleFonts.lexend(fontSize: 16, fontWeight: FontWeight.bold)),
-                     Text("Lihat Semua", style: GoogleFonts.lexend(fontSize: 12, color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
+                     InkWell(
+                        onTap: () {
+                           Navigator.push(context, MaterialPageRoute(builder: (_) => const HistoryScreen()));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Text("Lihat Semua", style: GoogleFonts.lexend(fontSize: 12, color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
+                        ),
+                     ),
                    ],
                  ),
                  const SizedBox(height: 12),
@@ -315,13 +323,7 @@ class _DashboardContentState extends ConsumerState<_DashboardContent> {
                    ),
                    child: Row(
                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                     children: [
-                        _buildDayRecapFromData(weekly, 1), // Monday
-                        _buildDayRecapFromData(weekly, 2), // Tuesday
-                        _buildDayRecapFromData(weekly, 3), // Wednesday
-                        _buildDayRecapFromData(weekly, 4), // Thursday
-                        _buildDayRecapFromData(weekly, 5), // Friday
-                     ],
+                     children: _buildWeeklyRecapChildren(weekly),
                    ),
                  )
               ],
@@ -330,6 +332,47 @@ class _DashboardContentState extends ConsumerState<_DashboardContent> {
         ],
       ),
     );
+  }
+
+  // Helper to build children dynamically
+  List<Widget> _buildWeeklyRecapChildren(List<dynamic>? weeklyData) {
+      if (weeklyData == null || weeklyData.isEmpty) {
+          // Fallback static or empty
+          return [const Text("Memuat data...")];
+      }
+      
+      List<Widget> children = [];
+      // Backend returns a list (0=Sen, 1=Sel, etc.)
+      int index = 0;
+      for (var dayData in weeklyData) {
+          index++;
+          // Logic: 
+          // If day is Saturday (index 6, assuming 1-based logic in loop count or check date)
+          // Actually, backend returns items. We check 'label'.
+          // If label is 'Libur' and day is Saturday, maybe hide?
+          // Let's check the date to be sure of the day.
+          
+          bool shouldShow = true;
+          if (dayData['date'] != null) {
+              final date = DateTime.parse(dayData['date']);
+              // If Saturday (6) and label is Libur, hide it per requirements
+              // "Jika ... sampai Jumat (Sabtu Minggu Libur), maka hari yang ditampilkan Senin-Jumat"
+              if (date.weekday == 6) { // Saturday
+                  if (dayData['label'] == 'Libur') {
+                      shouldShow = false;
+                  }
+              }
+              // If Sunday (7), we usually don't get it from backend loop 0-5. 
+          }
+          
+          if (shouldShow) {
+              children.add(_buildDayRecapItem(dayData));
+          }
+      }
+      
+      // If we have fewer than 5 items displayed, maybe alignment looks weird?
+      // Row is SpaceBetween. 
+      return children;
   }
 
   Widget _buildStatCard(String label, String value, IconData icon, Color color) {
@@ -378,50 +421,48 @@ class _DashboardContentState extends ConsumerState<_DashboardContent> {
     );
   }
   
-  Widget _buildDayRecapFromData(List<dynamic> weeklyData, int weekday) {
-    // Weekday: 1 = Mon, 7 = Sun
-    final days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-    final dayLabel = days[weekday - 1];
-    
-    // Find data for this weekday
-    dynamic dayData;
-    try {
-      dayData = weeklyData.firstWhere((element) {
-        if (element['date'] != null) {
-          final date = DateTime.parse(element['date']);
-          return date.weekday == weekday;
-        }
-        return false;
-      }, orElse: () => null);
-    } catch (e) {
-      dayData = null;
-    }
+  Widget _buildDayRecapItem(dynamic dayData) {
+     // Weekday determination 
+     String dayLabel = '?';
+     if (dayData['date'] != null) {
+         final date = DateTime.parse(dayData['date']);
+         final days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+         dayLabel = days[date.weekday - 1];
+     }
 
-    String status = '--';
-    Color color = Colors.grey;
-    IconData icon = Icons.remove;
+     String status = dayData['label'] ?? '--';
+     String colorStr = dayData['color'] ?? 'gray';
+     Color color = Colors.grey;
+     IconData icon = Icons.remove;
 
-    if (dayData != null) {
-      status = 'Hadir'; // Default to Hadir if record exists, or check 'status' field
-      color = Colors.green;
-      icon = Icons.check;
-      
-      // If backend provides specific status:
-      if (dayData['status'] != null) {
-         // Map backend status to UI
-         // Example: 'late', 'absent', 'permit'
-         final s = dayData['status'].toString().toLowerCase();
-         if (s.contains('sakit') || s.contains('izin')) {
-            status = 'Sakit';
-            color = Colors.orange;
-            icon = Icons.sick;
-         } else if (s.contains('alpha') || s.contains('alpa')) {
-            status = 'Alpha';
+     // Map Backend Colors to Flutter Colors
+     switch (colorStr) {
+         case 'green':
+            color = Colors.green;
+            icon = Icons.check;
+            break;
+         case 'yellow':
+            color = Colors.orange; // Yellow is hard to read
+            icon = Icons.access_time; // Late/Sick
+            if (status.toLowerCase().contains('sakit')) icon = Icons.sick;
+            break;
+         case 'blue':
+            color = Colors.blue;
+            icon = Icons.assignment_ind; // Permit
+            break;
+         case 'red':
             color = Colors.red;
-            icon = Icons.close;
-         }
-      }
-    }
+            icon = Icons.close; // Alpha
+            break;
+         default:
+            color = Colors.grey;
+            icon = Icons.remove;
+     }
+     
+     // Override icon for 'Hadir' (time label)
+     if (color == Colors.green) {
+         icon = Icons.check; 
+     }
 
      return Column(
        children: [

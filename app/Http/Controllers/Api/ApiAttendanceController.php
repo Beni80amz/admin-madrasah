@@ -232,38 +232,78 @@ class ApiAttendanceController extends Controller
 
         $timeline = [];
         $days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+        $fullDays = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+
+        // Fetch Operational Hours
+        $operationalHours = \App\Models\OperationalHour::where('is_active', true)->get()->keyBy('hari');
 
         for ($i = 0; $i < 6; $i++) {
             $date = $startOfWeek->copy()->addDays($i);
+            $dayName = $fullDays[$i];
+
+            // Check Operational Data
+            $isLibur = false;
+            if (isset($operationalHours[$dayName])) {
+                if ($operationalHours[$dayName]->is_libur) {
+                    $isLibur = true;
+                }
+            } else {
+                // If not in operational table (e.g. Sabtu if not listed), assume Libur? 
+                // Or default to optional. Let's assume Libur if explicitly set or if loop goes beyond operational days.
+                // For now, if not in DB, we treat as normal unless logic demands otherwise.
+            }
+
             $attendance = Attendance::where('user_id', $user->id)
                 ->whereDate('date', $date)
                 ->first();
 
-            $color = 'gray';
-            $label = '-';
+            $color = 'gray'; // Default
 
-            if ($attendance) {
-                switch ($attendance->status) {
-                    case 'hadir':
-                        $color = 'green';
-                        $label = $attendance->time_in ? Carbon::parse($attendance->time_in)->format('H:i') : 'Hadir';
-                        break;
-                    case 'telat':
-                        $color = 'yellow';
-                        $label = 'Telat';
-                        break;
-                    case 'izin':
-                        $color = 'blue';
-                        $label = 'Izin';
-                        break;
-                    case 'sakit':
-                        $color = 'yellow';
-                        $label = 'Sakit';
-                        break;
-                    case 'alpha':
+            if ($isLibur) {
+                // If Libur, mark as such regardless of attendance (unless they attended anyway?)
+                // Usually if Libur, expected is Libur.
+                $color = 'gray';
+                $label = 'Libur';
+
+                // If somehow they attended on Libur
+                if ($attendance && $attendance->status == 'hadir') {
+                    $color = 'green';
+                    $label = $attendance->time_in ? Carbon::parse($attendance->time_in)->format('H:i') : 'Hadir';
+                }
+            } else {
+                $label = '-'; // Default absence or future
+
+                if ($attendance) {
+                    switch ($attendance->status) {
+                        case 'hadir':
+                            $color = 'green';
+                            $label = $attendance->time_in ? Carbon::parse($attendance->time_in)->format('H:i') : 'Hadir';
+                            break;
+                        case 'telat':
+                            $color = 'yellow'; // Or orange in frontend
+                            $label = 'Telat';
+                            break;
+                        case 'izin':
+                            $color = 'blue';
+                            $label = 'Izin';
+                            break;
+                        case 'sakit':
+                            $color = 'yellow';
+                            $label = 'Sakit';
+                            break;
+                        case 'alpha':
+                            $color = 'red';
+                            $label = 'Alpha';
+                            break;
+                    }
+                } else {
+                    // No attendance record
+                    if ($date->isPast() && !$date->isToday()) {
+                        // If past and no record, maybe Alpha? 
+                        // Or just '-' to keep it neutral until system auto-alphas
+                        $label = 'Alpha'; // Or '-'
                         $color = 'red';
-                        $label = 'Alpha';
-                        break;
+                    }
                 }
             }
 

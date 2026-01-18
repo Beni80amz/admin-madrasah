@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public routes (no authentication required)
 Route::post('auth/login', [ApiAuthController::class, 'login']);
+Route::get('school-profile', [ApiAuthController::class, 'schoolProfile']);
 
 // QR Token generation (for monitor screen, public)
 Route::get('attendance/generate-qr', [ApiAttendanceController::class, 'generateQr']);

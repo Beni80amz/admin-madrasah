@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Teacher;
 use App\Models\Student;
+use App\Models\ProfileMadrasah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -92,6 +93,8 @@ class ApiAuthController extends Controller
             ];
         }
 
+        $schoolProfile = ProfileMadrasah::first();
+
         return response()->json([
             'status' => 'success',
             'message' => 'Login berhasil',
@@ -103,6 +106,15 @@ class ApiAuthController extends Controller
                 ],
                 'user_type' => $userType,
                 'profile' => $profileData,
+                'school_profile' => $schoolProfile ? [
+                    'nama_madrasah' => $schoolProfile->nama_madrasah,
+                    'alamat' => $schoolProfile->alamat,
+                    'email' => $schoolProfile->email,
+                    'no_hp' => $schoolProfile->no_hp,
+                    'nama_kepala_madrasah' => $schoolProfile->nama_kepala_madrasah,
+                    'nip_kepala_madrasah' => $schoolProfile->nip_kepala_madrasah,
+                    'tanda_tangan_kepala_madrasah' => $schoolProfile->tanda_tangan_kepala_madrasah ? asset('storage/' . $schoolProfile->tanda_tangan_kepala_madrasah) : null,
+                ] : null,
                 'token' => $token,
             ],
         ]);
@@ -142,6 +154,8 @@ class ApiAuthController extends Controller
             ];
         }
 
+        $schoolProfile = ProfileMadrasah::first();
+
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -152,6 +166,15 @@ class ApiAuthController extends Controller
                 ],
                 'user_type' => $userType,
                 'profile' => $profileData,
+                'school_profile' => $schoolProfile ? [
+                    'nama_madrasah' => $schoolProfile->nama_madrasah,
+                    'alamat' => $schoolProfile->alamat,
+                    'email' => $schoolProfile->email,
+                    'no_hp' => $schoolProfile->no_hp,
+                    'nama_kepala_madrasah' => $schoolProfile->nama_kepala_madrasah,
+                    'nip_kepala_madrasah' => $schoolProfile->nip_kepala_madrasah,
+                    'tanda_tangan_kepala_madrasah' => $schoolProfile->tanda_tangan_kepala_madrasah ? asset('storage/' . $schoolProfile->tanda_tangan_kepala_madrasah) : null,
+                ] : null,
             ],
         ]);
     }
@@ -166,6 +189,23 @@ class ApiAuthController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Logout berhasil',
+        ]);
+    }
+
+    /**
+     * Get School Profile (Public)
+     */
+    public function schoolProfile()
+    {
+        $schoolProfile = ProfileMadrasah::first();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $schoolProfile ? [
+                'nama_madrasah' => $schoolProfile->nama_madrasah,
+                'alamat' => $schoolProfile->alamat,
+                'logo' => $schoolProfile->logo ? asset('storage/' . $schoolProfile->logo) : null,
+            ] : null,
         ]);
     }
 }

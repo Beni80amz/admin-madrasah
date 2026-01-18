@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../attendance_controller.dart';
+import '../../../../features/auth/data/auth_repository.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../services/history_pdf_service.dart';
 
 class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
@@ -49,6 +51,34 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     }
   }
 
+  Future<void> _exportPdf() async {
+    final attendanceState = ref.read(attendanceControllerProvider);
+    if (attendanceState.history.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Tidak ada data untuk diexport')),
+      );
+      return;
+    }
+
+    try {
+      final authRepo = ref.read(authRepositoryProvider);
+      final userData = authRepo.getUserData();
+
+      await HistoryPdfService().generateAndPrintPdf(
+        historyData: attendanceState.history, 
+        month: _selectedDate,
+        schoolProfile: userData?['school_profile'],
+        userProfile: userData?['profile'] ?? userData?['user'], // Fallback to basic user if profile missing
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal export PDF: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final attendanceState = ref.watch(attendanceControllerProvider);
@@ -60,6 +90,11 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           IconButton(
             icon: const Icon(Icons.calendar_month),
             onPressed: _pickMonth,
+          ),
+          IconButton(
+            icon: const Icon(Icons.print),
+            tooltip: 'Export PDF',
+            onPressed: _exportPdf,
           ),
         ],
       ),

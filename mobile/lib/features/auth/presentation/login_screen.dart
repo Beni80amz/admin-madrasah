@@ -5,6 +5,7 @@ import '../../../core/constants/api_constants.dart';
 import '../../../core/theme/app_theme.dart';
 import 'auth_controller.dart';
 import '../../settings/presentation/server_settings_screen.dart';
+import '../data/auth_repository.dart';
 // import '../../home/presentation/screens/home_screen.dart'; // To be mapped
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -19,6 +20,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  String _schoolName = 'Miamz Depok'; // Default
+  String? _logoUrl;
+
+  @override
+  void initState() {
+     super.initState();
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+        _loadSchoolProfile();
+     });
+  }
+
+  Future<void> _loadSchoolProfile() async {
+     try {
+        final authRepo = ref.read(authRepositoryProvider);
+        final profile = await authRepo.getSchoolProfile();
+        if (profile != null) {
+           setState(() {
+              if (profile['nama_madrasah'] != null) {
+                 _schoolName = profile['nama_madrasah'];
+              }
+              if (profile['logo'] != null) {
+                 _logoUrl = profile['logo'];
+              }
+           });
+        }
+     } catch (e) {
+        print('Error loading school profile: $e');
+     }
+  }
 
   @override
   void dispose() {
@@ -96,12 +126,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
-                            child: Image.asset(
-                              'assets/images/logo.png',
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(Icons.school, size: 60, color: AppTheme.primaryColor),
-                            ),
+                            child: _logoUrl != null 
+                              ? Image.network(
+                                  _logoUrl!,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Image.asset('assets/images/logo.png', fit: BoxFit.contain),
+                                )
+                              : Image.asset(
+                                  'assets/images/logo.png',
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.school, size: 60, color: AppTheme.primaryColor),
+                                ),
                         ),
                       ),
                     ),
@@ -116,7 +153,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
                 Text(
-                  'Miamz Depok',
+                  _schoolName,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.lexend(
                     fontSize: 16,

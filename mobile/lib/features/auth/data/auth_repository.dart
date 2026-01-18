@@ -35,6 +35,7 @@ class AuthRepository {
         final user = data['data']['user'];
         final userType = data['data']['user_type'];
         final profile = data['data']['profile'];
+        final schoolProfile = data['data']['school_profile'];
 
         // Save to Hive
         await _authBox.put(ApiConstants.tokenKey, token);
@@ -42,6 +43,7 @@ class AuthRepository {
           'user': user,
           'user_type': userType,
           'profile': profile,
+          'school_profile': schoolProfile,
         });
         
         return data['data'];
@@ -94,4 +96,25 @@ class AuthRepository {
   }
   
   bool get isAuthenticated => getToken() != null;
+
+  Future<Map<String, dynamic>?> getSchoolProfile() async {
+    try {
+      final response = await _dio.get(
+        '${ApiConstants.apiUrl}/school-profile',
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data['status'] == 'success') {
+        return response.data['data'];
+      }
+      return null;
+    } catch (e) {
+      print('Failed to load school profile: $e');
+      return null;
+    }
+  }
 }
