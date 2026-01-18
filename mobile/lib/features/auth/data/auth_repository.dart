@@ -2,16 +2,19 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../../core/constants/api_constants.dart';
+import '../../../core/services/device_id_service.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepository(Dio(), Hive.box('authBox'));
+  final deviceIdService = ref.watch(deviceIdServiceProvider);
+  return AuthRepository(Dio(), Hive.box('authBox'), deviceIdService);
 });
 
 class AuthRepository {
   final Dio _dio;
   final Box _authBox;
+  final DeviceIdService _deviceIdService;
 
-  AuthRepository(this._dio, this._authBox);
+  AuthRepository(this._dio, this._authBox, this._deviceIdService);
 
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
@@ -20,7 +23,7 @@ class AuthRepository {
         data: {
           'email': email,
           'password': password,
-          'device_name': 'mobile_app', // You might want to get real device name later
+          'device_name': _deviceIdService.getDeviceId(), // Send persistent ID as device name
         },
         options: Options(
           headers: {

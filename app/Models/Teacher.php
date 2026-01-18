@@ -104,16 +104,31 @@ class Teacher extends Model
     public function ensureUserExists(): void
     {
         try {
-            // If user already linked, skip
-            if ($this->user_id) {
-                return;
-            }
-
-            // Determine password and email
+            // Determine password and email based on current NIP/NIK
             $password = $this->nip ?? $this->nik ?? '12345678';
             $email = $this->nip ? $this->nip . '@teacher.com' : ($this->nik ? $this->nik . '@teacher.com' : uniqid() . '@teacher.com');
 
-            // Check if user already exists
+            // If user already linked, check for sync updates
+            if ($this->user_id) {
+                $user = \App\Models\User::find($this->user_id);
+                if ($user) {
+                    // Check if email/username needs update
+                    // We treat the email as the username handle here (based on NIP)
+                    if ($user->email !== $email) {
+                        $user->update([
+                            'email' => $email,
+                            'name' => $this->nama_lengkap, // Also sync name
+                            'password' => \Illuminate\Support\Facades\Hash::make($password),
+                        ]);
+                    } elseif ($user->name !== $this->nama_lengkap) {
+                        // Sync name only if email matches
+                        $user->update(['name' => $this->nama_lengkap]);
+                    }
+                }
+                return;
+            }
+
+            // Check if user already exists by email (detached case)
             $existingUser = \App\Models\User::where('email', $email)->first();
 
             if (!$existingUser) {
@@ -142,7 +157,7 @@ class Teacher extends Model
                 $this->save();
             }
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Auto Create User Error: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Auto Create/Sync User Error: ' . $e->getMessage());
         }
     }
 }

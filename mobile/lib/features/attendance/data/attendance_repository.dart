@@ -7,10 +7,13 @@ import '../../../core/constants/api_constants.dart';
 import '../../../core/network/network_info.dart';
 import '../../../core/offline/offline_queue_service.dart';
 
+import '../../../core/services/device_id_service.dart';
+
 final attendanceRepositoryProvider = Provider<AttendanceRepository>((ref) {
   final networkInfo = ref.watch(networkInfoProvider);
   final offlineQueue = ref.watch(offlineQueueServiceProvider);
-  return AttendanceRepository(Dio(), Hive.box('authBox'), networkInfo, offlineQueue);
+  final deviceIdService = ref.watch(deviceIdServiceProvider);
+  return AttendanceRepository(Dio(), Hive.box('authBox'), networkInfo, offlineQueue, deviceIdService);
 });
 
 class AttendanceRepository {
@@ -18,8 +21,9 @@ class AttendanceRepository {
   final Box _authBox;
   final NetworkInfo _networkInfo;
   final OfflineQueueService _offlineQueue;
+  final DeviceIdService _deviceIdService;
 
-  AttendanceRepository(this._dio, this._authBox, this._networkInfo, this._offlineQueue);
+  AttendanceRepository(this._dio, this._authBox, this._networkInfo, this._offlineQueue, this._deviceIdService);
 
   String? get _token => _authBox.get(ApiConstants.tokenKey);
 
@@ -69,7 +73,8 @@ class AttendanceRepository {
         'longitude': longitude,
         'type': type,
         'action_status': actionStatus,
-        'device_id': 'mobile_device_id', // Implement real ID
+        'action_status': actionStatus,
+        'device_id': _deviceIdService.getDeviceId(), // Send real persistent ID
       };
 
       if (type == 'qr' && qrContent != null) {
