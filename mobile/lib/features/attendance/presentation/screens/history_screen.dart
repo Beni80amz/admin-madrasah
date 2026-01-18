@@ -67,8 +67,12 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       await HistoryPdfService().generateAndPrintPdf(
         historyData: attendanceState.history, 
         month: _selectedDate,
-        schoolProfile: userData?['school_profile'],
-        userProfile: userData?['profile'] ?? userData?['user'], // Fallback to basic user if profile missing
+        schoolProfile: userData?['school_profile'] != null 
+            ? Map<String, dynamic>.from(userData!['school_profile']) 
+            : null,
+        userProfile: (userData?['profile'] ?? userData?['user']) != null
+            ? Map<String, dynamic>.from(userData?['profile'] ?? userData?['user'])
+            : null,
       );
     } catch (e) {
       if (mounted) {
