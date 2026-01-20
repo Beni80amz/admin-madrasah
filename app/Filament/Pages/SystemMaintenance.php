@@ -288,20 +288,70 @@ class SystemMaintenance extends Page
     /**
      * Create storage link
      */
+    /**
+     * Create storage link (Custom Logic for Shared Hosting)
+     */
     public function linkStorage(): void
     {
+        $target = storage_path('app/public');
+        $shortcut = public_path('storage');
+        $messages = [];
+
         try {
-            Artisan::call('storage:link');
-            Notification::make()
-                ->title('Storage Linked')
-                ->body('The [public/storage] directory has been linked.')
-                ->success()
-                ->send();
+            $messages[] = "Target: $target";
+            $messages[] = "Shortcut: $shortcut";
+
+            // Check if target exists
+            if (!file_exists($target)) {
+                // Try to create it if missing
+                if (!is_dir($target)) {
+                    mkdir($target, 0755, true);
+                    $messages[] = "Created missing target directory.";
+                }
+            }
+
+            // Check if shortcut exists
+            if (file_exists($shortcut)) {
+                if (is_link($shortcut)) {
+                    $messages[] = "Existing symlink found. Removing...";
+                    unlink($shortcut);
+                } elseif (is_dir($shortcut)) {
+                    $messages[] = "WARNING: 'storage' in public is a REAL DIRECTORY.";
+                    // Attempt to rename existing directory to back it up
+                    $backupName = $shortcut . '_backup_' . time();
+                    if (rename($shortcut, $backupName)) {
+                        $messages[] = "Renamed code existing directory to $backupName";
+                    } else {
+                        throw new \Exception("Cannot remove/rename existing 'public/storage' directory. Please remove it manually via File Manager.");
+                    }
+                } else {
+                    $messages[] = "Removing existing file at shortcut path...";
+                    unlink($shortcut);
+                }
+            }
+
+            // Create symlink
+            if (symlink($target, $shortcut)) {
+                $messages[] = "SUCCESS: Symlink created.";
+
+                Notification::make()
+                    ->title('Storage Linked Successfully')
+                    ->body(implode("\n", $messages))
+                    ->success()
+                    ->persistent() // Keep it visible so they can read paths
+                    ->send();
+            } else {
+                throw new \Exception("symlink() function returned false.");
+            }
+
         } catch (\Exception $e) {
+            $messages[] = "ERROR: " . $e->getMessage();
+
             Notification::make()
-                ->title('Error')
-                ->body($e->getMessage())
+                ->title('Storage Link Failed')
+                ->body(implode("\n", $messages))
                 ->danger()
+                ->persistent()
                 ->send();
         }
     }
