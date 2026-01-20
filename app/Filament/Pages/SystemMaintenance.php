@@ -291,6 +291,9 @@ class SystemMaintenance extends Page
     /**
      * Create storage link (Custom Logic for Shared Hosting)
      */
+    /**
+     * Create storage link (Custom Logic for Shared Hosting)
+     */
     public function linkStorage(): void
     {
         $target = storage_path('app/public');
