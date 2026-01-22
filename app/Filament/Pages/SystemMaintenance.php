@@ -409,7 +409,8 @@ class SystemMaintenance extends Page
 
         try {
             $homeDir = $this->getHomeDirectory();
-            $process = new SymfonyProcess(['composer', 'install', '--no-dev', '--optimize-autoloader', '--no-interaction']);
+            // Changed to dump-autoload to fix classmap without permission issues on removal
+            $process = new SymfonyProcess(['composer', 'dump-autoload', '--optimize', '--no-interaction']);
             $process->setWorkingDirectory(base_path());
             $process->setEnv([
                 'HOME' => $homeDir,
