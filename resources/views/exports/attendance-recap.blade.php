@@ -209,53 +209,37 @@
         </thead>
         <tbody>
             @foreach ($data as $index => $row)
-                <!-- Row 1: Time In -->
                 <tr>
-                    <td rowspan="2">{{ $index + 1 }}</td>
-                    <td rowspan="2" style="text-align: left; padding-left: 5px;">{{ strtoupper($row['name']) }}</td>
+                    <td>{{ $index + 1 }}</td>
+                    <td style="text-align: left; padding-left: 5px;">{{ strtoupper($row['name']) }}</td>
 
-                    @foreach ($validDates as $d)
+                    @foreach ($validDates as $dIdx => $d)
                         @php
                             $attendance = $row['dates'][$d] ?? null;
                             $status = $attendance ? strtolower($attendance->status) : null;
+                            $isLastCol = ($dIdx === count($validDates) - 1);
+                            $rightBorderStyle = $isLastCol ? 'border-right: 1px solid black !important;' : '';
                         @endphp
 
                         @if ($attendance)
                             @if ($status == 'hadir' || $status == 'telat')
-                                <td style="font-size: 6pt; border-bottom: none;">
-                                    {{ $attendance->time_in ? \Carbon\Carbon::parse($attendance->time_in)->format('H:i') : '-' }}
+                                <td style="font-size: 6pt; {{ $rightBorderStyle }}">
+                                    {{ $attendance->time_in ? \Carbon\Carbon::parse($attendance->time_in)->format('H:i') : '-' }}<br>
+                                    {{ $attendance->time_out ? \Carbon\Carbon::parse($attendance->time_out)->format('H:i') : '-' }}
                                 </td>
                             @elseif ($status == 'sakit')
-                                <td rowspan="2" class="status-sakit">Sakit</td>
+                                <td class="status-sakit" style="{{ $rightBorderStyle }}">Sakit</td>
                             @elseif ($status == 'izin')
-                                <td rowspan="2" class="status-izin">Izin</td>
+                                <td class="status-izin" style="{{ $rightBorderStyle }}">Izin</td>
                             @elseif ($status == 'alpha')
-                                <td rowspan="2" class="status-alpha">Alpha</td>
+                                <td class="status-alpha" style="{{ $rightBorderStyle }}">Alpha</td>
                             @elseif ($status == 'libur')
-                                <td rowspan="2" class="status-libur"
-                                    style="background-color: #ffcccc; color: red; font-weight: bold; font-size: 6pt;">LIBUR</td>
+                                <td class="status-libur" style="background-color: #ffcccc; color: red; font-weight: bold; font-size: 6pt; {{ $rightBorderStyle }}">LIBUR</td>
                             @else
-                                <td rowspan="2">-</td>
+                                <td style="{{ $rightBorderStyle }}">-</td>
                             @endif
                         @else
-                            <td rowspan="2">-</td>
-                        @endif
-                    @endforeach
-                </tr>
-                <!-- Row 2: Time Out -->
-                <tr>
-                    @foreach ($validDates as $d)
-                        @php
-                            $attendance = $row['dates'][$d] ?? null;
-                            $status = $attendance ? strtolower($attendance->status) : null;
-                        @endphp
-
-                        @if ($attendance && ($status == 'hadir' || $status == 'telat'))
-                            <td style="font-size: 6pt; border-top: none;">
-                                {{ $attendance->time_out ? \Carbon\Carbon::parse($attendance->time_out)->format('H:i') : '-' }}
-                            </td>
-                        @else
-                            <!-- Handled by rowspan above for other statuses -->
+                            <td style="{{ $rightBorderStyle }}">-</td>
                         @endif
                     @endforeach
                 </tr>
