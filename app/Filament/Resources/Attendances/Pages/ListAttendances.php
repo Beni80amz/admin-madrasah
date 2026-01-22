@@ -86,7 +86,7 @@ class ListAttendances extends ListRecords
                     ->action(function (array $data) {
                         $recapData = AttendanceRecapExport::getData($data['month'], $data['year']);
                         $pdf = Pdf::loadView('exports.attendance-recap', $recapData)
-                            ->setPaper([0, 0, 609.45, 935.43], 'landscape');
+                            ->setPaper('a4', 'landscape');
 
                         return response()->streamDownload(function () use ($pdf) {
                             echo $pdf->output();
