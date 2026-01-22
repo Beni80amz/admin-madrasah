@@ -38,15 +38,16 @@
 
         /* Specific widths */
         .col-no {
-            width: 15px;
+            width: 25px;
         }
 
         .col-name {
-            width: 130px;
+            /* width: auto; Let it expand */
         }
 
         .col-date {
-            width: 25px;
+            width: 28px;
+            /* Slightly wider distinct columns */
         }
 
         .header-title {
@@ -168,7 +169,7 @@
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
                     $dateNum = $dateObj->format('d/m');
-                                    ?>
+                                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dateNum }}
                                 </th>
@@ -179,7 +180,7 @@
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
                     $dayName = $dateObj->locale('id')->isoFormat('ddd');
-                                    ?>
+                                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dayName }}
                                 </th>
