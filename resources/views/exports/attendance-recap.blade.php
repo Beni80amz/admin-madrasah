@@ -185,8 +185,8 @@
     <table class="data-table">
         <thead>
             <tr style="background-color: #008080; color: white;">
-                <th rowspan="2" class="col-no" style="background-color: #008080; color: white; vertical-align: middle;">NO</th>
-                <th rowspan="2" class="col-name" style="background-color: #008080; color: white; vertical-align: middle;">NAMA GTK</th>
+                <th rowspan="2" class="col-no" style="background-color: #008080; color: white; vertical-align: middle; text-align: center;">NO</th>
+                <th rowspan="2" class="col-name" style="background-color: #008080; color: white; vertical-align: middle; text-align: center;">NAMA GTK</th>
                 @foreach ($validDates as $d)
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
