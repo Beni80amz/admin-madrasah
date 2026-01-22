@@ -7,28 +7,29 @@
     <title>Rekapitulasi Absensi GTK</title>
     <style>
         @page {
-            margin: 3mm;
-            /* Reduced margin */
+            margin: 5mm;
         }
 
         body {
             font-family: Arial, sans-serif;
-            font-size: 6pt;
-            /* Reduced font size */
+            font-size: 8pt;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             border: 1px solid #000;
+            table-layout: fixed;
         }
 
         th,
         td {
-            border: 1px solid #000;
-            padding: 1px;
+            border: 1px solid #000 !important;
+            padding: 2px;
             text-align: center;
             vertical-align: middle;
+            word-wrap: break-word;
+            overflow: hidden;
         }
 
         /* Teal/Green styling for Header */
@@ -38,28 +39,28 @@
             font-weight: bold;
         }
 
-        /* Specific widths */
+        /* Column Widths - Percentage Based */
         .col-no {
-            width: 15px;
-            /* Aggressively reduced */
+            width: 3%;
         }
 
         .col-name {
-            width: 110px;
-            /* Fixed width, reduced per user request */
-            white-space: normal;
-            /* Allow wrapping */
+            width: 18%;
+            /* Adjusted to be smaller but readable */
+            text-align: left !important;
+            padding-left: 4px;
         }
 
         .col-date {
-            width: 21px;
-            /* Aggressively reduced */
+            width: 2.5%;
+            /* 31 columns * 2.5% = 77.5%. Total ~98.5% */
+            font-size: 7pt;
         }
 
         .header-title {
             text-align: center;
             font-weight: bold;
-            font-size: 12pt;
+            font-size: 14pt;
             margin-bottom: 5px;
             text-transform: uppercase;
             color: #008080;
@@ -95,32 +96,31 @@
 
         /* Table Cell Colors */
         .status-hadir {
-            font-size: 5pt;
-            /* Smaller for content */
+            font-size: 7pt;
         }
 
         .status-sakit {
             background-color: #FFD700;
             font-weight: bold;
-            font-size: 6pt;
+            font-size: 7pt;
         }
 
         .status-izin {
             background-color: #87CEFA;
             font-weight: bold;
-            font-size: 6pt;
+            font-size: 7pt;
         }
 
         .status-alpha {
             background-color: #FF0000;
             color: white;
             font-weight: bold;
-            font-size: 6pt;
+            font-size: 7pt;
         }
 
         .status-libur {
             color: red;
-            font-size: 6pt;
+            font-size: 7pt;
         }
 
         .footer-section {
@@ -176,7 +176,7 @@
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
                     $dateNum = $dateObj->format('d/m');
-                                                                    ?>
+                                                                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dateNum }}
                                 </th>
@@ -187,7 +187,7 @@
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
                     $dayName = $dateObj->locale('id')->isoFormat('ddd');
-                                                                    ?>
+                                                                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dayName }}
                                 </th>
