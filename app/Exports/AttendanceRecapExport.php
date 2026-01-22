@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\Teacher;
 use App\Models\Attendance;
 use App\Models\ProfileMadrasah;
+use App\Models\Holiday;
+use App\Models\OperationalHour;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -41,11 +43,77 @@ class AttendanceRecapExport implements FromView, ShouldAutoSize
         $endDate = $startDate->copy()->endOfMonth();
         $daysInMonth = $endDate->day;
 
-        // Generate Valid Dates (Exclude Sundays)
+        // Fetch Holidays
+        $holidays = Holiday::whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->get()
+            ->keyBy(function ($item) {
+                return $item->date->format('Y-m-d');
+            });
+
+        // Determine Working Days from OperationalHour
+        $workingDays = [];
+        $ops = OperationalHour::where('is_active', true)->where('is_libur', false)->get();
+
+        $dayMap = [
+            'senin' => 1,
+            'selasa' => 2,
+            'rabu' => 3,
+            'kamis' => 4,
+            'jumat' => 5,
+            "jum'at" => 5,
+            'sabtu' => 6,
+            'minggu' => 0
+        ];
+
+        foreach ($ops as $op) {
+            $hariRaw = strtolower($op->hari);
+            // Handle "Senin - Jumat"
+            if (str_contains($hariRaw, '-')) {
+                $parts = explode('-', $hariRaw);
+                $startDay = trim($parts[0]);
+                $endDay = trim($parts[1]);
+
+                $startIdx = $dayMap[$startDay] ?? null;
+                $endIdx = $dayMap[$endDay] ?? null;
+
+                if ($startIdx !== null && $endIdx !== null) {
+                    if ($startIdx <= $endIdx) {
+                        for ($i = $startIdx; $i <= $endIdx; $i++)
+                            $workingDays[] = $i;
+                    } else {
+                        // Crossing week boundary? Unlikely but handle
+                        for ($i = $startIdx; $i <= 6; $i++)
+                            $workingDays[] = $i;
+                        for ($i = 0; $i <= $endIdx; $i++)
+                            $workingDays[] = $i;
+                    }
+                }
+            }
+            // Handle "Sabtu, Minggu" or single "Sabtu"
+            else {
+                $parts = explode(',', $hariRaw);
+                foreach ($parts as $part) {
+                    $dName = trim($part);
+                    if (isset($dayMap[$dName])) {
+                        $workingDays[] = $dayMap[$dName];
+                    }
+                }
+            }
+        }
+        $workingDays = array_unique($workingDays);
+
+        // Fallback if config is empty or invalid: Default to Mon-Sat (1-6)
+        if (empty($workingDays)) {
+            $workingDays = [1, 2, 3, 4, 5, 6];
+        }
+
+        // Generate Valid Dates
         $validDates = [];
         for ($d = 1; $d <= $daysInMonth; $d++) {
             $date = Carbon::createFromDate($year, $month, $d);
-            if ($date->dayOfWeek !== Carbon::SUNDAY) {
+            // Check if this day of week is in workingDays
+            if (in_array($date->dayOfWeek, $workingDays)) {
                 $validDates[] = $d;
             }
         }
@@ -87,46 +155,50 @@ class AttendanceRecapExport implements FromView, ShouldAutoSize
                 $currentDate = Carbon::createFromDate($year, $month, $d);
                 $dateStr = $currentDate->format('Y-m-d');
 
+                // Check Holiday
+                if ($holidays->has($dateStr)) {
+                    $holiday = $holidays[$dateStr];
+                    $userData['dates'][$d] = (object) [
+                        'status' => 'libur',
+                        'title' => $holiday->title, // Pass title for view
+                        'time_in' => null,
+                        'time_out' => null,
+                    ];
+                    // Do NOT increment Global Total or User Stats
+                    continue;
+                }
+
                 $attendance = $attendances->has($teacher->user_id)
                     ? $attendances[$teacher->user_id]->firstWhere('date', $dateStr)
                     : null;
 
                 $userData['dates'][$d] = $attendance;
 
-                // Calculate summary (Personal)
-                // Fix: Case Insensitive Check
+                // Global Stats Calculation
+                $globalStats['Total']++;
+
                 if ($attendance) {
                     $status = strtolower($attendance->status);
-                    if ($status == 'hadir' || $status == 'telat')
+                    if ($status == 'hadir' || $status == 'telat') {
                         $userData['summary']['Hadir']++;
-                    elseif ($status == 'sakit')
-                        $userData['summary']['Sakit']++;
-                    elseif ($status == 'izin')
-                        $userData['summary']['Izin']++;
-                    elseif ($status == 'alpha')
-                        $userData['summary']['Alpha']++;
-                }
-
-                // Global Stats
-                $globalStats['Total']++; // Valid working day for 1 person (Total Expected)
-
-                if ($attendance) {
-                    $status = strtolower($attendance->status);
-                    if ($status == 'hadir' || $status == 'telat')
                         $globalStats['Hadir']++;
-                    elseif ($status == 'sakit')
+                    } elseif ($status == 'sakit') {
+                        $userData['summary']['Sakit']++;
                         $globalStats['Sakit']++;
-                    elseif ($status == 'izin')
+                    } elseif ($status == 'izin') {
+                        $userData['summary']['Izin']++;
                         $globalStats['Izin']++;
-                    elseif ($status == 'alpha')
+                    } elseif ($status == 'alpha') {
+                        $userData['summary']['Alpha']++;
                         $globalStats['Alpha']++;
-                    else {
+                    } else {
                         // Unrecognized/Other status -> count as Alpha? or Ignore?
-                        // Let's count as Alpha to ensure 100% total if not categorized
+                        $userData['summary']['Alpha']++;
                         $globalStats['Alpha']++;
                     }
                 } else {
-                    $globalStats['Alpha']++; // Counting missing as Alpha for percentage base
+                    $userData['summary']['Alpha']++;
+                    $globalStats['Alpha']++;
                 }
             }
             $mapData[] = $userData;
@@ -148,10 +220,11 @@ class AttendanceRecapExport implements FromView, ShouldAutoSize
             'month' => $month,
             'year' => $year,
             'daysInMonth' => $daysInMonth,
-            'validDates' => $validDates, // Pass this to view
+            'validDates' => $validDates,
             'monthName' => $startDate->locale('id')->isoFormat('MMMM Y'),
             'profile' => $profile,
             'percentages' => $percentages,
+            'holidays' => $holidays,
         ];
     }
 }

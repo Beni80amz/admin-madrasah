@@ -189,7 +189,7 @@
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
                     $dateNum = $dateObj->format('d/m');
-                                                                                                                    ?>
+                                                                                                                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dateNum }}
                                 </th>
@@ -200,7 +200,7 @@
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
                     $dayName = $dateObj->locale('id')->isoFormat('ddd');
-                                                                                                                    ?>
+                                                                                                                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dayName }}
                                 </th>
@@ -231,6 +231,9 @@
                                 <td rowspan="2" class="status-izin">Izin</td>
                             @elseif ($status == 'alpha')
                                 <td rowspan="2" class="status-alpha">Alpha</td>
+                            @elseif ($status == 'libur')
+                                <td rowspan="2" class="status-libur"
+                                    style="background-color: #ffcccc; color: red; font-weight: bold; font-size: 6pt;">LIBUR</td>
                             @else
                                 <td rowspan="2">-</td>
                             @endif
@@ -263,7 +266,20 @@
     <div class="footer-section">
         <table class="footer-table" style="border: none;">
             <tr>
-                <td style="width: 70%; border: none;"></td>
+                <td style="width: 70%; border: none; text-align: left; vertical-align: top; padding-left: 20px;">
+                    @if(isset($holidays) && count($holidays) > 0)
+                        <div style="font-size: 8pt; font-weight: bold; margin-bottom: 2px;">Keterangan Libur:</div>
+                        <ul style="margin: 0; padding-left: 15px; font-size: 7pt; list-style-type: none;">
+                            @foreach($holidays as $date => $holiday)
+                                <li style="margin-bottom: 2px;">
+                                    <span
+                                        style="font-weight: bold; color: red;">[{{ \Carbon\Carbon::parse($holiday->date)->format('d/m') }}]</span>
+                                    {{ $holiday->title }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </td>
                 <td style="width: 30%; border: none;">
                     Depok, {{ $daysInMonth }} {{ $monthName }}<br>
                     Mengetahui,<br>
