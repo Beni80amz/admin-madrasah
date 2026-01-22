@@ -172,13 +172,13 @@
     <!-- Percentage Recap Bar -->
     <table style="width: auto; margin: 0 auto 5px auto; border: 1px solid black; font-size: 8pt;">
         <tr>
-            <td style="width: 100px; font-weight: bold; text-align: left; padding-left: 10px;">Rekapitulasi :</td>
-            <td style="width: 100px; background-color: #e0f7fa;">Hari Kerja: {{ $workingDaysCount }}</td>
-            <td style="width: 100px; background-color: #ffcccc;">Hari Libur: {{ $holidayDaysCount }}</td>
-            <td class="bg-hadir" style="width: 100px;">Hadir {{ $percentages['Hadir'] }}%</td>
-            <td class="bg-sakit" style="width: 100px;">Sakit {{ $percentages['Sakit'] }}%</td>
-            <td class="bg-izin" style="width: 100px;">Izin {{ $percentages['Izin'] }}%</td>
-            <td class="bg-alpha" style="width: 100px;">Alpha {{ $percentages['Alpha'] }}%</td>
+            <td style="width: 100px; font-weight: bold; text-align: center; padding: 5px;">Rekapitulasi :</td>
+            <td style="width: 100px; background-color: #e0f7fa; text-align: center;">Hari Kerja: {{ $workingDaysCount }}</td>
+            <td style="width: 100px; background-color: #ffcccc; text-align: center;">Hari Libur: {{ $holidayDaysCount }}</td>
+            <td class="bg-hadir" style="width: 100px; text-align: center;">Hadir {{ $percentages['Hadir'] }}%</td>
+            <td class="bg-sakit" style="width: 100px; text-align: center;">Sakit {{ $percentages['Sakit'] }}%</td>
+            <td class="bg-izin" style="width: 100px; text-align: center;">Izin {{ $percentages['Izin'] }}%</td>
+            <td class="bg-alpha" style="width: 100px; text-align: center;">Alpha {{ $percentages['Alpha'] }}%</td>
         </tr>
     </table>
 
