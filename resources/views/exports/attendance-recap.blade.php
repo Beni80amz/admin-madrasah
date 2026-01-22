@@ -189,7 +189,7 @@
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
                     $dateNum = $dateObj->format('d/m');
-                                                                                                                                    ?>
+                                                                                                                                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dateNum }}
                                 </th>
@@ -200,7 +200,7 @@
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
                     $dayName = $dateObj->locale('id')->isoFormat('ddd');
-                                                                                                                                    ?>
+                                                                                                                                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dayName }}
                                 </th>
@@ -268,12 +268,18 @@
             <tr>
                 <td style="width: 70%; border: none; text-align: left; vertical-align: top; padding-left: 20px;">
                     @if(isset($holidays) && count($holidays) > 0)
+                        @php
+                            // Deduplicate holidays by ID
+                            $uniqueHolidays = $holidays->unique('id');
+                        @endphp
                         <div style="font-size: 8pt; font-weight: bold; margin-bottom: 2px;">Keterangan Libur:</div>
                         <ul style="margin: 0; padding-left: 15px; font-size: 7pt; list-style-type: none;">
-                            @foreach($holidays as $date => $holiday)
+                            @foreach($uniqueHolidays as $holiday)
                                 <li style="margin-bottom: 2px;">
-                                    <span
-                                        style="font-weight: bold; color: red;">[{{ \Carbon\Carbon::parse($holiday->date)->format('d/m') }}]</span>
+                                    <span style="font-weight: bold; color: red;">
+                                        [{{ $holiday->start_date->format('d/m') }}@if($holiday->end_date && $holiday->end_date->gt($holiday->start_date))
+                                        - {{ $holiday->end_date->format('d/m') }}@endif]
+                                    </span>
                                     {{ $holiday->title }}
                                 </li>
                             @endforeach

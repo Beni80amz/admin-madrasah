@@ -43,13 +43,33 @@ class AttendanceRecapExport implements FromView, ShouldAutoSize
         $endDate = $startDate->copy()->endOfMonth();
         $daysInMonth = $endDate->day;
 
-        // Fetch Holidays
-        $holidays = Holiday::whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->get()
-            ->keyBy(function ($item) {
-                return $item->date->format('Y-m-d');
+        // Fetch Holidays (now with date ranges)
+        $holidaysRaw = Holiday::where(function ($query) use ($year, $month, $startDate, $endDate) {
+            // Holiday starts within this month OR ends within this month OR spans this month
+            $query->where(function ($q) use ($year, $month) {
+                $q->whereYear('start_date', $year)
+                    ->whereMonth('start_date', $month);
+            })->orWhere(function ($q) use ($year, $month) {
+                $q->whereYear('end_date', $year)
+                    ->whereMonth('end_date', $month);
+            })->orWhere(function ($q) use ($startDate, $endDate) {
+                // Holiday spans the entire month
+                $q->where('start_date', '<=', $startDate)
+                    ->where('end_date', '>=', $endDate);
             });
+        })->get();
+
+        // Build a lookup: date => Holiday (for each day in the range)
+        $holidays = collect();
+        foreach ($holidaysRaw as $holiday) {
+            $hStart = $holiday->start_date;
+            $hEnd = $holiday->end_date ?? $holiday->start_date; // If no end_date, single day
+            $current = $hStart->copy();
+            while ($current->lte($hEnd)) {
+                $holidays[$current->format('Y-m-d')] = $holiday;
+                $current->addDay();
+            }
+        }
 
         // Determine Working Days from OperationalHour
         $workingDays = [];

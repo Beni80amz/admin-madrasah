@@ -16,10 +16,17 @@ class HolidaysTable
         return $table
             ->columns([
                 TextColumn::make('title')
+                    ->label('Judul')
                     ->searchable(),
-                TextColumn::make('date')
-                    ->date()
+                TextColumn::make('start_date')
+                    ->label('Tanggal Mulai')
+                    ->date('d M Y')
                     ->sortable(),
+                TextColumn::make('end_date')
+                    ->label('Tanggal Akhir')
+                    ->date('d M Y')
+                    ->sortable()
+                    ->placeholder('-'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -14,10 +14,17 @@ class HolidayForm
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->required(),
-                DatePicker::make('date')
-                    ->required(),
+                    ->required()
+                    ->label('Judul'),
+                DatePicker::make('start_date')
+                    ->required()
+                    ->label('Tanggal Mulai'),
+                DatePicker::make('end_date')
+                    ->label('Tanggal Akhir')
+                    ->afterOrEqual('start_date')
+                    ->helperText('Kosongkan jika hanya 1 hari'),
                 Textarea::make('description')
+                    ->label('Keterangan')
                     ->columnSpanFull(),
             ]);
     }

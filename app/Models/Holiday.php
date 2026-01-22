@@ -11,11 +11,13 @@ class Holiday extends Model
 
     protected $fillable = [
         'title',
-        'date',
+        'start_date',
+        'end_date',
         'description',
     ];
 
     protected $casts = [
-        'date' => 'date',
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 }
