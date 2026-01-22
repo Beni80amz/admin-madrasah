@@ -245,10 +245,19 @@ class SystemMaintenance extends Page
             Artisan::call('filament:cache-components');
             Artisan::call('icons:cache');
 
+            // Debug: Check which resources are discovered
+            $resources = \Filament\Facades\Filament::getPanel('admin')->getResources();
+            $resourceList = collect($resources)
+                ->map(fn($class) => class_basename($class))
+                ->sort()
+                ->values()
+                ->join(', ');
+
             Notification::make()
                 ->title('Optimization Complete')
-                ->body('Application has been optimized for production.')
+                ->body("Found Resources: " . $resourceList)
                 ->success()
+                ->persistent()
                 ->send();
         } catch (\Exception $e) {
             Notification::make()
