@@ -282,13 +282,13 @@
                     @endif
 
                     @php
-                        $qrContent = "Verifikasi Dokumen:\n" .
-                            "Dokumen: Rekap Absensi GTK\n" .
-                            "Periode: $monthName\n" .
-                            "Oleh: " . ($profile->nama_kepala_madrasah ?? '-');
+                        $verificationUrl = url('/verifikasi-absensi') . '?' . http_build_query([
+                            'period' => $monthName,
+                            'timestamp' => now()->timestamp,
+                        ]);
                     @endphp
                     <div>
-                        <img src="data:image/svg+xml;base64, {{ base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(100)->generate($qrContent)) }} "
+                        <img src="data:image/svg+xml;base64, {{ base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(100)->generate($verificationUrl)) }} "
                             alt="QR Code">
                     </div>
 
