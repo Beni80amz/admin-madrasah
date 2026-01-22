@@ -8,13 +8,11 @@
     <style>
         @page {
             margin: 5mm;
-            /* Aggressive margin reduction */
         }
 
         body {
             font-family: Arial, sans-serif;
             font-size: 7pt;
-            /* Smaller base font */
         }
 
         table {
@@ -27,7 +25,6 @@
         td {
             border: 1px solid #000;
             padding: 1px;
-            /* Minimal padding */
             text-align: center;
             vertical-align: middle;
         }
@@ -46,7 +43,6 @@
 
         .col-name {
             width: 130px;
-            /* Reduced width, allow wrapping */
         }
 
         .col-date {
@@ -72,56 +68,29 @@
             padding: 5px;
         }
 
-        /* Recap Bar */
-        .recap-bar {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 8pt;
-            border: 1px solid #000;
-        }
-
-        .recap-label {
-            padding: 5px 10px;
-            background-color: white;
-            border-right: 1px solid #000;
-        }
-
-        .recap-item {
-            padding: 5px 15px;
-            border-right: 1px solid #000;
-            text-align: center;
-        }
-
         /* Recap Colors */
         .bg-hadir {
             background-color: #00FA9A;
         }
 
-        /* Medium Spring Green */
         .bg-sakit {
             background-color: #FFD700;
         }
 
-        /* Gold */
         .bg-izin {
             background-color: #87CEFA;
         }
 
-        /* Light Sky Blue */
         .bg-alpha {
             background-color: #FF0000;
             color: white;
         }
 
-        /* Red */
         /* Table Cell Colors */
         .status-hadir {
             font-size: 6pt;
         }
 
-        /* Just text, plain or maybe checkmark? Image shows times */
         .status-sakit {
             background-color: #FFD700;
             font-weight: bold;
@@ -134,7 +103,6 @@
             font-size: 7pt;
         }
 
-        /* Use lighter yellow for display if needed, but matched recap above */
         .status-alpha {
             background-color: #FF0000;
             color: white;
@@ -147,11 +115,6 @@
             font-size: 7pt;
         }
 
-        .status-empty {
-            background-color: #f0f0f0;
-        }
-
-        /* Optional for styling empty slots */
         .footer-section {
             margin-top: 20px;
             width: 100%;
@@ -162,6 +125,13 @@
             text-align: center;
             vertical-align: top;
         }
+
+        /* Helper for 2-row data */
+        .row-top {
+            border-bottom: 1px dotted #ccc;
+        }
+
+        .row-bottom {}
     </style>
 </head>
 
@@ -170,8 +140,7 @@
     <div style="text-align: center; margin-bottom: 10px;">
         <div style="font-size: 14pt; font-weight: bold; color: #008080;">REKAPITULASI KEHADIRAN GURU DAN TENAGA
             KEPENDIDIKAN</div>
-        <div style="font-size: 12pt; font-weight: bold; color: #008080;">
-            {{ $profile->nama_madrasah ?? 'MADRASAH' }}
+        <div style="font-size: 12pt; font-weight: bold; color: #008080;">{{ $profile->nama_madrasah ?? 'MADRASAH' }}
         </div>
         <div
             style="font-size: 10pt; font-weight: bold; color: #008080; background-color: #d1f2eb; display: inline-block; width: 100%; padding: 3px 0; margin-top: 5px;">
@@ -192,29 +161,25 @@
 
     <table>
         <thead>
-            <!-- Row 1: Titles -->
             <tr style="background-color: #008080; color: white;">
                 <th rowspan="2" class="col-no" style="background-color: #008080; color: white;">NO</th>
-                <th rowspan="2" class="col-name" style="background-color: #008080; color: white;">NAMA GTK
-                </th>
+                <th rowspan="2" class="col-name" style="background-color: #008080; color: white;">NAMA GTK</th>
                 @foreach ($validDates as $d)
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
-                    $dateNum = $dateObj->format('d/m'); // shorten date format
-                                                    ?>
+                    $dateNum = $dateObj->format('d/m');
+                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dateNum }}
                                 </th>
                 @endforeach
             </tr>
-            <!-- Row 2: Day Names -->
             <tr style="background-color: #008080; color: white;">
                 @foreach ($validDates as $d)
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
-                    // Use shortest possible day name
                     $dayName = $dateObj->locale('id')->isoFormat('ddd');
-                                                    ?>
+                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dayName }}
                                 </th>
@@ -223,40 +188,50 @@
         </thead>
         <tbody>
             @foreach ($data as $index => $row)
+                <!-- Row 1: Time In -->
                 <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td style="text-align: left; padding-left: 5px;">{{ $row['name'] }}</td>
+                    <td rowspan="2">{{ $index + 1 }}</td>
+                    <td rowspan="2" style="text-align: left; padding-left: 5px;">{{ strtoupper($row['name']) }}</td>
 
                     @foreach ($validDates as $d)
                         @php
-                            // Check if index exists for this date
                             $attendance = $row['dates'][$d] ?? null;
+                            $status = $attendance ? strtolower($attendance->status) : null;
                         @endphp
 
                         @if ($attendance)
-                            @if ($attendance->status == 'Hadir')
-                                <td style="font-size: 6pt;">
-                                    {{ $attendance->time_in ? \Carbon\Carbon::parse($attendance->time_in)->format('H:i') : '' }}
-                                    -<br>
-                                    {{ $attendance->time_out ? \Carbon\Carbon::parse($attendance->time_out)->format('H:i') : '' }}
+                            @if ($status == 'hadir' || $status == 'telat')
+                                <td style="font-size: 6pt; border-bottom: none;">
+                                    {{ $attendance->time_in ? \Carbon\Carbon::parse($attendance->time_in)->format('H:i') : '-' }}
                                 </td>
-                            @elseif ($attendance->status == 'Sakit')
-                                <td class="status-sakit">Sakit</td>
-                            @elseif ($attendance->status == 'Izin')
-                                <td class="status-izin">Izin</td>
-                            @elseif ($attendance->status == 'Alpha')
-                                <td class="status-alpha">Alpha</td>
-                            @elseif ($attendance->status == 'telat')
-                                <td style="font-size: 6pt;">
-                                    {{ $attendance->time_in ? \Carbon\Carbon::parse($attendance->time_in)->format('H:i') : '' }}
-                                    -<br>
-                                    {{ $attendance->time_out ? \Carbon\Carbon::parse($attendance->time_out)->format('H:i') : '' }}
-                                </td>
+                            @elseif ($status == 'sakit')
+                                <td rowspan="2" class="status-sakit">Sakit</td>
+                            @elseif ($status == 'izin')
+                                <td rowspan="2" class="status-izin">Izin</td>
+                            @elseif ($status == 'alpha')
+                                <td rowspan="2" class="status-alpha">Alpha</td>
                             @else
-                                <td>-</td>
+                                <td rowspan="2">-</td>
                             @endif
                         @else
-                            <td>-</td>
+                            <td rowspan="2">-</td>
+                        @endif
+                    @endforeach
+                </tr>
+                <!-- Row 2: Time Out -->
+                <tr>
+                    @foreach ($validDates as $d)
+                        @php
+                            $attendance = $row['dates'][$d] ?? null;
+                            $status = $attendance ? strtolower($attendance->status) : null;
+                        @endphp
+
+                        @if ($attendance && ($status == 'hadir' || $status == 'telat'))
+                            <td style="font-size: 6pt; border-top: none;">
+                                {{ $attendance->time_out ? \Carbon\Carbon::parse($attendance->time_out)->format('H:i') : '-' }}
+                            </td>
+                        @else
+                            <!-- Handled by rowspan above for other statuses -->
                         @endif
                     @endforeach
                 </tr>
@@ -278,12 +253,10 @@
                     @endif
 
                     @php
-                        $qrContent =
-                            "Verifikasi Dokumen:\n" .
+                        $qrContent = "Verifikasi Dokumen:\n" .
                             "Dokumen: Rekap Absensi GTK\n" .
                             "Periode: $monthName\n" .
-                            "Oleh: " .
-                            ($profile->nama_kepala_madrasah ?? '-');
+                            "Oleh: " . ($profile->nama_kepala_madrasah ?? '-');
                     @endphp
                     <div>
                         <img src="data:image/svg+xml;base64, {{ base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(100)->generate($qrContent)) }} "

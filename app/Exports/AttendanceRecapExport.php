@@ -94,30 +94,37 @@ class AttendanceRecapExport implements FromView, ShouldAutoSize
                 $userData['dates'][$d] = $attendance;
 
                 // Calculate summary (Personal)
-                // Note: If attendance exists on Sunday (e.g. event), it won't be in this loop
-                // and thus won't count to summary here. This matches the "Exclude Sunday" requirement.
+                // Fix: Case Insensitive Check
                 if ($attendance) {
-                    if ($attendance->status == 'Hadir')
+                    $status = strtolower($attendance->status);
+                    if ($status == 'hadir' || $status == 'telat')
                         $userData['summary']['Hadir']++;
-                    if ($attendance->status == 'Sakit')
+                    elseif ($status == 'sakit')
                         $userData['summary']['Sakit']++;
-                    if ($attendance->status == 'Izin')
+                    elseif ($status == 'izin')
                         $userData['summary']['Izin']++;
-                    if ($attendance->status == 'Alpha')
+                    elseif ($status == 'alpha')
                         $userData['summary']['Alpha']++;
                 }
 
                 // Global Stats
-                $globalStats['Total']++; // Valid working day for 1 person
+                $globalStats['Total']++; // Valid working day for 1 person (Total Expected)
+
                 if ($attendance) {
-                    if ($attendance->status == 'Hadir')
+                    $status = strtolower($attendance->status);
+                    if ($status == 'hadir' || $status == 'telat')
                         $globalStats['Hadir']++;
-                    if ($attendance->status == 'Sakit')
+                    elseif ($status == 'sakit')
                         $globalStats['Sakit']++;
-                    if ($attendance->status == 'Izin')
+                    elseif ($status == 'izin')
                         $globalStats['Izin']++;
-                    if ($attendance->status == 'Alpha')
+                    elseif ($status == 'alpha')
                         $globalStats['Alpha']++;
+                    else {
+                        // Unrecognized/Other status -> count as Alpha? or Ignore?
+                        // Let's count as Alpha to ensure 100% total if not categorized
+                        $globalStats['Alpha']++;
+                    }
                 } else {
                     $globalStats['Alpha']++; // Counting missing as Alpha for percentage base
                 }
