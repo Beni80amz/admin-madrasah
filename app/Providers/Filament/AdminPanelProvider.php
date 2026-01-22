@@ -161,7 +161,6 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Resources\LeaveRequests\LeaveRequestResource::class,
                 \App\Filament\Resources\UserAccounts\UserAccountResource::class,
                 \App\Filament\Resources\MonitorSlides\MonitorSlideResource::class,
-                \App\Filament\Resources\Holidays\HolidayResource::class,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
