@@ -283,9 +283,20 @@
 
                     @php
                         $verificationUrl = url('/profil/verifikasi');
+                        $logoPath = $profile && $profile->logo ? storage_path('app/public/' . $profile->logo) : null;
+                        
+                        $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
+                            ->size(100)
+                            ->errorCorrection('H'); // High error correction to allow logo overlay
+                        
+                        if ($logoPath && file_exists($logoPath)) {
+                            $qrCode = $qrCode->merge($logoPath, .2, true); // 20% size, centered
+                        }
+                        
+                        $qrCodeImage = $qrCode->generate($verificationUrl);
                     @endphp
                     <div>
-                        <img src="data:image/svg+xml;base64, {{ base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(100)->generate($verificationUrl)) }} "
+                        <img src="data:image/png;base64, {{ base64_encode($qrCodeImage) }}"
                             alt="QR Code">
                     </div>
 
