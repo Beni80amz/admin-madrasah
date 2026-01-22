@@ -15,15 +15,22 @@
             font-size: 8pt;
         }
 
+        /* Generic Table - reset borders for layout tables */
         table {
             width: 100%;
             border-collapse: collapse;
+            border: none;
+        }
+
+        /* DATA Table - Strict borders */
+        table.data-table {
+            width: 100%;
             border: 1px solid #000;
             table-layout: fixed;
         }
 
-        th,
-        td {
+        table.data-table th,
+        table.data-table td {
             border: 1px solid #000 !important;
             padding: 2px;
             text-align: center;
@@ -45,15 +52,15 @@
         }
 
         .col-name {
-            width: 18%;
-            /* Adjusted to be smaller but readable */
+            width: 19%;
+            /* Slightly reduced to ensure total < 100% safety */
             text-align: left !important;
             padding-left: 4px;
         }
 
         .col-date {
-            width: 2.5%;
-            /* 31 columns * 2.5% = 77.5%. Total ~98.5% */
+            width: 2.4%;
+            /* 2.4 * 31 = 74.4%. Total: 3+19+74.4 = 96.4%. Safety buffer for borders */
             font-size: 7pt;
         }
 
@@ -128,10 +135,16 @@
             width: 100%;
         }
 
-        .footer-table td {
+        .footer-table {
             border: none;
+        }
+
+        .footer-table td {
+            border: none !important;
+            /* Force remove borders on footer cells */
             text-align: center;
             vertical-align: top;
+            padding: 0;
         }
 
         /* Helper for 2-row data */
@@ -167,7 +180,7 @@
         </tr>
     </table>
 
-    <table>
+    <table class="data-table">
         <thead>
             <tr style="background-color: #008080; color: white;">
                 <th rowspan="2" class="col-no" style="background-color: #008080; color: white;">NO</th>
@@ -176,7 +189,7 @@
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
                     $dateNum = $dateObj->format('d/m');
-                                                                                    ?>
+                                                                                                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dateNum }}
                                 </th>
@@ -187,7 +200,7 @@
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
                     $dayName = $dateObj->locale('id')->isoFormat('ddd');
-                                                                                    ?>
+                                                                                                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dayName }}
                                 </th>
