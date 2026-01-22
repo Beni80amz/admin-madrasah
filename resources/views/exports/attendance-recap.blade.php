@@ -38,7 +38,8 @@
 
         /* Specific widths */
         .col-no {
-            width: 25px;
+            width: 20px;
+            /* Reduced to 20px */
         }
 
         .col-name {
@@ -46,8 +47,8 @@
         }
 
         .col-date {
-            width: 28px;
-            /* Slightly wider distinct columns */
+            width: 26px;
+            /* Reduced to 26px to fit right border */
         }
 
         .header-title {
