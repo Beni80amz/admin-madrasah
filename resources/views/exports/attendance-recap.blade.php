@@ -7,12 +7,14 @@
     <title>Rekapitulasi Absensi GTK</title>
     <style>
         @page {
-            margin: 5mm;
+            margin: 3mm;
+            /* Reduced margin */
         }
 
         body {
             font-family: Arial, sans-serif;
-            font-size: 7pt;
+            font-size: 6pt;
+            /* Reduced font size */
         }
 
         table {
@@ -38,17 +40,20 @@
 
         /* Specific widths */
         .col-no {
-            width: 20px;
-            /* Reduced to 20px */
+            width: 15px;
+            /* Aggressively reduced */
         }
 
         .col-name {
-            /* width: auto; Let it expand */
+            width: 110px;
+            /* Fixed width, reduced per user request */
+            white-space: normal;
+            /* Allow wrapping */
         }
 
         .col-date {
-            width: 26px;
-            /* Reduced to 26px to fit right border */
+            width: 21px;
+            /* Aggressively reduced */
         }
 
         .header-title {
@@ -90,31 +95,32 @@
 
         /* Table Cell Colors */
         .status-hadir {
-            font-size: 6pt;
+            font-size: 5pt;
+            /* Smaller for content */
         }
 
         .status-sakit {
             background-color: #FFD700;
             font-weight: bold;
-            font-size: 7pt;
+            font-size: 6pt;
         }
 
         .status-izin {
             background-color: #87CEFA;
             font-weight: bold;
-            font-size: 7pt;
+            font-size: 6pt;
         }
 
         .status-alpha {
             background-color: #FF0000;
             color: white;
             font-weight: bold;
-            font-size: 7pt;
+            font-size: 6pt;
         }
 
         .status-libur {
             color: red;
-            font-size: 7pt;
+            font-size: 6pt;
         }
 
         .footer-section {
@@ -170,7 +176,7 @@
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
                     $dateNum = $dateObj->format('d/m');
-                                                    ?>
+                                                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dateNum }}
                                 </th>
@@ -181,7 +187,7 @@
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
                     $dayName = $dateObj->locale('id')->isoFormat('ddd');
-                                                    ?>
+                                                                    ?>
                                 <th class="col-date" style="background-color: #008080; color: white; font-size: 7pt;">
                                     {{ $dayName }}
                                 </th>
