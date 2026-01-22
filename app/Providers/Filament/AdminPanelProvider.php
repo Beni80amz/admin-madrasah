@@ -27,6 +27,10 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        // MANUAL REQUIRE: Bypass server permission issues preventing autoloader update
+        // This ensures the class is loaded even if composer dump-autoload fails
+        require_once app_path('Filament/Resources/Holidays/HolidayResource.php');
+
         // Get theme mode from settings (with safety check for migrations)
         $themeMode = 'dark';
         if (Schema::hasTable('app_settings')) {
