@@ -282,10 +282,7 @@
                     @endif
 
                     @php
-                        $verificationUrl = url('/verifikasi-absensi') . '?' . http_build_query([
-                            'period' => $monthName,
-                            'timestamp' => now()->timestamp,
-                        ]);
+                        $verificationUrl = url('/profil/verifikasi');
                     @endphp
                     <div>
                         <img src="data:image/svg+xml;base64, {{ base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(100)->generate($verificationUrl)) }} "
