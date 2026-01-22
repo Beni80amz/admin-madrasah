@@ -11,6 +11,7 @@ use App\Filament\Resources\Holidays\Schemas\HolidayInfolist;
 use App\Filament\Resources\Holidays\Tables\HolidaysTable;
 use App\Models\Holiday;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -24,7 +25,7 @@ class HolidayResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Hari Libur';
 
-    protected static ?string $navigationGroup = 'Data Pendukung';
+    protected static string|UnitEnum|null $navigationGroup = 'Data Pendukung';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
