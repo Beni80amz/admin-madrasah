@@ -173,6 +173,8 @@
     <table style="width: auto; margin-bottom: 5px; border: 1px solid black; font-size: 8pt;">
         <tr>
             <td style="width: 100px; font-weight: bold; text-align: left; padding-left: 10px;">Rekapitulasi :</td>
+            <td style="width: 100px; background-color: #e0f7fa;">Hari Kerja: {{ $workingDaysCount }}</td>
+            <td style="width: 100px; background-color: #ffcccc;">Hari Libur: {{ $holidayDaysCount }}</td>
             <td class="bg-hadir" style="width: 100px;">Hadir {{ $percentages['Hadir'] }}%</td>
             <td class="bg-sakit" style="width: 100px;">Sakit {{ $percentages['Sakit'] }}%</td>
             <td class="bg-izin" style="width: 100px;">Izin {{ $percentages['Izin'] }}%</td>

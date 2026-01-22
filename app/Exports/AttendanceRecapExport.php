@@ -235,6 +235,11 @@ class AttendanceRecapExport implements FromView, ShouldAutoSize
 
         $profile = ProfileMadrasah::first();
 
+        // Count working days (validDates that are not holidays)
+        $holidayDatesInMonth = $holidays->keys()->map(fn($d) => Carbon::parse($d)->day)->unique()->toArray();
+        $workingDaysCount = count(array_diff($validDates, $holidayDatesInMonth));
+        $holidayDaysCount = count(array_intersect($validDates, $holidayDatesInMonth));
+
         return [
             'data' => $mapData,
             'month' => $month,
@@ -245,6 +250,8 @@ class AttendanceRecapExport implements FromView, ShouldAutoSize
             'profile' => $profile,
             'percentages' => $percentages,
             'holidays' => $holidays,
+            'workingDaysCount' => $workingDaysCount,
+            'holidayDaysCount' => $holidayDaysCount,
         ];
     }
 }
