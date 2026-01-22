@@ -170,7 +170,7 @@
     </div>
 
     <!-- Percentage Recap Bar -->
-    <table style="width: auto; margin-bottom: 5px; border: 1px solid black; font-size: 8pt;">
+    <table style="width: auto; margin: 0 auto 5px auto; border: 1px solid black; font-size: 8pt;">
         <tr>
             <td style="width: 100px; font-weight: bold; text-align: left; padding-left: 10px;">Rekapitulasi :</td>
             <td style="width: 100px; background-color: #e0f7fa;">Hari Kerja: {{ $workingDaysCount }}</td>
@@ -185,8 +185,8 @@
     <table class="data-table">
         <thead>
             <tr style="background-color: #008080; color: white;">
-                <th rowspan="2" class="col-no" style="background-color: #008080; color: white;">NO</th>
-                <th rowspan="2" class="col-name" style="background-color: #008080; color: white;">NAMA GTK</th>
+                <th rowspan="2" class="col-no" style="background-color: #008080; color: white; vertical-align: middle;">NO</th>
+                <th rowspan="2" class="col-name" style="background-color: #008080; color: white; vertical-align: middle;">NAMA GTK</th>
                 @foreach ($validDates as $d)
                                 <?php
                     $dateObj = \Carbon\Carbon::createFromDate($year, $month, $d);
