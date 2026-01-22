@@ -20,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Support\Facades\Gate::policy(\App\Models\LeaveRequest::class, \App\Policies\LeaveRequestPolicy::class);
+        \Illuminate\Support\Facades\Gate::policy(\App\Models\Holiday::class, \App\Policies\HolidayPolicy::class);
 
         \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
             return $user->hasRole('Superadmin') ? true : null;
