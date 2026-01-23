@@ -67,6 +67,7 @@ class StrukturOrganisasiController extends Controller
             'strukturLevel4' => $strukturLevel4,
             'strukturLevel5' => $strukturLevel5,
             'strukturLevel6' => $strukturLevel6,
+            'qrCodeImage' => 'data:image/png;base64,' . base64_encode(app(\App\Services\QrCodeService::class)->generateDocumentVerificationQrCode()),
         ];
 
         $pdf = Pdf::loadView('pdf.struktur-organisasi', $data);

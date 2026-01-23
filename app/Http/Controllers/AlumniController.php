@@ -33,6 +33,7 @@ class AlumniController extends Controller
             'alumni' => $alumni,
             'total' => $total,
             'byYear' => $byYear,
+            'qrCodeImage' => 'data:image/png;base64,' . base64_encode(app(\App\Services\QrCodeService::class)->generateDocumentVerificationQrCode()),
         ];
 
         $pdf = Pdf::loadView('pdf.alumni', $data);

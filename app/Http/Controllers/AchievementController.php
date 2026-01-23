@@ -34,6 +34,7 @@ class AchievementController extends Controller
             'juara3' => $juara3,
             'total' => $total,
             'type' => 'Siswa',
+            'qrCodeImage' => 'data:image/png;base64,' . base64_encode(app(\App\Services\QrCodeService::class)->generateDocumentVerificationQrCode()),
         ];
 
         $pdf = Pdf::loadView('pdf.achievements', $data);
@@ -71,6 +72,7 @@ class AchievementController extends Controller
             'juara3' => $juara3,
             'total' => $total,
             'type' => 'Guru',
+            'qrCodeImage' => 'data:image/png;base64,' . base64_encode(app(\App\Services\QrCodeService::class)->generateDocumentVerificationQrCode()),
         ];
 
         $pdf = Pdf::loadView('pdf.achievements', $data);

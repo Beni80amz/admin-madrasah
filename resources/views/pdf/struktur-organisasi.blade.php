@@ -353,11 +353,7 @@
                     <p style="margin-top: 2px; font-size: 5px; color: #999;">Scan QR code untuk verifikasi</p>
                 </td>
                 <td class="footer-right">
-                    @php
-                        $verificationUrl = url('/profil/verifikasi');
-                        $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=40x40&data=' . urlencode($verificationUrl);
-                    @endphp
-                    <img src="{{ $qrUrl }}" class="qr-code" alt="QR Code Verifikasi">
+                    <img src="{{ $qrCodeImage }}" class="qr-code" alt="QR Code Verifikasi">
                 </td>
             </tr>
         </table>

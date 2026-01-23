@@ -41,6 +41,7 @@ class StrukturKurikulumController extends Controller
             'subjectsB' => $subjectsB,
             'subjectsC' => $subjectsC,
             'subjectsKokurikuler' => $subjectsKokurikuler,
+            'qrCodeImage' => 'data:image/png;base64,' . base64_encode(app(\App\Services\QrCodeService::class)->generateDocumentVerificationQrCode()),
         ]);
 
         $pdf->setPaper('A4', 'portrait');

@@ -79,10 +79,13 @@ class TeacherData extends Component
         $profile = ProfileMadrasah::first();
         $tahunAjaran = TahunAjaran::where('is_active', true)->first();
 
+        $qrCodeImage = 'data:image/png;base64,' . base64_encode(app(\App\Services\QrCodeService::class)->generateDocumentVerificationQrCode());
+
         $pdf = Pdf::loadView('pdf.teachers-landscape', [
             'teachers' => $teachers,
             'profile' => $profile,
             'tahunAjaran' => $tahunAjaran,
+            'qrCodeImage' => $qrCodeImage,
         ])->setPaper('a4', 'landscape');
 
         return response()->streamDownload(function () use ($pdf) {

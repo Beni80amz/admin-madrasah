@@ -36,6 +36,7 @@ class AcademicCalendarController extends Controller
             'semesterGenap' => $semesterGenap,
             'hariEfektifGanjil' => $hariEfektifGanjil,
             'hariEfektifGenap' => $hariEfektifGenap,
+            'qrCodeImage' => 'data:image/png;base64,' . base64_encode(app(\App\Services\QrCodeService::class)->generateDocumentVerificationQrCode()),
         ];
 
         $pdf = Pdf::loadView('pdf.academic-calendar', $data);

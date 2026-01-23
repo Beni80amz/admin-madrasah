@@ -199,11 +199,7 @@
                     <p>Total Data: {{ $teachers->count() }} Guru/Staff</p>
                 </td>
                 <td style="text-align: right;">
-                    @php
-                        $qrText = "Data Guru - " . ($profile->nama_madrasah ?? 'Madrasah') . " - " . now()->format('Y-m-d');
-                        $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=' . urlencode($qrText);
-                    @endphp
-                    <img src="{{ $qrUrl }}" alt="QR Code" style="height: 50px; width: 50px;">
+                    <img src="{{ $qrCodeImage }}" alt="QR Code" style="height: 50px; width: 50px;">
                 </td>
             </tr>
         </table>
