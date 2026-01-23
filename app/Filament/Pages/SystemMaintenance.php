@@ -332,48 +332,64 @@ class SystemMaintenance extends Page
 
             // Check if target exists
             if (!file_exists($target)) {
-                // Try to create it if missing
-                if (!is_dir($target)) {
-                    mkdir($target, 0755, true);
+                if (!@mkdir($target, 0755, true)) {
+                    $messages[] = "Warning: Could not create target directory.";
+                } else {
                     $messages[] = "Created missing target directory.";
                 }
             }
 
             // Check if shortcut exists
-            if (file_exists($shortcut)) {
+            if (file_exists($shortcut) || is_link($shortcut)) {
                 if (is_link($shortcut)) {
                     $messages[] = "Existing symlink found. Removing...";
-                    unlink($shortcut);
+                    @unlink($shortcut);
                 } elseif (is_dir($shortcut)) {
                     $messages[] = "WARNING: 'storage' in public is a REAL DIRECTORY.";
-                    // Attempt to rename existing directory to back it up
                     $backupName = $shortcut . '_backup_' . time();
-                    if (rename($shortcut, $backupName)) {
-                        $messages[] = "Renamed code existing directory to $backupName";
+                    if (@rename($shortcut, $backupName)) {
+                        $messages[] = "Renamed existing directory to backup.";
                     } else {
-                        throw new \Exception("Cannot remove/rename existing 'public/storage' directory. Please remove it manually via File Manager.");
+                        throw new \Exception("Cannot rename 'public/storage'. Remove it manually via File Manager.");
                     }
                 } else {
-                    $messages[] = "Removing existing file at shortcut path...";
-                    unlink($shortcut);
+                    $messages[] = "Removing existing file...";
+                    @unlink($shortcut);
                 }
             }
 
-            // Create symlink
-            if (symlink($target, $shortcut)) {
-                $messages[] = "SUCCESS: Symlink created.";
+            // Try symlink first
+            $symlinkSuccess = false;
+            if (function_exists('symlink')) {
+                $symlinkSuccess = @symlink($target, $shortcut);
+            }
 
+            if ($symlinkSuccess) {
+                $messages[] = "SUCCESS: Symlink created.";
                 Notification::make()
                     ->title('Storage Linked Successfully')
                     ->body(implode("\n", $messages))
                     ->success()
-                    ->persistent() // Keep it visible so they can read paths
+                    ->persistent()
                     ->send();
             } else {
-                throw new \Exception("symlink() function returned false.");
+                // Symlink failed or not available - show manual instructions
+                $messages[] = "Symlink tidak tersedia di server ini.";
+                $messages[] = "";
+                $messages[] = "Solusi Manual:";
+                $messages[] = "1. Buka File Manager di cPanel/CyberPanel";
+                $messages[] = "2. Buat symlink dari public/storage → storage/app/public";
+                $messages[] = "Atau copy manual folder storage/app/public ke public/storage";
+
+                Notification::make()
+                    ->title('Symlink Tidak Tersedia')
+                    ->body(implode("\n", $messages))
+                    ->warning()
+                    ->persistent()
+                    ->send();
             }
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $messages[] = "ERROR: " . $e->getMessage();
 
             Notification::make()
