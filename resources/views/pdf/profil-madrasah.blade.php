@@ -357,17 +357,7 @@
     @endif
 
     {{-- Signature Section --}}
-    <div class="kepala-section">
-        <div class="kepala-info">
-            <p>Bogor, {{ now()->translatedFormat('d F Y') }}</p>
-            <p>Kepala Madrasah</p>
-            
-            <div style="height: 80px; width: 100%; margin-top: 10px;"></div>
-    
-            <p class="kepala-name">{{ $profile->nama_kepala_madrasah }}</p>
-            <p class="kepala-title">NIP. {{ $profile->nip_kepala_madrasah ?? '-' }}</p>
-        </div>
-    </div>
+
 
     {{-- Footer with QR Code --}}
     <div class="footer">
