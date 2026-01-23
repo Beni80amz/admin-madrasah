@@ -100,7 +100,9 @@ class AttendancesTable
                                 'alpha' => $attendances->where('status', 'alpha')->count(),
                             ];
 
-                            $qrData = url('/profil/verifikasi');
+                            // Generate QR Code
+                            $qrRaw = app(\App\Services\QrCodeService::class)->generateDocumentVerificationQrCode();
+                            $qrCodeImage = 'data:image/png;base64,' . base64_encode($qrRaw);
 
                             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.attendance', [
                                 'attendances' => $attendances,
@@ -109,7 +111,7 @@ class AttendancesTable
                                 'profile' => $profile,
                                 'period' => \Carbon\Carbon::create($year, $month, 1)->locale('id')->isoFormat('MMMM Y'),
                                 'summary' => $summary,
-                                'qrData' => $qrData,
+                                'qrCodeImage' => $qrCodeImage,
                             ]);
 
                             $filename = 'Lap. Absensi_' . $teacherName . '_' . $year . str_pad($month, 2, '0', STR_PAD_LEFT) . now()->format('d') . '.pdf';
