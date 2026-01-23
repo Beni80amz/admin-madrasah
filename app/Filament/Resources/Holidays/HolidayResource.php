@@ -25,7 +25,7 @@ class HolidayResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Hari Libur';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Data Pendukung';
+    protected static UnitEnum|string|null $navigationGroup = 'Data Pendukung';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
