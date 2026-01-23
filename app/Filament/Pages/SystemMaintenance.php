@@ -345,13 +345,8 @@ class SystemMaintenance extends Page
                     $messages[] = "Existing symlink found. Removing...";
                     @unlink($shortcut);
                 } elseif (is_dir($shortcut)) {
-                    $messages[] = "WARNING: 'storage' in public is a REAL DIRECTORY.";
-                    $backupName = $shortcut . '_backup_' . time();
-                    if (@rename($shortcut, $backupName)) {
-                        $messages[] = "Renamed existing directory to backup.";
-                    } else {
-                        throw new \Exception("Cannot rename 'public/storage'. Remove it manually via File Manager.");
-                    }
+                    // Keep existing directory for copy fallback
+                    $messages[] = "Existing storage directory found.";
                 } else {
                     $messages[] = "Removing existing file...";
                     @unlink($shortcut);
@@ -360,7 +355,7 @@ class SystemMaintenance extends Page
 
             // Try symlink first
             $symlinkSuccess = false;
-            if (function_exists('symlink')) {
+            if (function_exists('symlink') && !is_dir($shortcut)) {
                 $symlinkSuccess = @symlink($target, $shortcut);
             }
 
@@ -373,20 +368,35 @@ class SystemMaintenance extends Page
                     ->persistent()
                     ->send();
             } else {
-                // Symlink failed or not available - show manual instructions
-                $messages[] = "Symlink tidak tersedia di server ini.";
-                $messages[] = "";
-                $messages[] = "Solusi Manual:";
-                $messages[] = "1. Buka File Manager di cPanel/CyberPanel";
-                $messages[] = "2. Buat symlink dari public/storage → storage/app/public";
-                $messages[] = "Atau copy manual folder storage/app/public ke public/storage";
+                // Symlink failed - try copy fallback
+                $messages[] = "Symlink tidak tersedia, menggunakan copy...";
 
-                Notification::make()
-                    ->title('Symlink Tidak Tersedia')
-                    ->body(implode("\n", $messages))
-                    ->warning()
-                    ->persistent()
-                    ->send();
+                if (!is_dir($shortcut)) {
+                    @mkdir($shortcut, 0755, true);
+                }
+
+                $copySuccess = $this->recursiveCopy($target, $shortcut);
+
+                if ($copySuccess) {
+                    $messages[] = "SUCCESS: Files copied to public/storage.";
+                    $messages[] = "Note: Jalankan ulang jika ada file baru di storage.";
+
+                    Notification::make()
+                        ->title('Storage Copied Successfully')
+                        ->body(implode("\n", $messages))
+                        ->success()
+                        ->persistent()
+                        ->send();
+                } else {
+                    $messages[] = "Copy gagal. Silahkan copy manual via File Manager.";
+
+                    Notification::make()
+                        ->title('Storage Link/Copy Failed')
+                        ->body(implode("\n", $messages))
+                        ->warning()
+                        ->persistent()
+                        ->send();
+                }
             }
 
         } catch (\Throwable $e) {
@@ -398,6 +408,47 @@ class SystemMaintenance extends Page
                 ->danger()
                 ->persistent()
                 ->send();
+        }
+    }
+
+    /**
+     * Recursively copy files from source to destination
+     */
+    protected function recursiveCopy(string $source, string $dest): bool
+    {
+        try {
+            if (!is_dir($source)) {
+                return false;
+            }
+
+            if (!is_dir($dest)) {
+                @mkdir($dest, 0755, true);
+            }
+
+            $dir = @opendir($source);
+            if (!$dir) {
+                return false;
+            }
+
+            while (($file = readdir($dir)) !== false) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+
+                $srcPath = $source . '/' . $file;
+                $destPath = $dest . '/' . $file;
+
+                if (is_dir($srcPath)) {
+                    $this->recursiveCopy($srcPath, $destPath);
+                } else {
+                    @copy($srcPath, $destPath);
+                }
+            }
+
+            closedir($dir);
+            return true;
+        } catch (\Throwable $e) {
+            return false;
         }
     }
 
