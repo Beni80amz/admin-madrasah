@@ -42,25 +42,36 @@
                 <div class="flex flex-col items-center mb-6">
                     <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-3">Tanda Tangan Kepala
                         Madrasah</p>
-                    @if($profile->tanda_tangan_kepala_madrasah)
-                        <div class="bg-white rounded-xl p-4 border border-border-light dark:border-border-dark shadow-inner">
-                            <img src="{{ Storage::url($profile->tanda_tangan_kepala_madrasah) }}"
-                                alt="Tanda Tangan Kepala Madrasah" class="max-h-24 w-auto">
-                        </div>
-                    @else
-                        <div
-                            class="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 border border-border-light dark:border-border-dark">
-                            <p class="text-text-secondary-light dark:text-text-secondary-dark italic text-sm">Tanda tangan belum
-                                tersedia</p>
-                        </div>
-                    @endif
+                    <div class="relative inline-block">
+                        @if($profile->stempel_madrasah)
+                            <img src="{{ Storage::url($profile->stempel_madrasah) }}"
+                                class="absolute -left-12 top-1/2 -translate-y-1/2 w-24 h-24 opacity-80 object-contain transform -rotate-12 pointer-events-none z-10"
+                                alt="Stempel Madrasah">
+                        @endif
+
+                        @if($profile->tanda_tangan_kepala_madrasah)
+                            <div
+                                class="bg-white rounded-xl p-4 border border-border-light dark:border-border-dark shadow-inner relative z-0">
+                                <img src="{{ Storage::url($profile->tanda_tangan_kepala_madrasah) }}"
+                                    alt="Tanda Tangan Kepala Madrasah" class="max-h-24 w-auto">
+                            </div>
+                        @else
+                            <div
+                                class="bg-gray-100 dark:bg-gray-800 rounded-xl p-4 border border-border-light dark:border-border-dark relative z-0">
+                                <p class="text-text-secondary-light dark:text-text-secondary-dark italic text-sm">Tanda tangan
+                                    belum
+                                    tersedia</p>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 {{-- Nama Kepala Madrasah --}}
                 <div class="text-center">
                     <p class="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-1">Kepala Madrasah</p>
                     <h3 class="text-lg font-bold text-text-primary-light dark:text-text-primary-dark">
-                        {{ $profile->nama_kepala_madrasah ?? '-' }}</h3>
+                        {{ $profile->nama_kepala_madrasah ?? '-' }}
+                    </h3>
                 </div>
 
                 {{-- Divider --}}

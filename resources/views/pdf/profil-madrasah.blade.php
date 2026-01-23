@@ -356,6 +356,37 @@
     </div>
     @endif
 
+    {{-- Signature Section --}}
+    <div class="kepala-section">
+        <div class="kepala-info">
+            <p>Bogor, {{ now()->translatedFormat('d F Y') }}</p>
+            <p>Kepala Madrasah</p>
+            
+            <div style="position: relative; display: inline-block; height: 80px; width: 100%; margin-top: 10px; min-width: 150px;">
+                <!-- Stempel (Left of Signature) -->
+                @if($profile->stempel_madrasah && file_exists(public_path('storage/' . $profile->stempel_madrasah)))
+                    <div style="position: absolute; left: -40px; top: -10px; z-index: 1;">
+                        <img src="{{ public_path('storage/' . $profile->stempel_madrasah) }}" 
+                             style="width: 80px; height: 80px; opacity: 0.9;">
+                    </div>
+                @endif
+    
+                <!-- Tanda Tangan -->
+                @if($profile->tanda_tangan_kepala_madrasah && file_exists(public_path('storage/' . $profile->tanda_tangan_kepala_madrasah)))
+                    <div style="position: relative; z-index: 2; display: inline-block;">
+                        <img src="{{ public_path('storage/' . $profile->tanda_tangan_kepala_madrasah) }}" 
+                             style="height: 80px; width: auto; max-width: 150px;">
+                    </div>
+                @else
+                    <div style="height: 80px;"></div>
+                @endif
+            </div>
+    
+            <p class="kepala-name">{{ $profile->nama_kepala_madrasah }}</p>
+            <p class="kepala-title">NIP. {{ $profile->nip_kepala_madrasah ?? '-' }}</p>
+        </div>
+    </div>
+
     {{-- Footer with QR Code --}}
     <div class="footer">
         <table class="footer-table">
