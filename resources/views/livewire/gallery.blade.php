@@ -56,6 +56,11 @@
                 </div>
             @endforelse
 
+            <!-- Pagination -->
+            <div class="col-span-full mt-8 flex justify-center">
+                {{ $photos->links() }}
+            </div>
+
             <!-- Lightbox Modal -->
             <div x-show="lightboxOpen" x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -131,6 +136,11 @@
                     <p class="text-text-secondary-light dark:text-text-secondary-dark">Belum ada video galeri.</p>
                 </div>
             @endforelse
+
+            <!-- Pagination -->
+            <div class="col-span-full mt-8 flex justify-center">
+                {{ $videos->links() }}
+            </div>
 
             <!-- Video Modal -->
             <div x-show="videoModalOpen" x-transition:enter="transition ease-out duration-300"

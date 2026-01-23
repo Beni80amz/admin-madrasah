@@ -12,11 +12,13 @@ use Livewire\Attributes\Title;
 #[Title('Galeri')]
 class Gallery extends Component
 {
+    use \Livewire\WithPagination;
+
     public function render()
     {
         return view('livewire.gallery', [
-            'photos' => GalleryModel::active()->photos()->ordered()->get(),
-            'videos' => GalleryModel::active()->videos()->ordered()->get(),
+            'photos' => GalleryModel::active()->photos()->ordered()->paginate(9, ['*'], 'photo_page'),
+            'videos' => GalleryModel::active()->videos()->ordered()->paginate(8, ['*'], 'video_page'),
             'siteProfile' => ProfileMadrasah::first(),
         ]);
     }
