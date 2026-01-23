@@ -181,27 +181,23 @@ class SystemMaintenance extends Page
             $process->setTimeout(60);
             $process->run();
 
-            // Get branch name
-            // Note: shell_exec calls don't easily accept env vars without complex string manipulation.
-            // However, 'git branch' and 'git rev-parse' are local operations and don't need SSH keys.
-            // 'git fetch' is the only one here that talks to the remote.
-
-            $branch = trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* branch --show-current 2>&1") ?? 'main');
+            // Get branch name using safe shell exec
+            $branch = $this->safeShellExec("cd \"{$basePath}\" && git -c safe.directory=* branch --show-current 2>&1", 'main');
 
             // Count commits behind
-            $behindCount = (int) trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* rev-list HEAD..origin/{$branch} --count 2>&1") ?? '0');
+            $behindCountStr = $this->safeShellExec("cd \"{$basePath}\" && git -c safe.directory=* rev-list HEAD..origin/{$branch} --count 2>&1", '0');
+            $behindCount = is_numeric($behindCountStr) ? (int) $behindCountStr : 0;
 
             // Get pending commits
             $pendingUpdates = [];
             if ($behindCount > 0) {
-                // git log origin/branch assumes we have fetched. It's local now.
-                $logOutput = shell_exec("cd \"{$basePath}\" && git -c safe.directory=* log HEAD..origin/{$branch} --pretty=format:\"%h - %s (%cr)\" 2>&1");
-                $pendingUpdates = array_filter(explode("\n", $logOutput ?? ''));
+                $logOutput = $this->safeShellExec("cd \"{$basePath}\" && git -c safe.directory=* log HEAD..origin/{$branch} --pretty=format:\"%h - %s (%cr)\" 2>&1", '');
+                $pendingUpdates = array_filter(explode("\n", $logOutput));
             }
 
             // Get current and latest commit
-            $currentCommit = trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* rev-parse --short HEAD 2>&1") ?? 'N/A');
-            $latestCommit = trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* rev-parse --short origin/{$branch} 2>&1") ?? 'N/A');
+            $currentCommit = $this->safeShellExec("cd \"{$basePath}\" && git -c safe.directory=* rev-parse --short HEAD 2>&1", 'N/A');
+            $latestCommit = $this->safeShellExec("cd \"{$basePath}\" && git -c safe.directory=* rev-parse --short origin/{$branch} 2>&1", 'N/A');
 
             $this->updateInfo = [
                 'has_update' => $behindCount > 0,
@@ -226,7 +222,7 @@ class SystemMaintenance extends Page
                     ->send();
             }
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Notification::make()
                 ->title('Error')
                 ->body('Gagal memeriksa update: ' . $e->getMessage())
