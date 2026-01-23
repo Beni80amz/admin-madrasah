@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\Auth;
 class AttendanceController extends Controller
 {
     protected $attendanceService;
+    protected $qrCodeService;
 
-    public function __construct(AttendanceService $attendanceService)
+    public function __construct(AttendanceService $attendanceService, \App\Services\QrCodeService $qrCodeService)
     {
         $this->attendanceService = $attendanceService;
+        $this->qrCodeService = $qrCodeService;
     }
 
     public function index()
@@ -177,11 +179,8 @@ class AttendanceController extends Controller
             'alpha' => $attendances->where('status', 'alpha')->count(),
         ];
 
-        $qrData = route('attendance.verify', [
-            'period' => "$month-$year",
-            'user' => $user->id,
-            'timestamp' => now()->timestamp
-        ]);
+        $qrData = $this->qrCodeService->generateDocumentVerificationQrCode();
+        $qrCodeImage = 'data:image/png;base64,' . base64_encode($qrData);
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.attendance', [
             'attendances' => $attendances,
@@ -190,7 +189,7 @@ class AttendanceController extends Controller
             'profile' => $profile,
             'period' => \Carbon\Carbon::create($year, $month, 1)->locale('id')->isoFormat('MMMM Y'),
             'summary' => $summary,
-            'qrData' => $qrData,
+            'qrCodeImage' => $qrCodeImage,
         ]);
 
         $pdf->setPaper('A4', 'portrait');
@@ -217,8 +216,7 @@ class AttendanceController extends Controller
     public function generateQr(Request $request)
     {
         // This endpoint will be called by the admin/monitor screen via AJAX
-        $qrService = app(\App\Services\QrCodeService::class);
-        $token = $qrService->generateQrToken();
+        $token = $this->qrCodeService->generateQrToken();
 
         return response()->json([
             'status' => 'success',

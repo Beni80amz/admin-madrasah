@@ -39,4 +39,27 @@ class QrCodeService
 
         return hash_equals($validTokenCurrent, $token) || hash_equals($validTokenPrevious, $token);
     }
+
+    /**
+     * Generate a standardized QR Code for document verification.
+     * Includes the madrasah logo in the center and points to the verification URL.
+     * Returns raw binary image data (PNG).
+     */
+    public function generateDocumentVerificationQrCode()
+    {
+        $verificationUrl = url('/profil/verifikasi');
+        $profile = \App\Models\ProfileMadrasah::first();
+        $logoPath = $profile && $profile->logo ? storage_path('app/public/' . $profile->logo) : null;
+
+        $qrCode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')
+            ->size(100)
+            ->errorCorrection('H') // High error correction to allow logo overlay
+            ->margin(1); // Small margin
+
+        if ($logoPath && file_exists($logoPath)) {
+            $qrCode = $qrCode->merge($logoPath, .2, true); // 20% size, centered
+        }
+
+        return $qrCode->generate($verificationUrl);
+    }
 }

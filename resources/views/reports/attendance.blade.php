@@ -200,8 +200,7 @@
 
             {{-- QR Code Positioned Between Title and Name --}}
             <div class="qr-code-container">
-                <img
-                    src="data:image/svg+xml;base64, {{ base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(70)->generate($qrData)) }}">
+                <img src="{{ $qrCodeImage }}" style="width: 70px; height: 70px;">
             </div>
 
             <p><strong>{{ $profile->nama_kepala_madrasah ?? '______________________' }}</strong></p>

@@ -100,11 +100,7 @@ class AttendancesTable
                                 'alpha' => $attendances->where('status', 'alpha')->count(),
                             ];
 
-                            $qrData = route('attendance.verify', [
-                                'period' => "$month-$year",
-                                'user' => $user ? $user->id : 'all',
-                                'timestamp' => now()->timestamp
-                            ]);
+                            $qrData = url('/profil/verifikasi');
 
                             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.attendance', [
                                 'attendances' => $attendances,

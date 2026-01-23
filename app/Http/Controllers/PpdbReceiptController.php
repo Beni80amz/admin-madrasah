@@ -6,21 +6,15 @@ use App\Models\PpdbRegistration;
 use App\Models\ProfileMadrasah;
 use App\Models\AppSetting;
 use Barryvdh\DomPDF\Facade\Pdf;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Services\QrCodeService;
 
 class PpdbReceiptController extends Controller
 {
-    /**
-     * Generate QR code as base64 SVG for embedding in PDF
-     */
-    private function generateQrCodeBase64(string $data, int $size = 70): string
-    {
-        $qrCode = QrCode::format('svg')
-            ->size($size)
-            ->margin(0)
-            ->generate($data);
+    protected $qrCodeService;
 
-        return 'data:image/svg+xml;base64,' . base64_encode($qrCode);
+    public function __construct(QrCodeService $qrCodeService)
+    {
+        $this->qrCodeService = $qrCodeService;
     }
 
     /**
@@ -33,8 +27,8 @@ class PpdbReceiptController extends Controller
         $ppdbInfo = AppSetting::getPpdbInfo();
 
         // Generate QR Code as base64
-        $verificationUrl = route('ppdb.success', $registration->id);
-        $qrCodeBase64 = $this->generateQrCodeBase64($verificationUrl);
+        $qrData = $this->qrCodeService->generateDocumentVerificationQrCode();
+        $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($qrData);
 
         $pdf = Pdf::loadView('pdf.ppdb-receipt', [
             'registration' => $registration,
@@ -60,8 +54,8 @@ class PpdbReceiptController extends Controller
         $ppdbInfo = AppSetting::getPpdbInfo();
 
         // Generate QR Code as base64
-        $verificationUrl = route('ppdb.success', $registration->id);
-        $qrCodeBase64 = $this->generateQrCodeBase64($verificationUrl);
+        $qrData = $this->qrCodeService->generateDocumentVerificationQrCode();
+        $qrCodeBase64 = 'data:image/png;base64,' . base64_encode($qrData);
 
         $pdf = Pdf::loadView('pdf.ppdb-receipt', [
             'registration' => $registration,

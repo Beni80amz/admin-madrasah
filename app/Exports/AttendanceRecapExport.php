@@ -240,6 +240,10 @@ class AttendanceRecapExport implements FromView, ShouldAutoSize
         $workingDaysCount = count(array_diff($validDates, $holidayDatesInMonth));
         $holidayDaysCount = count(array_intersect($validDates, $holidayDatesInMonth));
 
+        // Generate QR Code
+        $qrData = app(\App\Services\QrCodeService::class)->generateDocumentVerificationQrCode();
+        $qrCodeImage = 'data:image/png;base64,' . base64_encode($qrData);
+
         return [
             'data' => $mapData,
             'month' => $month,
@@ -252,6 +256,7 @@ class AttendanceRecapExport implements FromView, ShouldAutoSize
             'holidays' => $holidays,
             'workingDaysCount' => $workingDaysCount,
             'holidayDaysCount' => $holidayDaysCount,
+            'qrCodeImage' => $qrCodeImage,
         ];
     }
 }
