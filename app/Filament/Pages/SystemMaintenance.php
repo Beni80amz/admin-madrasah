@@ -25,7 +25,7 @@ class SystemMaintenance extends Page
 
     protected static ?string $slug = 'system-maintenance';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Setting';
+    protected static UnitEnum|string|null $navigationGroup = 'Setting';
 
     protected static ?int $navigationSort = 3;
 
@@ -53,14 +53,14 @@ class SystemMaintenance extends Page
 
         try {
             $this->versionInfo = [
-                'current_version' => trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* rev-parse --short HEAD 2>&1") ?? 'N/A'),
-                'branch' => trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* branch --show-current 2>&1") ?? 'main'),
-                'last_commit_date' => trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* log -1 --format=%ci 2>&1") ?? 'N/A'),
-                'last_commit_message' => trim(shell_exec("cd \"{$basePath}\" && git -c safe.directory=* log -1 --pretty=%B 2>&1") ?? 'N/A'),
+                'current_version' => $this->safeShellExec("cd \"{$basePath}\" && git -c safe.directory=* rev-parse --short HEAD 2>&1", 'N/A'),
+                'branch' => $this->safeShellExec("cd \"{$basePath}\" && git -c safe.directory=* branch --show-current 2>&1", 'main'),
+                'last_commit_date' => $this->safeShellExec("cd \"{$basePath}\" && git -c safe.directory=* log -1 --format=%ci 2>&1", 'N/A'),
+                'last_commit_message' => $this->safeShellExec("cd \"{$basePath}\" && git -c safe.directory=* log -1 --pretty=%B 2>&1", 'N/A'),
                 'php_version' => PHP_VERSION,
                 'laravel_version' => app()->version(),
             ];
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->versionInfo = [
                 'current_version' => 'Error',
                 'branch' => 'N/A',
@@ -69,6 +69,22 @@ class SystemMaintenance extends Page
                 'php_version' => PHP_VERSION,
                 'laravel_version' => app()->version(),
             ];
+        }
+    }
+
+    /**
+     * Safely execute shell command, returning default if shell_exec is disabled or fails.
+     */
+    protected function safeShellExec(string $command, string $default = ''): string
+    {
+        if (!function_exists('shell_exec')) {
+            return $default;
+        }
+        try {
+            $result = @shell_exec($command);
+            return is_string($result) ? trim($result) : $default;
+        } catch (\Throwable $e) {
+            return $default;
         }
     }
 
@@ -94,14 +110,14 @@ class SystemMaintenance extends Page
     protected function checkCommand(string $command): array
     {
         try {
-            $output = shell_exec($command . ' 2>&1');
+            $output = $this->safeShellExec($command . ' 2>&1', '');
             $available = !empty($output) && !str_contains(strtolower($output), 'not found') && !str_contains(strtolower($output), 'not recognized');
 
             return [
                 'available' => $available,
-                'version' => $available ? trim($output) : 'Not installed',
+                'version' => $available ? $output : 'Not installed',
             ];
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return [
                 'available' => false,
                 'version' => 'Error: ' . $e->getMessage(),
@@ -115,8 +131,13 @@ class SystemMaintenance extends Page
     protected function getDiskSpace(): string
     {
         try {
-            $free = disk_free_space(base_path());
-            $total = disk_total_space(base_path());
+            $free = @disk_free_space(base_path());
+            $total = @disk_total_space(base_path());
+
+            if ($free === false || $total === false || $total <= 0) {
+                return 'Tidak tersedia';
+            }
+
             $used = $total - $free;
 
             return sprintf(
@@ -125,8 +146,8 @@ class SystemMaintenance extends Page
                 $this->formatBytes($total),
                 ($used / $total) * 100
             );
-        } catch (\Exception $e) {
-            return 'Unable to determine';
+        } catch (\Throwable $e) {
+            return 'Tidak tersedia';
         }
     }
 
