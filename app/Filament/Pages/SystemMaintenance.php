@@ -25,7 +25,7 @@ class SystemMaintenance extends Page
 
     protected static ?string $slug = 'system-maintenance';
 
-    protected static UnitEnum|string|null $navigationGroup = 'Setting';
+    protected static string|UnitEnum|null $navigationGroup = 'Setting';
 
     protected static ?int $navigationSort = 3;
 
