@@ -791,7 +791,8 @@ class SystemMaintenance extends Page
 
             $commands = [
                 ['git', '-c', 'safe.directory=*', 'fetch', '--all'],
-                ['git', '-c', 'safe.directory=*', 'reset', '--hard', "origin/{$branch}"]
+                ['git', '-c', 'safe.directory=*', 'reset', '--hard', "origin/{$branch}"],
+                ['git', '-c', 'safe.directory=*', 'clean', '-fd']
             ];
 
             foreach ($commands as $cmd) {
