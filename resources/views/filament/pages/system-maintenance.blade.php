@@ -46,6 +46,21 @@
                 </x-slot>
 
                 @if($systemInfo)
+                    {{-- Shared hosting notice --}}
+                    @if($systemInfo['shell_exec_disabled'] ?? false)
+                        <div
+                            style="padding: 0.5rem; background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 0.375rem; margin-bottom: 0.75rem;">
+                            <div style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.7rem;">
+                                <span style="color: #eab308;">⚠️</span>
+                                <div style="color: #eab308;">
+                                    <strong>Shared Hosting Terdeteksi</strong><br>
+                                    <span style="opacity: 0.9;">Fungsi shell_exec dinonaktifkan. Git, Composer, NPM tidak dapat
+                                        dideteksi melalui PHP. Update dilakukan manual via SSH/Hosting Panel.</span>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; font-size: 0.75rem;">
                         <div style="display: flex; align-items: center; gap: 0.25rem;">
                             @if($systemInfo['git']['available'] ?? false)

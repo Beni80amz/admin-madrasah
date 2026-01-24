@@ -77,7 +77,8 @@ class SystemMaintenance extends Page
      */
     protected function safeShellExec(string $command, string $default = ''): string
     {
-        if (!function_exists('shell_exec')) {
+        // Check if shell_exec exists and is not disabled
+        if (!function_exists('shell_exec') || $this->isShellExecDisabled()) {
             return $default;
         }
         try {
@@ -89,11 +90,29 @@ class SystemMaintenance extends Page
     }
 
     /**
+     * Check if shell_exec is disabled via php.ini disable_functions
+     */
+    protected function isShellExecDisabled(): bool
+    {
+        static $disabled = null;
+
+        if ($disabled === null) {
+            $disabledFunctions = ini_get('disable_functions');
+            $disabled = $disabledFunctions && in_array('shell_exec', array_map('trim', explode(',', strtolower($disabledFunctions))));
+        }
+
+        return $disabled;
+    }
+
+    /**
      * Load system information (check Composer, NPM, Git availability)
      */
     public function loadSystemInfo(): void
     {
+        $shellDisabled = $this->isShellExecDisabled();
+
         $this->systemInfo = [
+            'shell_exec_disabled' => $shellDisabled,
             'git' => $this->checkCommand('git --version'),
             'composer' => $this->checkCommand('composer --version'),
             'npm' => $this->checkCommand('npm --version'),
