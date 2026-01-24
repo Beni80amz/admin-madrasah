@@ -160,11 +160,38 @@
                             @if($updateInfo['shell_disabled'] ?? false)
                                 <span style="color: #9ca3af;">🚫 Tidak tersedia (Shared Hosting)</span>
                             @elseif($updateInfo['has_update'])
-                                <span style="color: #eab308;">⚠️ {{ $updateInfo['pending_count'] }} update</span>
+                                <span style="color: #eab308;">⚠️ {{ $updateInfo['pending_count'] }} update tersedia</span>
                             @else
                                 <span style="color: #22c55e;">✅ Up-to-date</span>
                             @endif
                         </div>
+
+                        {{-- Recommended Actions --}}
+                        @if(($updateInfo['has_update'] ?? false) && !empty($updateInfo['recommended_actions'] ?? []))
+                            <div
+                                style="padding: 0.75rem; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 0.375rem;">
+                                <div style="font-size: 0.7rem; font-weight: 600; color: #818cf8; margin-bottom: 0.5rem;">
+                                    📋 Langkah Update:
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; align-items: center;">
+                                    @foreach($updateInfo['recommended_actions'] as $index => $action)
+                                        <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                            <span
+                                                style="background: rgba(99, 102, 241, 0.2); padding: 0.125rem 0.375rem; border-radius: 0.25rem; font-size: 0.65rem; color: #a5b4fc; white-space: nowrap;"
+                                                title="{{ $action['description'] }}">
+                                                {{ $action['icon'] }} {{ $action['label'] }}
+                                            </span>
+                                            @if($index < count($updateInfo['recommended_actions']) - 1)
+                                                <span style="color: #6366f1; font-size: 0.6rem;">→</span>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div style="font-size: 0.6rem; color: #9ca3af; margin-top: 0.5rem;">
+                                    Klik tombol di atas atau gunakan panel Update Manual
+                                </div>
+                            </div>
+                        @endif
                     @endif
                 </div>
             </x-filament::section>

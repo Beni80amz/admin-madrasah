@@ -230,9 +230,18 @@ class SystemMaintenance extends Page
 
             // Get pending commits
             $pendingUpdates = [];
+            $changedFiles = '';
+            $recommendedActions = [];
+
             if ($behindCount > 0) {
                 $logOutput = $this->safeShellExec("cd \"{$basePath}\" && git -c safe.directory=* log HEAD..origin/{$branch} --pretty=format:\"%h - %s (%cr)\" 2>&1", '');
                 $pendingUpdates = array_filter(explode("\n", $logOutput));
+
+                // Get list of changed files
+                $changedFiles = $this->safeShellExec("cd \"{$basePath}\" && git -c safe.directory=* diff --name-only HEAD..origin/{$branch} 2>&1", '');
+
+                // Analyze changed files and determine recommended actions
+                $recommendedActions = $this->analyzeChangedFiles($changedFiles);
             }
 
             // Get current and latest commit
@@ -245,14 +254,20 @@ class SystemMaintenance extends Page
                 'current_version' => $currentCommit,
                 'latest_version' => $latestCommit,
                 'pending_updates' => $pendingUpdates,
+                'recommended_actions' => $recommendedActions,
                 'last_check' => now()->format('d M Y H:i:s'),
             ];
 
             if ($behindCount > 0) {
+                $actionSummary = count($recommendedActions) > 0
+                    ? ' Langkah: ' . implode(' → ', array_column($recommendedActions, 'label'))
+                    : '';
+
                 Notification::make()
                     ->title('Update Tersedia!')
-                    ->body("{$behindCount} commit baru tersedia untuk diupdate.")
+                    ->body("{$behindCount} commit baru tersedia.{$actionSummary}")
                     ->warning()
+                    ->persistent()
                     ->send();
             } else {
                 Notification::make()
@@ -269,6 +284,108 @@ class SystemMaintenance extends Page
                 ->danger()
                 ->send();
         }
+    }
+
+    /**
+     * Analyze changed files and return recommended actions
+     */
+    protected function analyzeChangedFiles(string $changedFiles): array
+    {
+        $actions = [];
+        $files = array_filter(explode("\n", $changedFiles));
+
+        // Define patterns and their corresponding actions
+        $patterns = [
+            [
+                'pattern' => '/^(composer\.json|composer\.lock)$/m',
+                'action' => 'composer',
+                'label' => 'Composer',
+                'icon' => '📦',
+                'description' => 'Dependencies PHP berubah',
+                'priority' => 2,
+            ],
+            [
+                'pattern' => '/^(package\.json|package-lock\.json)$/m',
+                'action' => 'npm',
+                'label' => 'NPM Build',
+                'icon' => '🧩',
+                'description' => 'Dependencies JS/CSS berubah',
+                'priority' => 3,
+            ],
+            [
+                'pattern' => '/^database\/migrations\//m',
+                'action' => 'migrate',
+                'label' => 'Migrate',
+                'icon' => '📤',
+                'description' => 'Ada migration baru',
+                'priority' => 4,
+            ],
+            [
+                'pattern' => '/^(resources\/css|resources\/js|vite\.config)/m',
+                'action' => 'npm',
+                'label' => 'NPM Build',
+                'icon' => '🧩',
+                'description' => 'Asset frontend berubah',
+                'priority' => 3,
+            ],
+            [
+                'pattern' => '/^config\//m',
+                'action' => 'cache',
+                'label' => 'Clear Cache',
+                'icon' => '🗑️',
+                'description' => 'Config berubah',
+                'priority' => 5,
+            ],
+            [
+                'pattern' => '/^(\.env\.example)$/m',
+                'action' => 'env',
+                'label' => 'Cek .env',
+                'icon' => '⚙️',
+                'description' => 'Environment example berubah',
+                'priority' => 6,
+            ],
+        ];
+
+        // Always add Git Pull as first action
+        $actions[] = [
+            'action' => 'git_pull',
+            'label' => 'Git Pull',
+            'icon' => '⬇️',
+            'description' => 'Download update terbaru',
+            'priority' => 1,
+        ];
+
+        // Check each pattern
+        $addedActions = ['git_pull' => true];
+        foreach ($patterns as $patternDef) {
+            if (preg_match($patternDef['pattern'], $changedFiles)) {
+                $actionKey = $patternDef['action'];
+                if (!isset($addedActions[$actionKey])) {
+                    $actions[] = [
+                        'action' => $actionKey,
+                        'label' => $patternDef['label'],
+                        'icon' => $patternDef['icon'],
+                        'description' => $patternDef['description'],
+                        'priority' => $patternDef['priority'],
+                    ];
+                    $addedActions[$actionKey] = true;
+                }
+            }
+        }
+
+        // Always add Optimize at the end
+        $actions[] = [
+            'action' => 'optimize',
+            'label' => 'Optimize',
+            'icon' => '🚀',
+            'description' => 'Rebuild cache aplikasi',
+            'priority' => 99,
+        ];
+
+        // Sort by priority
+        usort($actions, fn($a, $b) => $a['priority'] <=> $b['priority']);
+
+        return $actions;
     }
 
     /**
