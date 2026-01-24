@@ -386,7 +386,12 @@
                             </span>
                         </td>
                         <td>{{ $reg->nisn }}</td>
-                        <td>{{ $reg->asal_sekolah }}</td>
+                        <td>
+                            {{ $reg->asal_sekolah }}
+                            @if($reg->nama_sekolah_asal)
+                                - {{ $reg->nama_sekolah_asal }}
+                            @endif
+                        </td>
                         <td>{{ $reg->nama_ayah }}</td>
                         <td>{{ $reg->nama_ibu }}</td>
                         <td>{{ $reg->no_hp_ortu }}</td>
