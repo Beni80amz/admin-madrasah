@@ -72,7 +72,7 @@ class ListPpdbRegistrations extends ListRecords
                     }
 
                     $registrations = $query
-                        ->orderBy('created_at', 'desc')
+                        ->orderBy('no_daftar', 'asc')
                         ->get();
 
                     $total = $registrations->count();

@@ -31,7 +31,7 @@ class PpdbRegistrationExport implements FromCollection, WithHeadings, WithStyles
         }
 
         $this->registrations = $query
-            ->orderBy('created_at', 'desc')
+            ->orderBy('no_daftar', 'asc')
             ->get();
 
         return collect([]); // Return empty - we'll populate via events

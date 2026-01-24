@@ -231,8 +231,16 @@
         <!-- KOP Header -->
         <div class="kop-header">
             <div class="kop-logo">
-                @if(optional($siteProfile)->logo)
-                    <img src="{{ public_path('storage/' . $siteProfile->logo) }}" alt="Logo">
+                @if($siteProfile && $siteProfile->logo)
+                    @php
+                        $logoPath = storage_path('app/public/' . $siteProfile->logo);
+                    @endphp
+                    @if(file_exists($logoPath))
+                        <img src="{{ $logoPath }}" alt="Logo">
+                    @else
+                        <!-- Fallback if file not found locally, try public url or empty -->
+                        <!-- Debug info hidden in production -->
+                    @endif
                 @endif
             </div>
             <div class="kop-text">
@@ -347,7 +355,8 @@
                         <p>Dokumen ini dicetak pada {{ now()->setTimezone('Asia/Jakarta')->format('d F Y H:i') }} WIB
                         </p>
                         <p>{{ optional($siteProfile)->nama_madrasah ?? 'Madrasah' }} -
-                            {{ optional($siteProfile)->alamat ?? 'Alamat' }}</p>
+                            {{ optional($siteProfile)->alamat ?? 'Alamat' }}
+                        </p>
                         <p style="margin-top: 5px; font-size: 6px; color: #999;">Scan QR code untuk verifikasi dokumen
                         </p>
                     </td>
