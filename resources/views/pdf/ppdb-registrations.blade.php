@@ -265,7 +265,7 @@
         </div>
 
         <!-- Combined Stats & Origin Table -->
-        <table style="width: 100%; border: none; margin-bottom: 20px;">
+        <table style="width: 100%; border: none; margin-bottom: 10px;">
             <tr>
                 <!-- Left: Stats -->
                 <td style="width: 40%; vertical-align: top; padding: 0; border: none;">
