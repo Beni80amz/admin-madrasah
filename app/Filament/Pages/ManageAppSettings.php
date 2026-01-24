@@ -165,10 +165,21 @@ class ManageAppSettings extends Page implements HasForms
                                     ->maxLength(100)
                                     ->columnSpan(2),
 
-                                Textarea::make('description')
+                                \Filament\Forms\Components\RichEditor::make('description')
                                     ->label('Deskripsi')
                                     ->required()
-                                    ->rows(2)
+                                    ->toolbarButtons([
+                                        'bold',
+                                        'italic',
+                                        'underline',
+                                        'strike',
+                                        'bulletList',
+                                        'orderedList',
+                                        'h2',
+                                        'h3',
+                                        'blockquote',
+                                        'link',
+                                    ])
                                     ->columnSpanFull(),
                             ])
                             ->columns(5)

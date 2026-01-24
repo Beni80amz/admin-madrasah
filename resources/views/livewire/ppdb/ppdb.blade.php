@@ -147,8 +147,8 @@
                                         class="flex-1 bg-gray-50 dark:bg-white/5 rounded-xl p-6 border border-border-light dark:border-border-dark">
                                         <h3 class="font-bold text-lg text-text-primary-light dark:text-text-primary-dark mb-3">
                                             {{ $step['title'] }}</h3>
-                                        <p class="text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
-                                            {{ $step['description'] }}</p>
+                                        <div class="text-text-secondary-light dark:text-text-secondary-dark leading-relaxed prose prose-sm dark:prose-invert max-w-none">
+                                            {!! $step['description'] !!}</div>
                                     </div>
                                 </div>
                             @endforeach
