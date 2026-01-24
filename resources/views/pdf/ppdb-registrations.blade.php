@@ -264,62 +264,76 @@
             </p>
         </div>
 
-        <!-- Stats -->
-        <div class="stats-container">
-            <div class="stat-box">
-                <div class="stat-number">{{ $total }}</div>
-                <div class="stat-label">Total Pendaftar</div>
-            </div>
-            <div class="stat-box" style="background-color: #dbeafe;">
-                <div class="stat-number" style="color: #3b82f6;">{{ $statusCounts['new'] ?? 0 }}</div>
-                <div class="stat-label">Baru</div>
-            </div>
-            <div class="stat-box" style="background-color: #fef3c7;">
-                <div class="stat-number" style="color: #f59e0b;">{{ $statusCounts['verified'] ?? 0 }}</div>
-                <div class="stat-label">Diverifikasi</div>
-            </div>
-            <div class="stat-box" style="background-color: #d1fae5;">
-                <div class="stat-number" style="color: #10b981;">{{ $statusCounts['accepted'] ?? 0 }}</div>
-                <div class="stat-label">Diterima</div>
-            </div>
-            <div class="stat-box" style="background-color: #fce7f3;">
-                <div class="stat-number" style="color: #ec4899;">{{ $statusCounts['rejected'] ?? 0 }}</div>
-                <div class="stat-label">Ditolak</div>
-            </div>
-        </div>
+        <!-- Combined Stats & Origin Table -->
+        <table style="width: 100%; border: none; margin-bottom: 20px;">
+            <tr>
+                <!-- Left: Stats -->
+                <td style="width: 40%; vertical-align: top; padding: 0; border: none;">
+                    <div class="stats-container" style="display: table; width: 100%;">
+                        <div class="stat-box">
+                            <div class="stat-number">{{ $total }}</div>
+                            <div class="stat-label">Total Pendaftar</div>
+                        </div>
+                        <div class="stat-box" style="background-color: #dbeafe;">
+                            <div class="stat-number" style="color: #3b82f6;">{{ $statusCounts['new'] ?? 0 }}</div>
+                            <div class="stat-label">Baru</div>
+                        </div>
+                        <div class="stat-box" style="background-color: #fef3c7;">
+                            <div class="stat-number" style="color: #f59e0b;">{{ $statusCounts['verified'] ?? 0 }}</div>
+                            <div class="stat-label">Diverifikasi</div>
+                        </div>
+                        <div class="stat-box" style="background-color: #d1fae5;">
+                            <div class="stat-number" style="color: #10b981;">{{ $statusCounts['accepted'] ?? 0 }}</div>
+                            <div class="stat-label">Diterima</div>
+                        </div>
+                        <div class="stat-box" style="background-color: #fce7f3;">
+                            <div class="stat-number" style="color: #ec4899;">{{ $statusCounts['rejected'] ?? 0 }}</div>
+                            <div class="stat-label">Ditolak</div>
+                        </div>
+                    </div>
+                </td>
 
-        <!-- Origin Stats -->
-        <div class="stats-container" style="margin-bottom: 20px;">
-            <table style="width: 100%; border: 1px solid #e5e7eb;">
-                <thead>
-                    <tr>
-                        <th colspan="7"
-                            style="text-align: center; background-color: #f3f4f6; color: #333; border: 1px solid #e5e7eb;">
-                            Asal Sekolah</th>
-                    </tr>
-                    <tr>
-                        <th style="background-color: #ffffff; color: #333; text-align: center;">RA</th>
-                        <th style="background-color: #ffffff; color: #333; text-align: center;">TK</th>
-                        <th style="background-color: #ffffff; color: #333; text-align: center;">BIMBA</th>
-                        <th style="background-color: #ffffff; color: #333; text-align: center;">PAUD</th>
-                        <th style="background-color: #ffffff; color: #333; text-align: center;">Orang Tua</th>
-                        <th style="background-color: #ffffff; color: #333; text-align: center;">Pindahan</th>
-                        <th style="background-color: #ffffff; color: #333; text-align: center;">Lainnya</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="text-align: center; font-weight: bold;">{{ $originCounts['RA'] ?? 0 }}</td>
-                        <td style="text-align: center; font-weight: bold;">{{ $originCounts['TK'] ?? 0 }}</td>
-                        <td style="text-align: center; font-weight: bold;">{{ $originCounts['BIMBA'] ?? 0 }}</td>
-                        <td style="text-align: center; font-weight: bold;">{{ $originCounts['PAUD'] ?? 0 }}</td>
-                        <td style="text-align: center; font-weight: bold;">{{ $originCounts['Orang Tua'] ?? 0 }}</td>
-                        <td style="text-align: center; font-weight: bold;">{{ $originCounts['Pindahan'] ?? 0 }}</td>
-                        <td style="text-align: center; font-weight: bold;">{{ $originCounts['Lainnya'] ?? 0 }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                <!-- Spacer -->
+                <td style="width: 2%; border: none;"></td>
+
+                <!-- Right: Origin Stats -->
+                <td style="width: 58%; vertical-align: top; padding: 0; border: none;">
+                    <table style="width: 100%; border: 1px solid #e5e7eb;">
+                        <thead>
+                            <tr>
+                                <th colspan="7"
+                                    style="text-align: center; background-color: #f3f4f6; color: #333; border: 1px solid #e5e7eb;">
+                                    Asal Sekolah</th>
+                            </tr>
+                            <tr>
+                                <th style="background-color: #ffffff; color: #333; text-align: center;">RA</th>
+                                <th style="background-color: #ffffff; color: #333; text-align: center;">TK</th>
+                                <th style="background-color: #ffffff; color: #333; text-align: center;">BIMBA</th>
+                                <th style="background-color: #ffffff; color: #333; text-align: center;">PAUD</th>
+                                <th style="background-color: #ffffff; color: #333; text-align: center;">Orang Tua</th>
+                                <th style="background-color: #ffffff; color: #333; text-align: center;">Pindahan</th>
+                                <th style="background-color: #ffffff; color: #333; text-align: center;">Lainnya</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align: center; font-weight: bold;">{{ $originCounts['RA'] ?? 0 }}</td>
+                                <td style="text-align: center; font-weight: bold;">{{ $originCounts['TK'] ?? 0 }}</td>
+                                <td style="text-align: center; font-weight: bold;">{{ $originCounts['BIMBA'] ?? 0 }}
+                                </td>
+                                <td style="text-align: center; font-weight: bold;">{{ $originCounts['PAUD'] ?? 0 }}</td>
+                                <td style="text-align: center; font-weight: bold;">{{ $originCounts['Orang Tua'] ?? 0 }}
+                                </td>
+                                <td style="text-align: center; font-weight: bold;">{{ $originCounts['Pindahan'] ?? 0 }}
+                                </td>
+                                <td style="text-align: center; font-weight: bold;">{{ $originCounts['Lainnya'] ?? 0 }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
 
         <!-- Data Table -->
         <table>
