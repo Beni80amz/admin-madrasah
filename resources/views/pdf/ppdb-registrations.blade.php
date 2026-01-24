@@ -298,7 +298,7 @@
 
                 <!-- Right: Origin Stats -->
                 <td style="width: 58%; vertical-align: top; padding: 0; border: none;">
-                    <table style="width: 100%; border: 1px solid #10b981;">
+                    <table style="width: 100%; border: 1px solid #e5e7eb;">
                         <thead>
                             <tr>
                                 <th colspan="7"
@@ -307,42 +307,47 @@
                             </tr>
                             <tr>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #10b981;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb;">
                                     RA</th>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #10b981; border-left: 1px solid #10b981;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb;">
                                     TK</th>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #10b981; border-left: 1px solid #10b981;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb;">
                                     BIMBA</th>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #10b981; border-left: 1px solid #10b981;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb;">
                                     PAUD</th>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #10b981; border-left: 1px solid #10b981;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb;">
                                     Orang Tua</th>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #10b981; border-left: 1px solid #10b981;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb;">
                                     Pindahan</th>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #10b981; border-left: 1px solid #10b981;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb;">
                                     Lainnya</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td style="text-align: center; font-weight: bold; border-right: 1px solid #10b981;">
-                                    {{ $originCounts['RA'] ?? 0 }}</td>
-                                <td style="text-align: center; font-weight: bold; border-right: 1px solid #10b981;">
-                                    {{ $originCounts['TK'] ?? 0 }}</td>
-                                <td style="text-align: center; font-weight: bold; border-right: 1px solid #10b981;">
+                                <td style="text-align: center; font-weight: bold; border-right: 1px solid #e5e7eb;">
+                                    {{ $originCounts['RA'] ?? 0 }}
+                                </td>
+                                <td style="text-align: center; font-weight: bold; border-right: 1px solid #e5e7eb;">
+                                    {{ $originCounts['TK'] ?? 0 }}
+                                </td>
+                                <td style="text-align: center; font-weight: bold; border-right: 1px solid #e5e7eb;">
                                     {{ $originCounts['BIMBA'] ?? 0 }}
                                 </td>
-                                <td style="text-align: center; font-weight: bold; border-right: 1px solid #10b981;">
-                                    {{ $originCounts['PAUD'] ?? 0 }}</td>
-                                <td style="text-align: center; font-weight: bold; border-right: 1px solid #10b981;">{{ $originCounts['Orang Tua'] ?? 0 }}
+                                <td style="text-align: center; font-weight: bold; border-right: 1px solid #e5e7eb;">
+                                    {{ $originCounts['PAUD'] ?? 0 }}
                                 </td>
-                                <td style="text-align: center; font-weight: bold; border-right: 1px solid #10b981;">{{ $originCounts['Pindahan'] ?? 0 }}
+                                <td style="text-align: center; font-weight: bold; border-right: 1px solid #e5e7eb;">
+                                    {{ $originCounts['Orang Tua'] ?? 0 }}
+                                </td>
+                                <td style="text-align: center; font-weight: bold; border-right: 1px solid #e5e7eb;">
+                                    {{ $originCounts['Pindahan'] ?? 0 }}
                                 </td>
                                 <td style="text-align: center; font-weight: bold;">{{ $originCounts['Lainnya'] ?? 0 }}
                                 </td>
