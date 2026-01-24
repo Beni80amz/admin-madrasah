@@ -156,8 +156,10 @@
 
                     @if($updateInfo)
                         <div
-                            style="padding: 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; background: {{ $updateInfo['has_update'] ? 'rgba(234, 179, 8, 0.1)' : 'rgba(34, 197, 94, 0.1)' }};">
-                            @if($updateInfo['has_update'])
+                            style="padding: 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; background: {{ ($updateInfo['shell_disabled'] ?? false) ? 'rgba(156, 163, 175, 0.1)' : ($updateInfo['has_update'] ? 'rgba(234, 179, 8, 0.1)' : 'rgba(34, 197, 94, 0.1)') }};">
+                            @if($updateInfo['shell_disabled'] ?? false)
+                                <span style="color: #9ca3af;">🚫 Tidak tersedia (Shared Hosting)</span>
+                            @elseif($updateInfo['has_update'])
                                 <span style="color: #eab308;">⚠️ {{ $updateInfo['pending_count'] }} update</span>
                             @else
                                 <span style="color: #22c55e;">✅ Up-to-date</span>

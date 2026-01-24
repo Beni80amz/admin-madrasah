@@ -187,6 +187,27 @@ class SystemMaintenance extends Page
      */
     public function checkForUpdates(): void
     {
+        // Check if shell commands are available
+        if ($this->isShellExecDisabled()) {
+            $this->updateInfo = [
+                'has_update' => false,
+                'pending_count' => 0,
+                'current_version' => 'N/A',
+                'latest_version' => 'N/A',
+                'pending_updates' => [],
+                'last_check' => now()->format('d M Y H:i:s'),
+                'shell_disabled' => true,
+            ];
+
+            Notification::make()
+                ->title('Fitur Tidak Tersedia')
+                ->body('Cek update tidak dapat dilakukan di shared hosting karena shell_exec dinonaktifkan. Silahkan cek update via SSH atau Hosting Panel.')
+                ->warning()
+                ->persistent()
+                ->send();
+            return;
+        }
+
         $basePath = base_path();
 
         try {
