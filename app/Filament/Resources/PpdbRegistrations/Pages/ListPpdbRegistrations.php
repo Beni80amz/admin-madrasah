@@ -87,12 +87,24 @@ class ListPpdbRegistrations extends ListRecords
                         'enrolled' => $allRegistrations->where('status', 'enrolled')->count(),
                     ];
 
+                    // Count by origin
+                    $originCounts = [
+                        'RA' => $registrations->where('asal_sekolah', 'RA')->count(),
+                        'TK' => $registrations->where('asal_sekolah', 'TK')->count(),
+                        'BIMBA' => $registrations->where('asal_sekolah', 'BIMBA')->count(),
+                        'PAUD' => $registrations->where('asal_sekolah', 'PAUD')->count(),
+                        'Orang Tua' => $registrations->where('asal_sekolah', 'Orang Tua')->count(),
+                        'Pindahan' => $registrations->where('asal_sekolah', 'Pindahan')->count(),
+                        'Lainnya' => $registrations->where('asal_sekolah', 'Lainnya')->count(),
+                    ];
+
                     $pdf = Pdf::loadView('pdf.ppdb-registrations', [
                         'siteProfile' => $siteProfile,
                         'tahunAjaran' => $ppdbInfo['tahun_ajaran'] ?? '-',
                         'registrations' => $registrations,
                         'total' => $total,
                         'statusCounts' => $statusCounts,
+                        'originCounts' => $originCounts,
                         'filterStatus' => $status,
                     ]);
                     $pdf->setPaper('A4', 'landscape');
