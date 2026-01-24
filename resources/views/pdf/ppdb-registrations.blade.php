@@ -307,25 +307,25 @@
                             </tr>
                             <tr>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border: 1px solid #e5e7eb;">
                                     RA</th>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border: 1px solid #e5e7eb;">
                                     TK</th>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border: 1px solid #e5e7eb;">
                                     BIMBA</th>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border: 1px solid #e5e7eb;">
                                     PAUD</th>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border: 1px solid #e5e7eb;">
                                     Orang Tua</th>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border: 1px solid #e5e7eb;">
                                     Pindahan</th>
                                 <th
-                                    style="background-color: #ffffff; color: #333; text-align: center; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb;">
+                                    style="background-color: #ffffff; color: #333; text-align: center; border: 1px solid #e5e7eb;">
                                     Lainnya</th>
                             </tr>
                         </thead>
