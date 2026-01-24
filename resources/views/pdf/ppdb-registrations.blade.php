@@ -362,12 +362,12 @@
         <table>
             <thead>
                 <tr>
-                    <th style="width: 4%;">No</th>
-                    <th style="width: 12%;">No Daftar</th>
+                    <th style="width: 3%;">No</th>
+                    <th style="width: 10%;">No Daftar</th>
                     <th style="width: 18%;">Nama Lengkap</th>
-                    <th style="width: 5%;">L/P</th>
-                    <th style="width: 12%;">NISN</th>
-                    <th style="width: 10%;">Asal Sekolah</th>
+                    <th style="width: 3%;">L/P</th>
+                    <th style="width: 8%;">NISN</th>
+                    <th style="width: 19%;">Asal Sekolah</th>
                     <th style="width: 12%;">Nama Ayah</th>
                     <th style="width: 12%;">Nama Ibu</th>
                     <th style="width: 8%;">No HP</th>
