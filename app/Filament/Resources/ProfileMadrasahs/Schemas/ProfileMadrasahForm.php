@@ -103,6 +103,7 @@ class ProfileMadrasahForm
                         RichEditor::make('sejarah_singkat')
                             ->label('Sejarah Singkat')
                             ->toolbarButtons([
+                                'attachFiles',
                                 'bold',
                                 'italic',
                                 'underline',
@@ -113,11 +114,17 @@ class ProfileMadrasahForm
                                 'h3',
                                 'blockquote',
                                 'link',
+                                'undo',
+                                'redo',
                             ])
+                            ->fileAttachmentsDisk('public')
+                            ->fileAttachmentsDirectory('profile-content')
+                            ->fileAttachmentsVisibility('public')
                             ->columnSpanFull(),
                         RichEditor::make('visi')
                             ->label('Visi')
                             ->toolbarButtons([
+                                'attachFiles',
                                 'bold',
                                 'italic',
                                 'underline',
@@ -128,11 +135,17 @@ class ProfileMadrasahForm
                                 'h3',
                                 'blockquote',
                                 'link',
+                                'undo',
+                                'redo',
                             ])
+                            ->fileAttachmentsDisk('public')
+                            ->fileAttachmentsDirectory('profile-content')
+                            ->fileAttachmentsVisibility('public')
                             ->columnSpanFull(),
                         RichEditor::make('misi')
                             ->label('Misi')
                             ->toolbarButtons([
+                                'attachFiles',
                                 'bold',
                                 'italic',
                                 'underline',
@@ -143,13 +156,19 @@ class ProfileMadrasahForm
                                 'h3',
                                 'blockquote',
                                 'link',
+                                'undo',
+                                'redo',
                             ])
+                            ->fileAttachmentsDisk('public')
+                            ->fileAttachmentsDirectory('profile-content')
+                            ->fileAttachmentsVisibility('public')
                             ->placeholder('Contoh: Mewujudkan pendidikan berkualitas yang berlandaskan nilai-nilai Islam...')
                             ->helperText('Ditampilkan sebagai deskripsi di section Misi pada halaman Profil')
                             ->columnSpanFull(),
                         RichEditor::make('tujuan_madrasah')
                             ->label('Tujuan Madrasah')
                             ->toolbarButtons([
+                                'attachFiles',
                                 'bold',
                                 'italic',
                                 'underline',
@@ -160,7 +179,12 @@ class ProfileMadrasahForm
                                 'h3',
                                 'blockquote',
                                 'link',
+                                'undo',
+                                'redo',
                             ])
+                            ->fileAttachmentsDisk('public')
+                            ->fileAttachmentsDirectory('profile-content')
+                            ->fileAttachmentsVisibility('public')
                             ->columnSpanFull(),
                     ]),
 
@@ -204,6 +228,7 @@ class ProfileMadrasahForm
                         RichEditor::make('kata_pengantar')
                             ->label('Kata Pengantar')
                             ->toolbarButtons([
+                                'attachFiles',
                                 'bold',
                                 'italic',
                                 'underline',
@@ -211,7 +236,13 @@ class ProfileMadrasahForm
                                 'bulletList',
                                 'orderedList',
                                 'blockquote',
+                                'link',
+                                'undo',
+                                'redo',
                             ])
+                            ->fileAttachmentsDisk('public')
+                            ->fileAttachmentsDirectory('profile-content')
+                            ->fileAttachmentsVisibility('public')
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
