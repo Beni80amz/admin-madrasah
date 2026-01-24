@@ -169,6 +169,7 @@ class ManageAppSettings extends Page implements HasForms
                                     ->label('Deskripsi')
                                     ->required()
                                     ->toolbarButtons([
+                                        'attachFiles',
                                         'bold',
                                         'italic',
                                         'underline',
@@ -179,7 +180,13 @@ class ManageAppSettings extends Page implements HasForms
                                         'h3',
                                         'blockquote',
                                         'link',
+                                        'codeBlock',
+                                        'undo',
+                                        'redo',
                                     ])
+                                    ->fileAttachmentsDisk('public')
+                                    ->fileAttachmentsDirectory('ppdb-alur')
+                                    ->fileAttachmentsVisibility('public')
                                     ->columnSpanFull(),
                             ])
                             ->columns(5)
