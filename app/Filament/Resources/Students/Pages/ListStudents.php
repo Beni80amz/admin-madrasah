@@ -14,6 +14,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Actions\CreateAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Maatwebsite\Excel\Facades\Excel;
@@ -58,6 +59,10 @@ class ListStudents extends ListRecords
             ->toArray();
 
         return [
+            CreateAction::make()
+                ->label('Input Siswa Baru')
+                ->icon('heroicon-o-plus'),
+
             Action::make('downloadTemplate')
                 ->label('Download Template')
                 ->icon('heroicon-o-document-text')
