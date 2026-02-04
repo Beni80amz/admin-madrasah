@@ -18,6 +18,11 @@ class AttendanceResource extends Resource
 {
     protected static ?string $model = Attendance::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return !auth()->user()->hasRole('Admin Keuangan');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema

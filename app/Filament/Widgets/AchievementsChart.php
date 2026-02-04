@@ -9,6 +9,11 @@ class AchievementsChart extends ChartWidget
 {
     protected static ?int $sort = 4;
 
+    public static function canView(): bool
+    {
+        return !auth()->user()->hasRole('Admin Keuangan');
+    }
+
     public function getHeading(): string
     {
         return 'Prestasi per Tahun';

@@ -18,6 +18,11 @@ class LeaveRequestResource extends Resource
 {
     protected static ?string $model = LeaveRequest::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return !auth()->user()->hasRole('Admin Keuangan');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static UnitEnum|string|null $navigationGroup = 'Akademik';

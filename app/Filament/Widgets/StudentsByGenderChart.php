@@ -9,6 +9,11 @@ class StudentsByGenderChart extends ChartWidget
 {
     protected static ?int $sort = 3;
 
+    public static function canView(): bool
+    {
+        return !auth()->user()->hasRole('Admin Keuangan');
+    }
+
     public function getHeading(): string
     {
         return 'Distribusi Siswa per Gender';

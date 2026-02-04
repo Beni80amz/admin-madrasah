@@ -18,6 +18,11 @@ class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return !auth()->user()->hasRole('Admin Keuangan');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
     protected static UnitEnum|string|null $navigationGroup = 'Akademik';

@@ -24,6 +24,11 @@ class SyncErrorLogResource extends Resource
 {
     protected static ?string $model = SyncErrorLog::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return !auth()->user()->hasRole('Admin Keuangan');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedExclamationTriangle;
 
     protected static UnitEnum|string|null $navigationGroup = 'Data Pendukung';

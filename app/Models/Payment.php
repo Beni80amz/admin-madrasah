@@ -1,0 +1,123 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Payment extends Model
+{
+    use HasFactory;
+
+    protected $guarded = [];
+
+    protected $casts = [
+        'amount_paid' => 'decimal:2',
+        'payment_date' => 'date',
+    ];
+
+    public static function getPaymentMethodOptions(): array
+    {
+        return [
+            'cash' => 'Tunai',
+            'transfer' => 'Transfer Bank',
+            'qris' => 'QRIS',
+        ];
+    }
+
+    /**
+     * Boot the model
+     */
+    protected static function booted(): void
+    {
+        // After creating a payment, update the student bill
+        static::created(function (Payment $payment) {
+            $bill = $payment->studentBill;
+            if ($bill) {
+                $bill->paid_amount = (float) $bill->paid_amount + (float) $payment->amount_paid;
+                $bill->save();
+                $bill->updatePaymentStatus();
+            }
+        });
+
+        // After deleting a payment, update the student bill
+        static::deleted(function (Payment $payment) {
+            $bill = $payment->studentBill;
+            if ($bill) {
+                $bill->paid_amount = (float) $bill->paid_amount - (float) $payment->amount_paid;
+                if ($bill->paid_amount < 0) {
+                    $bill->paid_amount = 0;
+                }
+                $bill->save();
+                $bill->updatePaymentStatus();
+            }
+        });
+
+        // Auto-generate receipt number before creating
+        static::creating(function (Payment $payment) {
+            if (empty($payment->receipt_number)) {
+                $payment->receipt_number = self::generateReceiptNumber();
+            }
+        });
+    }
+
+    /**
+     * Generate unique receipt number
+     * Format: INV-YYYYMMDD-XXXXX
+     */
+    public static function generateReceiptNumber(): string
+    {
+        $date = now()->format('Ymd');
+        $prefix = "INV-{$date}-";
+
+        // Get the latest receipt number for today
+        $latest = static::where('receipt_number', 'like', $prefix . '%')
+            ->orderBy('receipt_number', 'desc')
+            ->first();
+
+        if ($latest) {
+            // Extract the sequence number and increment
+            $lastNumber = (int) substr($latest->receipt_number, -5);
+            $newNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '00001';
+        }
+
+        return $prefix . $newNumber;
+    }
+
+    public function studentBill(): BelongsTo
+    {
+        return $this->belongsTo(StudentBill::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get student through bill relationship
+     */
+    public function getStudentAttribute()
+    {
+        return $this->studentBill?->student;
+    }
+
+    /**
+     * Get formatted amount
+     */
+    public function getFormattedAmountAttribute(): string
+    {
+        return 'Rp ' . number_format($this->amount_paid, 0, ',', '.');
+    }
+
+    /**
+     * Get payment method label
+     */
+    public function getPaymentMethodLabelAttribute(): string
+    {
+        return self::getPaymentMethodOptions()[$this->payment_method] ?? $this->payment_method;
+    }
+}

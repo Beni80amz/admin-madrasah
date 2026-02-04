@@ -18,6 +18,11 @@ class StatsOverview extends BaseWidget
 {
     protected static ?int $sort = 1;
 
+    public static function canView(): bool
+    {
+        return !auth()->user()->hasRole('Admin Keuangan');
+    }
+
     protected function getStats(): array
     {
         // Count students by status (prefer status field, fallback to is_active)

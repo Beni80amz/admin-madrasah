@@ -24,6 +24,11 @@ class LinkPendataanResource extends Resource
 {
     protected static ?string $model = LinkPendataan::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return !auth()->user()->hasRole('Admin Keuangan');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-link';
 
     protected static UnitEnum|string|null $navigationGroup = 'Setting';

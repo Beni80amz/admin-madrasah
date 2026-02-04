@@ -11,6 +11,13 @@ class RdmSync extends Page
 {
     protected string $view = 'filament.pages.rdm-sync';
 
+    protected static ?string $navigationLabel = 'Sinkronisasi RDM';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return !auth()->user()->hasRole('Admin Keuangan');
+    }
+
     public static function getNavigationIcon(): ?string
     {
         return 'heroicon-o-arrow-path';

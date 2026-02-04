@@ -87,3 +87,7 @@ Route::middleware(['auth'])->group(function () {
     Route::view('/inbox', 'frontend.features.inbox')->name('inbox.index');
     Route::view('/profil-user', 'frontend.features.profil')->name('profil.user');
 });
+
+// Payment Receipt (Madrasah Pay)
+Route::get('/payment/{payment}/receipt', [App\Http\Controllers\PaymentReceiptController::class, 'stream'])->name('payment.receipt');
+Route::get('/payment/{payment}/receipt/download', [App\Http\Controllers\PaymentReceiptController::class, 'download'])->name('payment.receipt.download');

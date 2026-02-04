@@ -55,6 +55,15 @@ class ProfileMadrasahForm
                             ->label('Alamat Madrasah')
                             ->rows(3)
                             ->columnSpanFull(),
+                        TextInput::make('kelurahan')
+                            ->label('Kelurahan/Desa'),
+                        TextInput::make('kecamatan')
+                            ->label('Kecamatan'),
+                        TextInput::make('kota')
+                            ->label('Kabupaten/Kota'),
+                        TextInput::make('kode_pos')
+                            ->label('Kode POS')
+                            ->numeric(),
                         Textarea::make('running_text')
                             ->label('Teks Berjalan (Monitor)')
                             ->placeholder('Contoh: Selamat Datang di MIS Al-Islamiyah AMZ • Jagalah Kebersihan • ...')

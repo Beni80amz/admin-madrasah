@@ -43,5 +43,20 @@ class RolesAndUsersSeeder extends Seeder
 
         $ppdbUser->assignRole($ppdbAdminRole);
         $this->command->info("User '{$ppdbUser->email}' created/updated with role 'Admin PPDB'");
+
+        // 4. Create Admin Keuangan Role and User
+        $keuanganRole = Role::firstOrCreate(['name' => 'Admin Keuangan']);
+
+        $keuanganUser = User::updateOrCreate(
+            ['email' => 'keuangan@madrasah.sch.id'],
+            [
+                'name' => 'Admin Keuangan',
+                'password' => Hash::make('@#AdminKeuangan@#'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        $keuanganUser->assignRole($keuanganRole);
+        $this->command->info("User '{$keuanganUser->email}' created/updated with role 'Admin Keuangan'");
     }
 }

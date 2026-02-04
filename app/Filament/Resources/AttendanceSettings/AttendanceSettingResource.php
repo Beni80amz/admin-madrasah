@@ -18,6 +18,11 @@ class AttendanceSettingResource extends Resource
 {
     protected static ?string $model = AttendanceSetting::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return !auth()->user()->hasRole('Admin Keuangan');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'key';
