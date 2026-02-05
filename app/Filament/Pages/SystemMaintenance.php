@@ -906,6 +906,15 @@ class SystemMaintenance extends Page
                 $output = $process->getOutput();
                 $this->commandOutput .= $output;
 
+                // Run Permissions Seeder as requested
+                try {
+                    $this->commandOutput .= "\n\n[AUTO] Running PermissionsSeeder...\n";
+                    Artisan::call('db:seed', ['--class' => 'PermissionsSeeder', '--force' => true]);
+                    $this->commandOutput .= Artisan::output();
+                } catch (\Exception $e) {
+                    $this->commandOutput .= "\n[ERROR] Seeder failed: " . $e->getMessage() . "\n";
+                }
+
                 Notification::make()
                     ->title('Update Successful')
                     ->body('Git pull command executed successfully.')
