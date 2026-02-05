@@ -20,20 +20,17 @@ class LeaveRequestResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return !auth()->user()->hasRole('Admin Keuangan');
+        return auth()->user()->can('view_any_leave_request');
     }
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    // protected static UnitEnum|string|null $navigationGroup = null; // DEBUG: Test Visibility
     protected static UnitEnum|string|null $navigationGroup = 'Akademik';
+
     protected static ?int $navigationSort = 99;
     protected static ?string $navigationLabel = 'Permohonan Izin';
     protected static ?string $slug = 'leave-requests';
-
-    public static function canViewAny(): bool
-    {
-        return true;
-    }
 
     public static function form(Schema $schema): Schema
     {

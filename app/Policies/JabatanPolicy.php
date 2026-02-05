@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Jabatan;
+use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class JabatanPolicy
@@ -13,15 +13,15 @@ class JabatanPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->can('view_any_jabatan');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Jabatan $model): bool
+    public function view(User $user, Jabatan $jabatan): bool
     {
-        return false;
+        return $user->can('view_jabatan');
     }
 
     /**
@@ -29,38 +29,38 @@ class JabatanPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('create_jabatan');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Jabatan $model): bool
+    public function update(User $user, Jabatan $jabatan): bool
     {
-        return false;
+        return $user->can('update_jabatan');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Jabatan $model): bool
+    public function delete(User $user, Jabatan $jabatan): bool
     {
-        return false;
+        return $user->can('delete_jabatan');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Jabatan $model): bool
+    public function restore(User $user, Jabatan $jabatan): bool
     {
-        return false;
+        return $user->can('restore_jabatan');
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Jabatan $model): bool
+    public function forceDelete(User $user, Jabatan $jabatan): bool
     {
-        return false;
+        return $user->can('force_delete_jabatan');
     }
 }

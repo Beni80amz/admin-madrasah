@@ -19,6 +19,11 @@ class RombelResource extends Resource
 {
     protected static ?string $model = Rombel::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->can('view_any_rombel');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
 
     protected static UnitEnum|string|null $navigationGroup = 'Master Data';

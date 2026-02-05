@@ -26,7 +26,7 @@ class ManageAppSettings extends Page implements HasForms
 
     public static function canAccess(): bool
     {
-        return auth()->user()->hasRole(['Superadmin', 'Admin PPDB']);
+        return auth()->user()->can('view_any_app_setting');
     }
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';

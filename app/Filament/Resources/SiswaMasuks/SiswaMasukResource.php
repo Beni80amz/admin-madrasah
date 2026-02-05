@@ -19,6 +19,11 @@ class SiswaMasukResource extends Resource
 {
     protected static ?string $model = SiswaMasuk::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->can('view_any_siswa_masuk');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowLeftEndOnRectangle;
 
     protected static UnitEnum|string|null $navigationGroup = 'Akademik';

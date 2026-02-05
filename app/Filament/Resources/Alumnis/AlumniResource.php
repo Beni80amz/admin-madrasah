@@ -19,6 +19,11 @@ class AlumniResource extends Resource
 {
     protected static ?string $model = Alumni::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->can('view_any_alumni');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
 
     protected static UnitEnum|string|null $navigationGroup = 'Akademik';

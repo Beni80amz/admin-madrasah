@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Rombel;
+use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class RombelPolicy
@@ -13,15 +13,15 @@ class RombelPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->can('view_any_rombel');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Rombel $model): bool
+    public function view(User $user, Rombel $rombel): bool
     {
-        return false;
+        return $user->can('view_rombel');
     }
 
     /**
@@ -29,38 +29,38 @@ class RombelPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('create_rombel');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Rombel $model): bool
+    public function update(User $user, Rombel $rombel): bool
     {
-        return false;
+        return $user->can('update_rombel');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Rombel $model): bool
+    public function delete(User $user, Rombel $rombel): bool
     {
-        return false;
+        return $user->can('delete_rombel');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Rombel $model): bool
+    public function restore(User $user, Rombel $rombel): bool
     {
-        return false;
+        return $user->can('restore_rombel');
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Rombel $model): bool
+    public function forceDelete(User $user, Rombel $rombel): bool
     {
-        return false;
+        return $user->can('force_delete_rombel');
     }
 }

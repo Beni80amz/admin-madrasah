@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\AcademicCalendar;
+use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class AcademicCalendarPolicy
@@ -13,15 +13,15 @@ class AcademicCalendarPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->can('view_any_academic_calendar');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, AcademicCalendar $model): bool
+    public function view(User $user, AcademicCalendar $academicCalendar): bool
     {
-        return false;
+        return $user->can('view_academic_calendar');
     }
 
     /**
@@ -29,38 +29,38 @@ class AcademicCalendarPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('create_academic_calendar');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, AcademicCalendar $model): bool
+    public function update(User $user, AcademicCalendar $academicCalendar): bool
     {
-        return false;
+        return $user->can('update_academic_calendar');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, AcademicCalendar $model): bool
+    public function delete(User $user, AcademicCalendar $academicCalendar): bool
     {
-        return false;
+        return $user->can('delete_academic_calendar');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, AcademicCalendar $model): bool
+    public function restore(User $user, AcademicCalendar $academicCalendar): bool
     {
-        return false;
+        return $user->can('restore_academic_calendar');
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, AcademicCalendar $model): bool
+    public function forceDelete(User $user, AcademicCalendar $academicCalendar): bool
     {
-        return false;
+        return $user->can('force_delete_academic_calendar');
     }
 }

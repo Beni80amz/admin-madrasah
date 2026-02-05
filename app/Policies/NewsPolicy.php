@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\News;
+use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class NewsPolicy
@@ -13,15 +13,15 @@ class NewsPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->can('view_any_news');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, News $model): bool
+    public function view(User $user, News $news): bool
     {
-        return false;
+        return $user->can('view_news');
     }
 
     /**
@@ -29,38 +29,38 @@ class NewsPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('create_news');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, News $model): bool
+    public function update(User $user, News $news): bool
     {
-        return false;
+        return $user->can('update_news');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, News $model): bool
+    public function delete(User $user, News $news): bool
     {
-        return false;
+        return $user->can('delete_news');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, News $model): bool
+    public function restore(User $user, News $news): bool
     {
-        return false;
+        return $user->can('restore_news');
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, News $model): bool
+    public function forceDelete(User $user, News $news): bool
     {
-        return false;
+        return $user->can('force_delete_news');
     }
 }

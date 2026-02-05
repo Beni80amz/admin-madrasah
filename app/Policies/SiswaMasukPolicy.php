@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\SiswaMasuk;
+use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class SiswaMasukPolicy
@@ -13,15 +13,15 @@ class SiswaMasukPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->can('view_any_siswa_masuk');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, SiswaMasuk $model): bool
+    public function view(User $user, SiswaMasuk $siswaMasuk): bool
     {
-        return false;
+        return $user->can('view_siswa_masuk');
     }
 
     /**
@@ -29,38 +29,38 @@ class SiswaMasukPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('create_siswa_masuk');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, SiswaMasuk $model): bool
+    public function update(User $user, SiswaMasuk $siswaMasuk): bool
     {
-        return false;
+        return $user->can('update_siswa_masuk');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, SiswaMasuk $model): bool
+    public function delete(User $user, SiswaMasuk $siswaMasuk): bool
     {
-        return false;
+        return $user->can('delete_siswa_masuk');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, SiswaMasuk $model): bool
+    public function restore(User $user, SiswaMasuk $siswaMasuk): bool
     {
-        return false;
+        return $user->can('restore_siswa_masuk');
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, SiswaMasuk $model): bool
+    public function forceDelete(User $user, SiswaMasuk $siswaMasuk): bool
     {
-        return false;
+        return $user->can('force_delete_siswa_masuk');
     }
 }

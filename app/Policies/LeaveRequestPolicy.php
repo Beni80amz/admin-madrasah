@@ -2,20 +2,18 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\LeaveRequest;
-use Illuminate\Auth\Access\HandlesAuthorization;
+use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
 class LeaveRequestPolicy
 {
-    use HandlesAuthorization;
-
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return true; // Allow everyone to view for debugging/fixing visibility
+        return $user->can('view_any_leave_request');
     }
 
     /**
@@ -23,7 +21,7 @@ class LeaveRequestPolicy
      */
     public function view(User $user, LeaveRequest $leaveRequest): bool
     {
-        return true;
+        return $user->can('view_leave_request');
     }
 
     /**
@@ -31,7 +29,7 @@ class LeaveRequestPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->can('create_leave_request');
     }
 
     /**
@@ -39,7 +37,7 @@ class LeaveRequestPolicy
      */
     public function update(User $user, LeaveRequest $leaveRequest): bool
     {
-        return true;
+        return $user->can('update_leave_request');
     }
 
     /**
@@ -47,7 +45,7 @@ class LeaveRequestPolicy
      */
     public function delete(User $user, LeaveRequest $leaveRequest): bool
     {
-        return true;
+        return $user->can('delete_leave_request');
     }
 
     /**
@@ -55,7 +53,7 @@ class LeaveRequestPolicy
      */
     public function restore(User $user, LeaveRequest $leaveRequest): bool
     {
-        return true;
+        return $user->can('restore_leave_request');
     }
 
     /**
@@ -63,6 +61,6 @@ class LeaveRequestPolicy
      */
     public function forceDelete(User $user, LeaveRequest $leaveRequest): bool
     {
-        return true;
+        return $user->can('force_delete_leave_request');
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Holiday;
+use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class HolidayPolicy
@@ -13,7 +13,7 @@ class HolidayPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('Superadmin');
+        return $user->can('view_any_holiday');
     }
 
     /**
@@ -21,7 +21,7 @@ class HolidayPolicy
      */
     public function view(User $user, Holiday $holiday): bool
     {
-        return $user->hasRole('Superadmin');
+        return $user->can('view_holiday');
     }
 
     /**
@@ -29,7 +29,7 @@ class HolidayPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('Superadmin');
+        return $user->can('create_holiday');
     }
 
     /**
@@ -37,7 +37,7 @@ class HolidayPolicy
      */
     public function update(User $user, Holiday $holiday): bool
     {
-        return $user->hasRole('Superadmin');
+        return $user->can('update_holiday');
     }
 
     /**
@@ -45,7 +45,7 @@ class HolidayPolicy
      */
     public function delete(User $user, Holiday $holiday): bool
     {
-        return $user->hasRole('Superadmin');
+        return $user->can('delete_holiday');
     }
 
     /**
@@ -53,7 +53,7 @@ class HolidayPolicy
      */
     public function restore(User $user, Holiday $holiday): bool
     {
-        return $user->hasRole('Superadmin');
+        return $user->can('restore_holiday');
     }
 
     /**
@@ -61,6 +61,6 @@ class HolidayPolicy
      */
     public function forceDelete(User $user, Holiday $holiday): bool
     {
-        return $user->hasRole('Superadmin');
+        return $user->can('force_delete_holiday');
     }
 }

@@ -19,6 +19,11 @@ class KelasResource extends Resource
 {
     protected static ?string $model = Kelas::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->can('view_any_kelas');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
     protected static UnitEnum|string|null $navigationGroup = 'Master Data';

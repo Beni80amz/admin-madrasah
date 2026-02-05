@@ -13,9 +13,14 @@ class RdmSync extends Page
 
     protected static ?string $navigationLabel = 'Sinkronisasi RDM';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasRole('Superadmin');
+    }
+
     public static function shouldRegisterNavigation(): bool
     {
-        return !auth()->user()->hasRole('Admin Keuangan');
+        return static::canAccess();
     }
 
     public static function getNavigationIcon(): ?string

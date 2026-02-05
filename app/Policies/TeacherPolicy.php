@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Teacher;
+use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class TeacherPolicy
@@ -13,15 +13,15 @@ class TeacherPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->can('view_any_teacher');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Teacher $model): bool
+    public function view(User $user, Teacher $teacher): bool
     {
-        return false;
+        return $user->can('view_teacher');
     }
 
     /**
@@ -29,38 +29,38 @@ class TeacherPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->can('create_teacher');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Teacher $model): bool
+    public function update(User $user, Teacher $teacher): bool
     {
-        return false;
+        return $user->can('update_teacher');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Teacher $model): bool
+    public function delete(User $user, Teacher $teacher): bool
     {
-        return false;
+        return $user->can('delete_teacher');
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Teacher $model): bool
+    public function restore(User $user, Teacher $teacher): bool
     {
-        return false;
+        return $user->can('restore_teacher');
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Teacher $model): bool
+    public function forceDelete(User $user, Teacher $teacher): bool
     {
-        return false;
+        return $user->can('force_delete_teacher');
     }
 }

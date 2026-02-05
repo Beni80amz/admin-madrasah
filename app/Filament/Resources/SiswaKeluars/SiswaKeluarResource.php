@@ -19,6 +19,11 @@ class SiswaKeluarResource extends Resource
 {
     protected static ?string $model = SiswaKeluar::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->user()->can('view_any_siswa_keluar');
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowRightStartOnRectangle;
 
     protected static UnitEnum|string|null $navigationGroup = 'Akademik';

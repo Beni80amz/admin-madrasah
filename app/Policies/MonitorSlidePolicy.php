@@ -2,26 +2,27 @@
 
 namespace App\Policies;
 
-use App\Models\HeroSlider;
+use App\Models\MonitorSlide;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class HeroSliderPolicy
+class MonitorSlidePolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_hero_slider');
+        // Only Superadmin (via Gate::before) or if we explicitly add permission later
+        return false;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, HeroSlider $heroSlider): bool
+    public function view(User $user, MonitorSlide $monitorSlide): bool
     {
-        return $user->can('view_hero_slider');
+        return false;
     }
 
     /**
@@ -29,38 +30,38 @@ class HeroSliderPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_hero_slider');
+        return false;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, HeroSlider $heroSlider): bool
+    public function update(User $user, MonitorSlide $monitorSlide): bool
     {
-        return $user->can('update_hero_slider');
+        return false;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, HeroSlider $heroSlider): bool
+    public function delete(User $user, MonitorSlide $monitorSlide): bool
     {
-        return $user->can('delete_hero_slider');
+        return false;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, HeroSlider $heroSlider): bool
+    public function restore(User $user, MonitorSlide $monitorSlide): bool
     {
-        return $user->can('restore_hero_slider');
+        return false;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, HeroSlider $heroSlider): bool
+    public function forceDelete(User $user, MonitorSlide $monitorSlide): bool
     {
-        return $user->can('force_delete_hero_slider');
+        return false;
     }
 }

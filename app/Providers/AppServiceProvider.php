@@ -26,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('Superadmin') ? true : null;
         });
 
+        // Force register policies that might strictly fail auto-discovery
+        \Illuminate\Support\Facades\Gate::policy(\App\Models\LeaveRequest::class, \App\Policies\LeaveRequestPolicy::class);
+
         \App\Models\ProfileMadrasah::observe(\App\Observers\ProfileMadrasahObserver::class);
     }
 }

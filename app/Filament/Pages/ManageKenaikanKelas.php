@@ -19,7 +19,7 @@ class ManageKenaikanKelas extends Page
 
     public static function canAccess(): bool
     {
-        return auth()->user()->hasRole('Superadmin');
+        return auth()->user()->can('view_any_student_promotion');
     }
     protected static ?string $navigationLabel = 'Kenaikan Kelas';
     protected static ?string $title = 'Kenaikan Kelas';

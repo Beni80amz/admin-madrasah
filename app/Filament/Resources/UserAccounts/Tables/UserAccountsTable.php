@@ -8,6 +8,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Illuminate\Database\Eloquent\Collection;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Actions\Action;
 
 class UserAccountsTable
@@ -41,13 +45,22 @@ class UserAccountsTable
                         default => 'gray',
                     })
                     ->searchable(),
+                \Filament\Tables\Columns\ToggleColumn::make('is_active')
+                    ->label('Active'),
             ])
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('roles')
                     ->relationship('roles', 'name')
                     ->label('Filter Role'),
+                \Filament\Tables\Filters\TernaryFilter::make('is_active')
+                    ->label('Active Status')
+                    ->boolean()
+                    ->trueLabel('Active Users')
+                    ->falseLabel('Inactive Users'),
             ])
             ->actions([
+                EditAction::make(),
+                DeleteAction::make(),
                 Action::make('editRole')
                     ->label('Ubah Role')
                     ->icon('heroicon-o-pencil-square')

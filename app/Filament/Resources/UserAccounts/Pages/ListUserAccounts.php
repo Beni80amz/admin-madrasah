@@ -12,7 +12,7 @@ class ListUserAccounts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            // Export action will be here later
+            \Filament\Actions\CreateAction::make(),
         ];
     }
 }

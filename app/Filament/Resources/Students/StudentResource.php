@@ -20,7 +20,7 @@ class StudentResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return !auth()->user()->hasRole('Admin Keuangan');
+        return auth()->user()->can('view_any_student');
     }
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
