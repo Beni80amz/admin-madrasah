@@ -281,7 +281,7 @@
                                 <ul class="detail-list">
                                     @foreach($payments as $p)
                                         <li class="detail-item">
-                                            {{ $p->studentBill->feeItem->feeCategory->name }}
+                                            {{ $p->studentBill->feeItem->name }}
                                             {{ $p->studentBill->month ? '(' . $p->studentBill->month . ')' : '' }}
                                             <br>
                                             <span class="detail-status">
@@ -335,7 +335,7 @@
                             <table class="reminder-table">
                                 @foreach($unpaidBills as $unpaid)
                                     <tr>
-                                        <td>{{ $unpaid->feeItem->feeCategory->name }}
+                                        <td>{{ $unpaid->feeItem->name }}
                                             {{ $unpaid->month ? '(' . $unpaid->month . ')' : '' }}
                                         </td>
                                         <td class="reminder-total">Rp

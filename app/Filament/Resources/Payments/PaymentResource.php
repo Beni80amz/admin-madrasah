@@ -76,7 +76,7 @@ class PaymentResource extends Resource
                         return $query->get()
                             ->mapWithKeys(fn($bill) => [
                                 $bill->id => $bill->student->nama_lengkap . ' - ' .
-                                    $bill->feeItem->feeCategory->name .
+                                    $bill->feeItem->name .
                                     ($bill->month ? ' (' . $bill->month . ')' : '') .
                                     ' - Sisa: Rp ' . number_format($bill->remaining_amount, 0, ',', '.')
                             ]);

@@ -56,7 +56,7 @@ class PaymentReceiptController extends Controller
             ->where('student_id', $student->id)
             ->where('status', '!=', 'paid')
             ->orderBy('created_at', 'desc')
-            ->limit(5)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         $pdf = Pdf::loadView('pdf.payment-receipt', [
