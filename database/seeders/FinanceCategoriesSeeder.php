@@ -15,11 +15,9 @@ class FinanceCategoriesSeeder extends Seeder
     {
         // Kategori Pemasukan
         $incomeCategories = [
-            ['name' => 'Madrasah Pay', 'description' => 'Pemasukan dari pembayaran siswa via Madrasah Pay'],
-            ['name' => 'Donasi/Infaq', 'description' => 'Donasi dan infaq dari masyarakat'],
-            ['name' => 'Bantuan Pemerintah', 'description' => 'Bantuan BOS dan bantuan pemerintah lainnya'],
-            ['name' => 'Sumbangan Wali Santri', 'description' => 'Sumbangan sukarela dari wali santri'],
-            ['name' => 'Hasil Koperasi/Usaha', 'description' => 'Pendapatan dari koperasi dan unit usaha madrasah'],
+            ['name' => 'BOS Reguler (Pusat)', 'description' => 'Dana Bantuan Operasional Sekolah dari Pemerintah Pusat'],
+            ['name' => 'BOS Kota (KDS)', 'description' => 'Dana Bantuan Operasional Sekolah dari Pemerintah Kota/Daerah'],
+            ['name' => 'Sumbangan Wali Murid', 'description' => 'Sumbangan sukarela dari wali murid/santri'],
             ['name' => 'Lain-lain', 'description' => 'Pemasukan lain yang tidak termasuk kategori di atas'],
         ];
 
@@ -37,8 +35,6 @@ class FinanceCategoriesSeeder extends Seeder
             ['name' => 'Pemeliharaan Gedung', 'description' => 'Biaya perbaikan dan perawatan gedung'],
             ['name' => 'Pengadaan Alat/Bahan', 'description' => 'Pembelian alat pembelajaran dan bahan habis pakai'],
             ['name' => 'Kegiatan Pendidikan', 'description' => 'Biaya kegiatan belajar mengajar dan ekstrakurikuler'],
-            ['name' => 'Konsumsi', 'description' => 'Biaya konsumsi rapat, acara, dll'],
-            ['name' => 'Transport', 'description' => 'Biaya transportasi dan perjalanan dinas'],
             ['name' => 'Lain-lain', 'description' => 'Pengeluaran lain yang tidak termasuk kategori di atas'],
         ];
 
