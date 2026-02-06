@@ -97,10 +97,10 @@ class GoogleDriveSettings extends Page implements HasInfolists, HasSchemas
                                             'sm' => 2,
                                         ])
                                             ->schema([
-                                                $this->createFolderEntry('Main', 'Direktori Utama', $googleToken?->main_folder_id, true),
-                                                $this->createFolderEntry('Planning', 'Perencanaan (S1)', $googleToken?->planning_folder_id),
-                                                $this->createFolderEntry('Execution', 'Pelaksanaan (S2)', $googleToken?->execution_folder_id),
-                                                $this->createFolderEntry('Support', 'Bukti Pendukung', $googleToken?->support_folder_id),
+                                                $this->createFolderEntry('Main', 'Direktori Utama', $googleToken?->main_folder_id, true, $isConnected),
+                                                $this->createFolderEntry('Planning', 'Perencanaan (S1)', $googleToken?->planning_folder_id, false, $isConnected),
+                                                $this->createFolderEntry('Execution', 'Pelaksanaan (S2)', $googleToken?->execution_folder_id, false, $isConnected),
+                                                $this->createFolderEntry('Support', 'Bukti Pendukung', $googleToken?->support_folder_id, false, $isConnected),
                                             ])
                                             ->gap(4),
                                     ])
@@ -114,9 +114,9 @@ class GoogleDriveSettings extends Page implements HasInfolists, HasSchemas
                                             'md' => 1,
                                         ])
                                             ->schema([
-                                                $this->createBenefitEntry('heroicon-s-shield-check', 'Data Terenkripsi & Aman', 'File tersimpan langsung di Google Drive pribadi Anda dengan standar keamanan perbankan (OAuth 2.0).', 'primary'),
-                                                $this->createBenefitEntry('heroicon-s-square-3-stack-3d', 'Pengarsipan Otomatis', 'Ucapkan selamat tinggal pada pemberkasan manual. Sistem mengelola folder Anda secara cerdas.', 'success'),
-                                                $this->createBenefitEntry('heroicon-s-sparkles', 'Manajemen Profesional', 'Meningkatkan akreditasi sekolah dengan sistem dokumentasi digital yang terpercaya dan rapi.', 'info'),
+                                                $this->createBenefitEntry('heroicon-o-shield-check', 'Data Terenkripsi & Aman', 'File tersimpan langsung di Google Drive pribadi Anda dengan standar keamanan perbankan (OAuth 2.0).', 'primary'),
+                                                $this->createBenefitEntry('heroicon-o-square-3-stack-3d', 'Pengarsipan Otomatis', 'Ucapkan selamat tinggal pada pemberkasan manual. Sistem mengelola folder Anda secara cerdas.', 'success'),
+                                                $this->createBenefitEntry('heroicon-o-sparkles', 'Manajemen Profesional', 'Meningkatkan akreditasi sekolah dengan sistem dokumentasi digital yang terpercaya dan rapi.', 'info'),
                                             ])
                                             ->gap(4),
                                     ]),
@@ -128,13 +128,14 @@ class GoogleDriveSettings extends Page implements HasInfolists, HasSchemas
     }
 
 
-    protected function createFolderEntry(string $id, string $name, ?string $folderId, bool $isMain = false): ViewEntry
+    protected function createFolderEntry(string $id, string $name, ?string $folderId, bool $isMain = false, bool $isConnected = false): ViewEntry
     {
         return ViewEntry::make("folder_{$id}")
             ->view('filament.infolists.components.google-drive-folder-card', [
                 'name' => $name,
                 'link' => $folderId ? "https://drive.google.com/drive/folders/{$folderId}" : null,
                 'isMain' => $isMain,
+                'isConnected' => $isConnected,
             ]);
     }
 

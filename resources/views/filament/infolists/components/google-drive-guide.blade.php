@@ -1,7 +1,7 @@
 <div class="relative rounded-3xl border border-gray-950/5 bg-gray-50/50 p-8 dark:border-white/10 dark:bg-gray-900/40">
     <div class="flex items-center gap-x-3">
         <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-500/10">
-            <x-heroicon-s-light-bulb style="width: 18px; height: 18px;"
+            <x-heroicon-o-light-bulb style="width: 18px; height: 18px;"
                 class="text-primary-600 dark:text-primary-400" />
         </div>
         <h3 class="text-sm font-black tracking-tight text-gray-950 dark:text-white uppercase">Prosedur Unggah</h3>
@@ -40,7 +40,7 @@
         <div class="relative flex gap-x-4">
             <div
                 class="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-500 shadow-lg shadow-primary-500/20">
-                <x-heroicon-s-check style="width: 14px; height: 14px;" class="text-white" />
+                <x-heroicon-m-check style="width: 14px; height: 14px;" class="text-white" />
             </div>
             <div class="flex-1 pt-1">
                 <p class="text-xs leading-relaxed text-gray-600 dark:text-gray-400">

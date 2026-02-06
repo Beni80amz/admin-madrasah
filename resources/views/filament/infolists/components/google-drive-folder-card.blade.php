@@ -10,9 +10,9 @@
         <div
             class="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 {{ $isMain ? 'bg-primary-500/10' : 'bg-blue-500/10' }}">
             @if($isMain)
-                <x-heroicon-s-cloud style="width: 28px; height: 28px;" class="text-primary-600 dark:text-primary-400" />
+                <x-heroicon-o-cloud style="width: 28px; height: 28px;" class="text-primary-600 dark:text-primary-400" />
             @else
-                <x-heroicon-s-folder style="width: 28px; height: 28px;" class="text-blue-600 dark:text-blue-400" />
+                <x-heroicon-o-folder style="width: 28px; height: 28px;" class="text-blue-600 dark:text-blue-400" />
             @endif
         </div>
 
@@ -32,7 +32,7 @@
 
         <div
             class="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gray-50 text-gray-400 transition-all duration-300 group-hover:bg-primary-500 group-hover:text-white dark:bg-gray-800">
-            <x-heroicon-s-arrow-up-right style="width: 16px; height: 16px;"
+            <x-heroicon-m-arrow-top-right-on-square style="width: 16px; height: 16px;"
                 class="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </div>
     </a>
