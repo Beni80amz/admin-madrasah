@@ -98,3 +98,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/laporan/export/excel', [App\Http\Controllers\LaporanExportController::class, 'exportExcel'])->name('laporan.export.excel');
 });
 
+// Google Drive Integration
+Route::middleware(['auth'])->prefix('google-drive')->name('google-drive.')->group(function () {
+    Route::get('/connect', [App\Http\Controllers\GoogleDriveController::class, 'redirect'])->name('connect');
+    Route::get('/callback', [App\Http\Controllers\GoogleDriveController::class, 'callback'])->name('callback');
+    Route::post('/disconnect', [App\Http\Controllers\GoogleDriveController::class, 'disconnect'])->name('disconnect');
+    Route::post('/refresh-folders', [App\Http\Controllers\GoogleDriveController::class, 'refreshFolders'])->name('refresh-folders');
+});

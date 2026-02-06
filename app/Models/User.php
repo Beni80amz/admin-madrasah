@@ -67,4 +67,28 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasOne(Student::class, 'user_id');
     }
+
+    /**
+     * Get the Google token associated with the user.
+     */
+    public function googleToken()
+    {
+        return $this->hasOne(GoogleToken::class);
+    }
+
+    /**
+     * Get the teacher administration files.
+     */
+    public function teacherAdministrations()
+    {
+        return $this->hasMany(TeacherAdministration::class);
+    }
+
+    /**
+     * Check if user is connected to Google Drive
+     */
+    public function isConnectedToGoogleDrive(): bool
+    {
+        return $this->googleToken !== null;
+    }
 }
