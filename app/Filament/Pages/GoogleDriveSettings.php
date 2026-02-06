@@ -67,45 +67,29 @@ class GoogleDriveSettings extends Page implements HasInfolists, HasSchemas
                         // Left Column: Status & Guide
                         Grid::make(1)
                             ->schema([
-                                Section::make('Status Koneksi')
-                                    ->schema([
-                                        IconEntry::make('status')
-                                            ->label('')
-                                            ->icon(fn(string $state): string => $state === 'connected' ? 'heroicon-o-check-circle' : 'heroicon-o-exclamation-triangle')
-                                            ->color(fn(string $state): string => $state === 'connected' ? 'success' : 'warning')
-                                            ->size(IconSize::ExtraLarge)
-                                            ->alignCenter()
-                                            ->hiddenLabel(),
-                                        TextEntry::make('status_title')
-                                            ->label('')
-                                            ->default(fn() => $isConnected ? 'Google Drive Terhubung' : 'Google Drive Belum Terhubung')
-                                            ->weight('bold')
-                                            ->size(TextSize::Large)
-                                            ->alignCenter(),
-                                        TextEntry::make('status_description')
-                                            ->label('')
-                                            ->default(fn() => $isConnected
-                                                ? 'Akun Google Drive Anda sudah terhubung dan siap digunakan untuk mengunggah berkas.'
-                                                : 'Hubungkan akun Google Drive Anda untuk mulai mengunggah berkas administrasi secara otomatis ke penyimpanan awan.')
-                                            ->alignCenter()
-                                            ->extraAttributes(['class' => 'text-gray-500 pb-4']),
-                                    ]),
+                                ViewEntry::make('status_card')
+                                    ->view('filament.infolists.components.google-drive-status-card', [
+                                        'status' => $isConnected ? 'connected' : 'disconnected',
+                                    ])
+                                    ->columnSpanFull()
+                                    ->hiddenLabel(),
 
-                                Section::make('Panduan Penggunaan')
+                                Section::make('Prosedur & Bantuan')
                                     ->visible($isConnected)
                                     ->schema([
                                         ViewEntry::make('quick_guide')
                                             ->view('filament.infolists.components.google-drive-guide')
                                             ->hiddenLabel(),
-                                    ]),
+                                    ])
+                                    ->compact(),
                             ])
                             ->columnSpan(['lg' => 1]),
 
                         // Right Column: Folder Structure or Benefits
                         Grid::make(1)
                             ->schema([
-                                Section::make('Struktur Folder Cloud')
-                                    ->description('Lokasi penyimpanan berkas Anda di Google Drive:')
+                                Section::make('Dashboard Penyimpanan Cloud')
+                                    ->description('Akses cepat ke direktori administrasi di Google Drive Anda.')
                                     ->visible($isConnected && $googleToken?->main_folder_id)
                                     ->schema([
                                         Grid::make([
@@ -113,29 +97,36 @@ class GoogleDriveSettings extends Page implements HasInfolists, HasSchemas
                                             'sm' => 2,
                                         ])
                                             ->schema([
-                                                $this->createFolderEntry('Main', config('google.main_folder_name'), $googleToken?->main_folder_id, true),
-                                                $this->createFolderEntry('Planning', config('google.subfolders.planning'), $googleToken?->planning_folder_id),
-                                                $this->createFolderEntry('Execution', config('google.subfolders.execution'), $googleToken?->execution_folder_id),
-                                                $this->createFolderEntry('Support', config('google.subfolders.support'), $googleToken?->support_folder_id),
-                                            ]),
+                                                $this->createFolderEntry('Main', 'Direktori Utama', $googleToken?->main_folder_id, true),
+                                                $this->createFolderEntry('Planning', 'Perencanaan (S1)', $googleToken?->planning_folder_id),
+                                                $this->createFolderEntry('Execution', 'Pelaksanaan (S2)', $googleToken?->execution_folder_id),
+                                                $this->createFolderEntry('Support', 'Bukti Pendukung', $googleToken?->support_folder_id),
+                                            ])
+                                            ->gap(4),
                                     ])
                                     ->columnSpan('full'),
 
-                                Section::make('Mengapa Menggunakan Google Drive?')
+                                Section::make('Keunggulan Cloud Storage')
                                     ->visible(!$isConnected)
                                     ->schema([
-                                        Grid::make(1)
+                                        Grid::make([
+                                            'default' => 1,
+                                            'md' => 1,
+                                        ])
                                             ->schema([
-                                                $this->createBenefitEntry('heroicon-o-cloud-arrow-up', 'Penyimpanan Aman', 'File tersimpan langsung di Google Drive pribadi Anda dengan enkripsi standar Google.', 'primary'),
-                                                $this->createBenefitEntry('heroicon-o-folder-open', 'Otomasi Folder', 'Sistem akan otomatis mengelola folder Anda berdasarkan kategori administrasi.', 'success'),
-                                                $this->createBenefitEntry('heroicon-o-eye', 'Akses Fleksibel', 'Akses berkas Anda kapan saja dari perangkat apa saja melalui web atau aplikasi Google Drive.', 'info'),
-                                            ]),
+                                                $this->createBenefitEntry('heroicon-s-shield-check', 'Data Terenkripsi & Aman', 'File tersimpan langsung di Google Drive pribadi Anda dengan standar keamanan perbankan (OAuth 2.0).', 'primary'),
+                                                $this->createBenefitEntry('heroicon-s-square-3-stack-3d', 'Pengarsipan Otomatis', 'Ucapkan selamat tinggal pada pemberkasan manual. Sistem mengelola folder Anda secara cerdas.', 'success'),
+                                                $this->createBenefitEntry('heroicon-s-sparkles', 'Manajemen Profesional', 'Meningkatkan akreditasi sekolah dengan sistem dokumentasi digital yang terpercaya dan rapi.', 'info'),
+                                            ])
+                                            ->gap(4),
                                     ]),
                             ])
                             ->columnSpan(['lg' => 2]),
-                    ]),
+                    ])
+                    ->gap(6),
             ]);
     }
+
 
     protected function createFolderEntry(string $id, string $name, ?string $folderId, bool $isMain = false): ViewEntry
     {
