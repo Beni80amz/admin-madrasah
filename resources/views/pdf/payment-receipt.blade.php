@@ -109,24 +109,34 @@
             font-weight: bold;
         }
 
-        /* Amount Box */
         .amount-box {
             margin-top: 10px;
             border: 2px solid #000;
             padding: 8px;
-            text-align: center;
             background: #f9f9f9;
+        }
+
+        .amount-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .amount-table td {
+            vertical-align: middle;
+            padding: 4px;
         }
 
         .amount-val {
             font-size: 14pt;
             font-weight: bold;
+            text-align: left;
         }
 
         .amount-text {
             font-style: italic;
             font-size: 8pt;
-            margin-top: 2px;
+            text-align: right;
+            color: #444;
         }
 
         /* Reminder Section */
@@ -292,8 +302,12 @@
 
         <!-- Amount Box -->
         <div class="amount-box">
-            <div class="amount-val">Rp {{ number_format($payments->sum('amount_paid'), 0, ',', '.') }}</div>
-            <div class="amount-text">Terbilang: {{ $terbilang }} Rupiah</div>
+            <table class="amount-table">
+                <tr>
+                    <td class="amount-val">Rp {{ number_format($payments->sum('amount_paid'), 0, ',', '.') }}</td>
+                    <td class="amount-text">Terbilang: {{ $terbilang }} Rupiah</td>
+                </tr>
+            </table>
         </div>
 
         <!-- Reminder Section -->
