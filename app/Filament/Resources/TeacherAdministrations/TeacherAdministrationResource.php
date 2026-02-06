@@ -47,7 +47,7 @@ class TeacherAdministrationResource extends Resource
     public static function canAccess(): bool
     {
         $user = Auth::user();
-        return $user && ($user->hasRole('teacher') || $user->hasRole('super_admin') || $user->hasRole('admin') || $user->hasRole('kepala_sekolah'));
+        return $user && ($user->hasRole(['teacher', 'Teacher', 'Guru', 'super_admin', 'Superadmin', 'admin', 'Admin', 'kepala_sekolah', 'Kepala Sekolah']));
     }
 
     public static function form(Schema $schema): Schema

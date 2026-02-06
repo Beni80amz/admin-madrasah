@@ -161,7 +161,7 @@ class GoogleDriveSettings extends Page implements HasInfolists, HasSchemas
     public static function canAccess(): bool
     {
         $user = Auth::user();
-        return $user && ($user->hasRole('teacher') || $user->hasRole('super_admin') || $user->hasRole('admin'));
+        return $user && ($user->hasRole(['teacher', 'Teacher', 'Guru', 'super_admin', 'Superadmin', 'admin', 'Admin', 'kepala_sekolah', 'Kepala Sekolah']));
     }
 
     protected function getHeaderActions(): array
