@@ -27,6 +27,16 @@ class NewsResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasRole(['Konten', 'Superadmin']);
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
+    }
+
     public static function form(Schema $schema): Schema
     {
         return NewsForm::configure($schema);
