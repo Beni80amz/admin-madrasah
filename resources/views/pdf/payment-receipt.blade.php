@@ -7,7 +7,7 @@
     <style>
         @page {
             margin: 5mm;
-            size: a5 landscape;
+            size: a5 portrait;
         }
 
         body {
@@ -79,23 +79,9 @@
         }
 
         /* Content Layout */
-        .content-table {
+        .content-section {
             width: 100%;
-            border-collapse: collapse;
-        }
-
-        .col-left {
-            width: 55%;
-            vertical-align: top;
-            padding-right: 10px;
-            border-right: 1px dashed #bbb;
-        }
-
-        .col-right {
-            width: 45%;
-            vertical-align: top;
-            padding-left: 10px;
-            position: relative;
+            margin-bottom: 10px;
         }
 
         /* Info Tables */
@@ -258,114 +244,102 @@
             <div class="receipt-number">{{ $payment->receipt_number }}</div>
         </div>
 
-        <!-- Main Content -->
-        <table class="content-table">
-            <tr>
-                <!-- Left Column: Details + Signature -->
-                <td class="col-left">
-                    <table class="info-table">
+        <!-- Main Content - Vertical Layout for Portrait -->
+        <div class="content-section">
+            <!-- Student Info -->
+            <table class="info-table">
+                <tr>
+                    <td class="label">Telah Terima Dari</td>
+                    <td class="sep">:</td>
+                    <td class="val">{{ $student->nama_lengkap }} ({{ $student->kelas }})</td>
+                </tr>
+                <tr>
+                    <td class="label">NIS / NISN</td>
+                    <td class="sep">:</td>
+                    <td class="val">{{ $student->nis_lokal }} / {{ $student->nisn }}</td>
+                </tr>
+                <tr>
+                    <td class="label" style="vertical-align:top; padding-top:2px;">Rincian Bayar</td>
+                    <td class="sep" style="vertical-align:top; padding-top:2px;">:</td>
+                    <td class="val">
+                        <ul class="detail-list">
+                            @foreach($payments as $p)
+                                <li class="detail-item">
+                                    {{ $p->studentBill->feeItem->name }}
+                                    {{ $p->studentBill->month ? '(' . $p->studentBill->month . ')' : '' }}
+                                    <br>
+                                    <span class="detail-status">
+                                        {{ $p->studentBill->feeItem->tahunAjaran->nama }} |
+                                        {{ ($p->studentBill->status == 'paid') ? 'LUNAS' : 'Sisa: Rp ' . number_format($p->studentBill->remaining_amount, 0, ',', '.') }}
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="label">Metode/Tgl</td>
+                    <td class="sep">:</td>
+                    <td class="val">{{ $payment->payment_method_label }} /
+                        {{ $payment->payment_date->format('d-m-Y') }}
+                    </td>
+                </tr>
+                @if($payment->note)
+                    <tr>
+                        <td class="label">Catatan</td>
+                        <td class="sep">:</td>
+                        <td class="val">{{ $payment->note }}</td>
+                    </tr>
+                @endif
+            </table>
+        </div>
+
+        <!-- Amount Box -->
+        <div class="amount-box">
+            <div class="amount-val">Rp {{ number_format($payments->sum('amount_paid'), 0, ',', '.') }}</div>
+            <div class="amount-text">Terbilang: {{ $terbilang }} Rupiah</div>
+        </div>
+
+        <!-- Reminder Section -->
+        @if(isset($unpaidBills) && $unpaidBills->count() > 0)
+            <div class="reminder-box">
+                <div class="reminder-title">Tagihan Lain Belum Lunas (Pengingat):</div>
+                <table class="reminder-table">
+                    @foreach($unpaidBills as $unpaid)
                         <tr>
-                            <td class="label">Telah Terima Dari</td>
-                            <td class="sep">:</td>
-                            <td class="val">{{ $student->nama_lengkap }} ({{ $student->kelas }})</td>
-                        </tr>
-                        <tr>
-                            <td class="label">NIS / NISN</td>
-                            <td class="sep">:</td>
-                            <td class="val">{{ $student->nis_lokal }} / {{ $student->nisn }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label" style="vertical-align:top; padding-top:2px;">Rincian Bayar</td>
-                            <td class="sep" style="vertical-align:top; padding-top:2px;">:</td>
-                            <td class="val">
-                                <ul class="detail-list">
-                                    @foreach($payments as $p)
-                                        <li class="detail-item">
-                                            {{ $p->studentBill->feeItem->name }}
-                                            {{ $p->studentBill->month ? '(' . $p->studentBill->month . ')' : '' }}
-                                            <br>
-                                            <span class="detail-status">
-                                                {{ $p->studentBill->feeItem->tahunAjaran->nama }} |
-                                                {{ ($p->studentBill->status == 'paid') ? 'LUNAS' : 'Sisa: Rp ' . number_format($p->studentBill->remaining_amount, 0, ',', '.') }}
-                                            </span>
-                                        </li>
-                                    @endforeach
-                                </ul>
+                            <td>{{ $unpaid->feeItem->name }}
+                                {{ $unpaid->month ? '(' . $unpaid->month . ')' : '' }}
+                            </td>
+                            <td class="reminder-total">Rp
+                                {{ number_format($unpaid->remaining_amount, 0, ',', '.') }}
                             </td>
                         </tr>
-                        <tr>
-                            <td class="label">Metode/Tgl</td>
-                            <td class="sep">:</td>
-                            <td class="val">{{ $payment->payment_method_label }} /
-                                {{ $payment->payment_date->format('d-m-Y') }}
-                            </td>
-                        </tr>
-                        @if($payment->note)
-                            <tr>
-                                <td class="label">Catatan</td>
-                                <td class="sep">:</td>
-                                <td class="val">{{ $payment->note }}</td>
-                            </tr>
-                        @endif
-                    </table>
+                    @endforeach
+                    <!-- Total Row -->
+                    <tr style="border-top: 1px solid #ccc;">
+                        <td style="text-align: right; padding-right: 5px;">Total:</td>
+                        <td class="reminder-total">Rp
+                            {{ number_format($unpaidBills->sum('remaining_amount'), 0, ',', '.') }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        @endif
 
-                    <div class="amount-box">
-                        <div class="amount-val">Rp {{ number_format($payments->sum('amount_paid'), 0, ',', '.') }}</div>
-                        <div class="amount-text">Terbilang: {{ $terbilang }} Rupiah</div>
-                    </div>
+        <!-- Signature Section -->
+        <div class="signature-section">
+            <div class="sig-date">
+                {{ $profile->kota ?? 'Kota' }},
+                {{ $payment->payment_date->locale('id')->translatedFormat('d F Y') }}
+            </div>
+            <div class="sig-name">{{ $payment->user->name }}</div>
+            <div class="sig-role">Petugas Keuangan</div>
+        </div>
 
-                    <!-- Signature moved to Left -->
-                    <div class="signature-section">
-                        <div class="sig-date">
-                            {{ $profile->kota ?? 'Kota' }},
-                            {{ $payment->payment_date->locale('id')->translatedFormat('d F Y') }}
-                        </div>
-                        <div class="sig-name">{{ $payment->user->name }}</div>
-                        <div class="sig-role">Petugas Keuangan</div>
-                    </div>
-                </td>
-
-                <!-- Right Column: Reminder (Swapped) -->
-                <td class="col-right">
-
-                    <!-- Reminder Tagihan Lain -->
-                    @if(isset($unpaidBills) && $unpaidBills->count() > 0)
-                        <div class="reminder-box">
-                            <div class="reminder-title">Tagihan Lain Belum Lunas (Pengingat):</div>
-                            <table class="reminder-table">
-                                @foreach($unpaidBills as $unpaid)
-                                    <tr>
-                                        <td>{{ $unpaid->feeItem->name }}
-                                            {{ $unpaid->month ? '(' . $unpaid->month . ')' : '' }}
-                                        </td>
-                                        <td class="reminder-total">Rp
-                                            {{ number_format($unpaid->remaining_amount, 0, ',', '.') }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                <!-- Total Row -->
-                                <tr style="border-top: 1px solid #ccc;">
-                                    <td style="text-align: right; padding-right: 5px;">Total:</td>
-                                    <td class="reminder-total">Rp
-                                        {{ number_format($unpaidBills->sum('remaining_amount'), 0, ',', '.') }}
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    @else
-                        <!-- Spacer if no reminders to balance height -->
-                        <br><br>
-                        <p style="text-align:center; font-style:italic; font-size:8pt; color:#888;">Tidak ada tagihan
-                            tertunggak lainnya.</p>
-                    @endif
-
-                    <div class="footer-note">
-                        * Simpan sebagai bukti pembayaran yang sah
-                        <br>Dicetak: {{ now()->translatedFormat('d/m/Y H:i') }}
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <div class="footer-note">
+            * Simpan sebagai bukti pembayaran yang sah
+            <br>Dicetak: {{ now()->translatedFormat('d/m/Y H:i') }}
+        </div>
     </div>
 </body>
 
