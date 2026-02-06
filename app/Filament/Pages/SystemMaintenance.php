@@ -924,6 +924,15 @@ class SystemMaintenance extends Page
                     $this->commandOutput .= "\n[ERROR] FinanceCategoriesSeeder failed: " . $e->getMessage() . "\n";
                 }
 
+                // Run Roles And Users Seeder
+                try {
+                    $this->commandOutput .= "\n[AUTO] Running RolesAndUsersSeeder...\n";
+                    Artisan::call('db:seed', ['--class' => 'RolesAndUsersSeeder', '--force' => true]);
+                    $this->commandOutput .= Artisan::output();
+                } catch (\Exception $e) {
+                    $this->commandOutput .= "\n[ERROR] RolesAndUsersSeeder failed: " . $e->getMessage() . "\n";
+                }
+
                 Notification::make()
                     ->title('Update Successful')
                     ->body('Git pull command executed successfully.')
