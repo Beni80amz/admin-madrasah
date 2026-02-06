@@ -912,7 +912,16 @@ class SystemMaintenance extends Page
                     Artisan::call('db:seed', ['--class' => 'PermissionsSeeder', '--force' => true]);
                     $this->commandOutput .= Artisan::output();
                 } catch (\Exception $e) {
-                    $this->commandOutput .= "\n[ERROR] Seeder failed: " . $e->getMessage() . "\n";
+                    $this->commandOutput .= "\n[ERROR] PermissionsSeeder failed: " . $e->getMessage() . "\n";
+                }
+
+                // Run Finance Categories Seeder
+                try {
+                    $this->commandOutput .= "\n[AUTO] Running FinanceCategoriesSeeder...\n";
+                    Artisan::call('db:seed', ['--class' => 'FinanceCategoriesSeeder', '--force' => true]);
+                    $this->commandOutput .= Artisan::output();
+                } catch (\Exception $e) {
+                    $this->commandOutput .= "\n[ERROR] FinanceCategoriesSeeder failed: " . $e->getMessage() . "\n";
                 }
 
                 Notification::make()
