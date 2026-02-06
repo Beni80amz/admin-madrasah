@@ -1,54 +1,118 @@
 @php
     $isConnected = $status === 'connected';
-    $primaryColor = $isConnected ? 'emerald' : 'amber';
+    $primaryHex = $isConnected ? '#10B981' : '#F59E0B';
+    $primaryRgb = $isConnected ? '16, 185, 129' : '245, 158, 11';
     $icon = $isConnected ? 'heroicon-o-check-badge' : 'heroicon-o-exclamation-circle';
     $title = $isConnected ? 'Google Drive Terhubung' : 'Google Drive Terputus';
 @endphp
 
-<div
-    class="relative overflow-hidden rounded-3xl border border-{{ $primaryColor }}-500/20 bg-white p-8 shadow-2xl transition-all duration-500 hover:shadow-{{ $primaryColor }}-500/10 dark:bg-gray-900/50 dark:backdrop-blur-xl">
-    <!-- Background Glow Effect -->
-    <div
-        class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-{{ $primaryColor }}-500/10 blur-[100px] transition-all duration-700 group-hover:bg-{{ $primaryColor }}-500/20">
-    </div>
-    <div class="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-{{ $primaryColor }}-500/5 blur-[80px]"></div>
+<div class="google-drive-status-card">
+    <style>
+        .google-drive-status-card .status-card-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1.5rem;
+            border: 1px solid rgba({{ $primaryRgb }}, 0.2);
+            background: white;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+        }
 
-    <div class="relative flex flex-col items-center text-center">
-        <!-- Animated Icon Container -->
-        <div class="relative">
-            <div
-                class="absolute inset-0 animate-ping rounded-full bg-{{ $primaryColor }}-500/20 opacity-75 duration-[3000ms]">
-            </div>
-            <div
-                class="relative flex h-24 w-24 items-center justify-center rounded-2xl bg-{{ $primaryColor }}-500/10 transition-transform duration-500 hover:scale-105">
-                <x-dynamic-component :component="$icon" style="width: 48px; height: 48px;"
-                    class="text-{{ $primaryColor }}-600 dark:text-{{ $primaryColor }}-400" />
-            </div>
+        .dark .google-drive-status-card .status-card-wrapper {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(12px);
+            border-color: rgba({{ $primaryRgb }}, 0.3);
+        }
+
+        .google-drive-status-card .glow-1 {
+            position: absolute;
+            top: -5rem;
+            right: -5rem;
+            width: 16rem;
+            height: 16rem;
+            border-radius: 9999px;
+            background: rgba({{ $primaryRgb }}, 0.1);
+            filter: blur(60px);
+            pointer-events: none;
+        }
+
+        .google-drive-status-card .icon-container {
+            position: relative;
+            display: flex;
+            height: 6rem;
+            width: 6rem;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            background: rgba({{ $primaryRgb }}, 0.1);
+            margin: 0 auto;
+        }
+
+        .google-drive-status-card .pulse-bg {
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            background: rgba({{ $primaryRgb }}, 0.2);
+            animation: gd-ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes gd-ping {
+
+            75%,
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .google-drive-status-card .card-title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-top: 1.5rem;
+            color: #111827;
+            text-align: center;
+        }
+
+        .dark .google-drive-status-card .card-title {
+            color: white;
+        }
+
+        .google-drive-status-card .card-desc {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: #6B7280;
+            text-align: center;
+            max-width: 24rem;
+        }
+    </style>
+
+    <div class="status-card-wrapper">
+        <div class="glow-1"></div>
+
+        <div class="icon-container">
+            <div class="pulse-bg"></div>
+            <x-dynamic-component :component="$icon"
+                style="width: 48px; height: 48px; position: relative; color: {{ $primaryHex }};" />
         </div>
 
-        <div class="mt-8">
-            <h3
-                class="bg-gradient-to-r from-gray-950 to-gray-600 bg-clip-text text-2xl font-black tracking-tight text-transparent dark:from-white dark:to-gray-400">
-                {{ $title }}
-            </h3>
-
-            <p class="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-gray-500 dark:text-gray-400">
-                @if($isConnected)
-                    Sistem siap mengamankan berkas administrasi Anda secara otomatis di penyimpanan awan Google.
-                @else
-                    Hubungkan akun Google Drive Anda untuk mulai menggunakan fitur pencadangan berkas otomatis.
-                @endif
-            </p>
+        <div class="card-title">{{ $title }}</div>
+        <div class="card-desc">
+            @if($isConnected)
+                Sistem siap mengamankan berkas administrasi Anda secara otomatis di penyimpanan awan Google Drive.
+            @else
+                Hubungkan akun Google Drive Anda untuk mulai menggunakan fitur pencadangan berkas otomatis.
+            @endif
         </div>
 
         @if($isConnected)
-            <div class="mt-8 flex items-center gap-x-2 rounded-full bg-emerald-500/10 px-4 py-1.5 dark:bg-emerald-500/20">
-                <span class="relative flex h-2 w-2">
-                    <span
-                        class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-                </span>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-700 dark:text-emerald-300">Active
+            <div
+                style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 1.5rem; background: rgba(16, 185, 129, 0.1); padding: 0.375rem 1rem; border-radius: 9999px; width: fit-content; margin-left: auto; margin-right: auto;">
+                <span
+                    style="height: 0.5rem; width: 0.5rem; border-radius: 9999px; background: #10B981; display: inline-block;"></span>
+                <span
+                    style="font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; color: #065F46;">Active
                     Sync</span>
             </div>
         @endif

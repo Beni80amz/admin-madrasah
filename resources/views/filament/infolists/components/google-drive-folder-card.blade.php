@@ -1,39 +1,101 @@
-<div class="fi-in-view-entry">
-    <a href="{{ $link }}" target="_blank" rel="noopener noreferrer"
-        class="group relative flex items-center gap-x-5 overflow-hidden rounded-2xl bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:bg-gray-900 dark:ring-1 dark:ring-white/10 dark:hover:ring-primary-400">
+@php
+    $accentColor = $isMain ? '#10B981' : '#3B82F6';
+    $icon = $isMain ? 'heroicon-o-cloud' : 'heroicon-o-folder';
+@endphp
 
-        <!-- Hover background gradient -->
-        <div
-            class="absolute inset-0 translate-y-full bg-gradient-to-t from-primary-500/5 to-transparent transition-transform duration-500 group-hover:translate-y-0">
+<div class="google-drive-folder-card">
+    <style>
+        .google-drive-folder-card .card-link {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            border-radius: 1rem;
+            background: white;
+            padding: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dark .google-drive-folder-card .card-link {
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .google-drive-folder-card .card-link:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .google-drive-folder-card .icon-box {
+            display: flex;
+            height: 3.5rem;
+            width: 3.5rem;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+            background: rgba({{ $isMain ? '16, 185, 129' : '59, 130, 246' }}, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        .google-drive-folder-card .card-link:hover .icon-box {
+            transform: rotate(6deg) scale(1.1);
+        }
+
+        .google-drive-folder-card .text-title {
+            font-size: 0.875rem;
+            font-weight: 800;
+            color: #111827;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dark .google-drive-folder-card .text-title {
+            color: white;
+        }
+
+        .google-drive-folder-card .text-subtitle {
+            font-size: 0.625rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #6B7280;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .google-drive-folder-card .dot {
+            height: 0.375rem;
+            width: 0.375rem;
+            border-radius: 9999px;
+            background:
+                {{ $isConnected ? '#10B981' : '#D1D5DB' }}
+            ;
+        }
+    </style>
+
+    <a href="{{ $link }}" target="_blank" class="card-link">
+        <div class="icon-box">
+            <x-dynamic-component :component="$icon" style="width: 28px; height: 28px; color: {{ $accentColor }};" />
         </div>
 
-        <div
-            class="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 {{ $isMain ? 'bg-primary-500/10' : 'bg-blue-500/10' }}">
-            @if($isMain)
-                <x-heroicon-o-cloud style="width: 28px; height: 28px;" class="text-primary-600 dark:text-primary-400" />
-            @else
-                <x-heroicon-o-folder style="width: 28px; height: 28px;" class="text-blue-600 dark:text-blue-400" />
-            @endif
-        </div>
-
-        <div class="relative flex-1 min-w-0">
-            <h4 class="truncate text-sm font-black tracking-tight text-gray-950 dark:text-white">
-                {{ $name }}
-            </h4>
-            <div class="mt-1 flex items-center gap-x-1.5">
-                <div
-                    class="h-1.5 w-1.5 rounded-full {{ $isConnected ? 'bg-emerald-500' : 'bg-gray-300 animate-pulse' }}">
-                </div>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                    {{ $isMain ? 'Root Directory' : 'Sub Directory' }}
-                </span>
+        <div style="flex: 1; min-width: 0;">
+            <div class="text-title">{{ $name }}</div>
+            <div class="text-subtitle">
+                <span class="dot"></span>
+                {{ $isMain ? 'Root Directory' : 'Sub Directory' }}
             </div>
         </div>
 
         <div
-            class="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gray-50 text-gray-400 transition-all duration-300 group-hover:bg-primary-500 group-hover:text-white dark:bg-gray-800">
-            <x-heroicon-m-arrow-top-right-on-square style="width: 16px; height: 16px;"
-                class="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            style="height: 2.25rem; width: 2.25rem; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; background: #F9FAFB; color: #9CA3AF;">
+            <x-heroicon-m-arrow-top-right-on-square style="width: 16px; height: 16px;" />
         </div>
     </a>
 </div>
