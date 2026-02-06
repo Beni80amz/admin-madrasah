@@ -91,3 +91,10 @@ Route::middleware(['auth'])->group(function () {
 // Payment Receipt (Madrasah Pay)
 Route::get('/payment/{payment}/receipt', [App\Http\Controllers\PaymentReceiptController::class, 'stream'])->name('payment.receipt');
 Route::get('/payment/{payment}/receipt/download', [App\Http\Controllers\PaymentReceiptController::class, 'download'])->name('payment.receipt.download');
+
+// Laporan Keuangan Export
+Route::middleware(['auth'])->group(function () {
+    Route::get('/laporan/export/pdf', [App\Http\Controllers\LaporanExportController::class, 'exportPdf'])->name('laporan.export.pdf');
+    Route::get('/laporan/export/excel', [App\Http\Controllers\LaporanExportController::class, 'exportExcel'])->name('laporan.export.excel');
+});
+

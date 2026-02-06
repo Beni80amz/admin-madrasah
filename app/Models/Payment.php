@@ -31,17 +31,20 @@ class Payment extends Model
      */
     protected static function booted(): void
     {
-        // After creating a payment, update the student bill
+        // After creating a payment, update the student bill AND sync aggregated total
         static::created(function (Payment $payment) {
             $bill = $payment->studentBill;
             if ($bill) {
                 $bill->paid_amount = (float) $bill->paid_amount + (float) $payment->amount_paid;
                 $bill->save();
                 $bill->updatePaymentStatus();
+
+                // Auto-sync aggregated total to Pelacakan Keuangan
+                static::syncAggregatedToIncome($payment);
             }
         });
 
-        // After deleting a payment, update the student bill
+        // After deleting a payment, update the student bill AND re-sync aggregated total
         static::deleted(function (Payment $payment) {
             $bill = $payment->studentBill;
             if ($bill) {
@@ -51,6 +54,9 @@ class Payment extends Model
                 }
                 $bill->save();
                 $bill->updatePaymentStatus();
+
+                // Re-sync aggregated total (will recalculate without deleted payment)
+                static::syncAggregatedToIncome($payment);
             }
         });
 
@@ -60,6 +66,64 @@ class Payment extends Model
                 $payment->receipt_number = self::generateReceiptNumber();
             }
         });
+    }
+
+    /**
+     * Sync AGGREGATED payment total to Income per FeeCategory
+     */
+    protected static function syncAggregatedToIncome(Payment $payment): void
+    {
+        $bill = $payment->studentBill;
+        $feeItem = $bill?->feeItem;
+        $feeCategory = $feeItem?->feeCategory;
+
+        if (!$feeCategory) {
+            return;
+        }
+
+        // Find or create "Madrasah Pay" income category
+        $madrasahPayCategory = IncomeCategory::firstOrCreate(
+            ['name' => 'Madrasah Pay'],
+            ['description' => 'Pemasukan dari pembayaran siswa via Madrasah Pay', 'is_active' => true]
+        );
+
+        // Calculate TOTAL payments for this fee category
+        $totalAmount = \DB::table('payments')
+            ->join('student_bills', 'payments.student_bill_id', '=', 'student_bills.id')
+            ->join('fee_items', 'student_bills.fee_item_id', '=', 'fee_items.id')
+            ->where('fee_items.fee_category_id', $feeCategory->id)
+            ->sum('payments.amount_paid');
+
+        // Find existing income for this fee category
+        $existingIncome = Income::where('is_synced', true)
+            ->where('fee_category_id', $feeCategory->id)
+            ->first();
+
+        if ($totalAmount > 0) {
+            if ($existingIncome) {
+                // Update existing with new total
+                $existingIncome->update([
+                    'amount' => $totalAmount,
+                    'transaction_date' => now(),
+                ]);
+            } else {
+                // Create new aggregated income
+                Income::create([
+                    'income_category_id' => $madrasahPayCategory->id,
+                    'user_id' => auth()->id() ?? 1,
+                    'fee_category_id' => $feeCategory->id,
+                    'amount' => $totalAmount,
+                    'transaction_date' => now(),
+                    'source' => 'Madrasah Pay - ' . $feeCategory->name,
+                    'description' => 'Total akumulasi pembayaran ' . $feeCategory->name,
+                    'payment_method' => 'transfer',
+                    'is_synced' => true,
+                ]);
+            }
+        } elseif ($existingIncome) {
+            // No payments left, delete the income record
+            $existingIncome->delete();
+        }
     }
 
     /**
