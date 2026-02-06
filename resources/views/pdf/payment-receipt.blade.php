@@ -265,13 +265,9 @@
                         <ul class="detail-list">
                             @foreach($payments as $p)
                                 <li class="detail-item">
-                                    {{ $p->studentBill->feeItem->name }}
-                                    {{ $p->studentBill->month ? '(' . $p->studentBill->month . ')' : '' }}
-                                    <br>
-                                    <span class="detail-status">
-                                        {{ $p->studentBill->feeItem->tahunAjaran->nama }} |
-                                        {{ ($p->studentBill->status == 'paid') ? 'LUNAS' : 'Sisa: Rp ' . number_format($p->studentBill->remaining_amount, 0, ',', '.') }}
-                                    </span>
+                                    {{ $p->studentBill->feeItem->name }}{{ $p->studentBill->month ? ' (' . $p->studentBill->month . ')' : '' }}
+                                    - <span class="detail-status">{{ $p->studentBill->feeItem->tahunAjaran->nama }} |
+                                        {{ ($p->studentBill->status == 'paid') ? 'LUNAS' : 'Sisa: Rp ' . number_format($p->studentBill->remaining_amount, 0, ',', '.') }}</span>
                                 </li>
                             @endforeach
                         </ul>
