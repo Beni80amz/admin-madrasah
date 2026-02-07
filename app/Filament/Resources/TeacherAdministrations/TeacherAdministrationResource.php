@@ -200,6 +200,14 @@ class TeacherAdministrationResource extends Resource
                     ->url(fn($record) => $record->web_view_link)
                     ->openUrlInNewTab(),
 
+                Action::make('download')
+                    ->label('Download')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->url(fn($record) => $record->file_url)
+                    ->openUrlInNewTab()
+                    ->visible(fn() => Auth::user()->hasAnyRole(['super_admin', 'Superadmin', 'kepala_sekolah', 'Kepala Sekolah'])),
+
                 Action::make('verify')
                     ->label('Verifikasi')
                     ->icon('heroicon-o-check-circle')
