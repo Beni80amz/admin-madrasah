@@ -100,7 +100,8 @@
         <h3>LAPORAN ABSENSI</h3>
         <h3>{{ strtoupper($profile->nama_madrasah ?? 'MIS. AL-ISLAMIYAH AMZ') }}</h3>
         <p>{{ $profile->alamat ?? 'Jl. Jasa Warga No.3, Bakti Jaya, Kec. Sukmajaya' }},
-            {{ $profile->kota ?? 'Kota Depok, Jawa Barat 16418' }}</p>
+            {{ $profile->kota ?? 'Kota Depok, Jawa Barat 16418' }}
+        </p>
         <p>Telp: {{ $profile->no_hp ?? '+6282110863967' }} | Email: {{ $profile->email ?? 'miamzdepok@gmail.com' }}</p>
     </div>
 
@@ -127,7 +128,8 @@
             <tr>
                 <td style="text-align: left; font-weight: bold;">Periode: {{ $monthName }} {{ $year }}</td>
                 <td style="text-align: right; font-weight: bold;">Nama:
-                    {{ strtoupper($user->name) }}{{ $teacher && $teacher->gelar ? ', ' . $teacher->gelar : '' }}</td>
+                    {{ strtoupper($user->name) }}{{ $teacher && $teacher->gelar ? ', ' . $teacher->gelar : '' }}
+                </td>
             </tr>
         </table>
         <hr style="border-top: 1px solid black; margin-top: 5px; margin-bottom: 15px;">
@@ -189,11 +191,16 @@
                     <div>Kepala Madrasah</div>
                     <div style="margin-top: 10px; margin-bottom: 10px;">
                         @php
-                            // URL verifikasi simulasi
-                            $verificationUrl = url('/verify/attendance?user=' . $user->id . '&month=' . $month . '&year=' . $year);
+                            // URL verifikasi 
+                            $verificationUrl = 'https://miamzdepok.sch.id/profil/verifikasi?user=' . $user->id . '&month=' . $month . '&year=' . $year;
+
+                            $qrCode = QrCode::format('png')->size(100)->errorCorrection('H');
+
+                            if (isset($profile->logo) && file_exists(storage_path('app/public/' . $profile->logo))) {
+                                $qrCode = $qrCode->merge(storage_path('app/public/' . $profile->logo), 0.3, true);
+                            }
                         @endphp
-                        <img
-                            src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(100)->generate($verificationUrl)) !!} ">
+                        <img src="data:image/png;base64, {!! base64_encode($qrCode->generate($verificationUrl)) !!} ">
                     </div>
                     <div style="font-weight: bold;">{{ $profile->nama_kepala_madrasah ?? 'Jamal, S.Pd.I' }}</div>
                     <div>NIP. {{ $profile->nip_kepala_madrasah ?? '3664520021047' }}</div>
