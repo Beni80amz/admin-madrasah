@@ -10,8 +10,10 @@ class TeacherAttendanceRealtime extends Widget
 {
     protected static string $view = 'filament.widgets.teacher-attendance-realtime';
 
-    // Sort order so it appears after Welcome widget
-    protected static ?int $sort = 2;
+    public static function getSort(): int
+    {
+        return 2;
+    }
 
     public static function canView(): bool
     {
