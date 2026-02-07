@@ -98,8 +98,8 @@ class TeacherAdministrationResource extends Resource
                                 'image/jpeg',
                                 'image/png',
                             ])
-                            ->maxSize(10240) // 10MB
-                            ->helperText('Format: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, JPG, PNG. Maksimal 10MB.')
+                            ->maxSize(51200) // 50MB
+                            ->helperText('Format: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, JPG, PNG. Maksimal 50MB.')
                             ->disk('public')
                             ->directory('temp-uploads')
                             ->visibility('public')
