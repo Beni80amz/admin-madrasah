@@ -16,9 +16,9 @@
                 <div class="flex items-center gap-3 mb-2">
                     <div class="rounded-full bg-white/20 p-1.5 backdrop-blur-sm">
                         @if(now()->hour < 18 && now()->hour > 5)
-                            <x-heroicon-m-sun class="h-6 w-6 text-yellow-300" />
+                            <x-heroicon-m-sun class="h-6 w-6 text-yellow-300" style="width: 24px; height: 24px;" />
                         @else
-                            <x-heroicon-m-moon class="h-6 w-6 text-blue-200" />
+                            <x-heroicon-m-moon class="h-6 w-6 text-blue-200" style="width: 24px; height: 24px;" />
                         @endif
                     </div>
                     <span class="font-medium text-emerald-100 tracking-wide text-sm uppercase">Dashboard Guru</span>
@@ -41,7 +41,7 @@
                 <div class="mt-6 flex items-center gap-4">
                     <div
                         class="flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 backdrop-blur-md border border-white/10">
-                        <x-heroicon-m-calendar class="h-5 w-5 text-emerald-200" />
+                        <x-heroicon-m-calendar class="h-5 w-5 text-emerald-200" style="width: 20px; height: 20px;" />
                         <span class="font-medium">{{ now()->translatedFormat('l, d F Y') }}</span>
                     </div>
                 </div>
@@ -49,7 +49,7 @@
 
             {{-- Illustration/Icon Side --}}
             <div class="hidden md:block opacity-90">
-                <x-heroicon-o-academic-cap class="h-40 w-40 text-white/10 rotate-12 transform" />
+                <x-heroicon-o-academic-cap class="h-40 w-40 text-white/10 rotate-12 transform" style="width: 160px; height: 160px;" />
             </div>
         </div>
     </div>

@@ -31,7 +31,7 @@
                         </h3>
                     </div>
                     <div class="rounded-lg bg-blue-50 dark:bg-blue-900/30 p-2 text-blue-600 dark:text-blue-400">
-                        <x-heroicon-m-arrow-right-end-on-rectangle class="h-6 w-6" />
+                        <x-heroicon-m-arrow-right-end-on-rectangle class="h-6 w-6" style="width: 24px; height: 24px;" />
                     </div>
                 </div>
 
@@ -39,13 +39,13 @@
                     @if($attendance?->keterlambatan > 0)
                         <span
                             class="inline-flex items-center gap-1 rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400 ring-1 ring-inset ring-red-600/10 dark:ring-red-400/20">
-                            <x-heroicon-m-exclamation-circle class="h-3 w-3" />
+                            <x-heroicon-m-exclamation-circle class="h-3 w-3" style="width: 12px; height: 12px;" />
                             Telat {{ $attendance->keterlambatan }}m
                         </span>
                     @elseif($attendance?->time_in)
                         <span
                             class="inline-flex items-center gap-1 rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400 ring-1 ring-inset ring-green-600/20 dark:ring-green-400/20">
-                            <x-heroicon-m-check-circle class="h-3 w-3" />
+                            <x-heroicon-m-check-circle class="h-3 w-3" style="width: 12px; height: 12px;" />
                             Tepat Waktu
                         </span>
                     @else
@@ -73,7 +73,8 @@
                         </h3>
                     </div>
                     <div class="rounded-lg bg-green-50 dark:bg-green-900/30 p-2 text-green-600 dark:text-green-400">
-                        <x-heroicon-m-arrow-left-start-on-rectangle class="h-6 w-6" />
+                        <x-heroicon-m-arrow-left-start-on-rectangle class="h-6 w-6"
+                            style="width: 24px; height: 24px;" />
                     </div>
                 </div>
 
@@ -81,7 +82,7 @@
                     @if($attendance?->lembur > 0)
                         <span
                             class="inline-flex items-center gap-1 rounded-md bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 ring-1 ring-inset ring-purple-600/10 dark:ring-purple-400/20">
-                            <x-heroicon-m-clock class="h-3 w-3" />
+                            <x-heroicon-m-clock class="h-3 w-3" style="width: 12px; height: 12px;" />
                             + Lembur @php
                                 $jam = floor($attendance->lembur / 60);
                                 $menit = $attendance->lembur % 60;
@@ -91,7 +92,7 @@
                     @elseif($attendance?->time_out)
                         <span
                             class="inline-flex items-center gap-1 rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400 ring-1 ring-inset ring-green-600/20 dark:ring-green-400/20">
-                            <x-heroicon-m-check class="h-3 w-3" />
+                            <x-heroicon-m-check class="h-3 w-3" style="width: 12px; height: 12px;" />
                             Selesai
                         </span>
                     @else
@@ -108,7 +109,7 @@
         <div class="mt-4 text-center">
             @if($attendance)
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                                                        {{ match (strtolower($attendance->status)) {
+                                                                    {{ match (strtolower($attendance->status)) {
                     'hadir' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
                     'telat' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
                     'izin' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
