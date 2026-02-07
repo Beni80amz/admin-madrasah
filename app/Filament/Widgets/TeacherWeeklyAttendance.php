@@ -11,7 +11,10 @@ use Illuminate\Support\Carbon;
 
 class TeacherWeeklyAttendance extends BaseWidget
 {
-    protected static ?int $sort = 3;
+    public static function getSort(): int
+    {
+        return 3;
+    }
 
     protected int|string|array $columnSpan = 'full';
 
