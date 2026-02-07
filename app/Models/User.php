@@ -10,11 +10,22 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
+use Filament\Models\Contracts\HasAvatar;
+use Illuminate\Support\Facades\Storage;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles, HasApiTokens;
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        if ($this->teacher && $this->teacher->photo) {
+            return Storage::disk('public')->url($this->teacher->photo);
+        }
+
+        return null;
+    }
 
     public function canAccessPanel(Panel $panel): bool
     {
