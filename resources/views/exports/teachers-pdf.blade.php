@@ -12,13 +12,14 @@
 
         @page {
             size: A4 portrait;
-            margin: 20mm 20mm 20mm 20mm;
+            margin: 10mm 10mm 10mm 10mm;
         }
 
         body {
             font-family: 'DejaVu Sans', sans-serif;
             font-size: 11px;
-            /* margin: 20px; Removed body margin to let @page handle it */
+            padding: 0;
+            margin: 0;
         }
 
         .header {
@@ -172,8 +173,8 @@
 
         <div class="signature-image">
             @php
-                $qrText = ($profile->nama_kepala_madrasah ?? 'Kepala Madrasah') . ' - ' . ($profile->nama_madrasah ?? 'Madrasah');
-                $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' . urlencode($qrText);
+                $verificationUrl = url('/profil/verifikasi');
+                $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' . urlencode($verificationUrl);
             @endphp
             <img src="{{ $qrUrl }}" alt="QR Code" style="height: 70px; width: 70px;">
         </div>
