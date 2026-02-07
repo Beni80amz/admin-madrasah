@@ -239,6 +239,9 @@ class GoogleDriveService
             'fields' => 'id, name, mimeType, webViewLink, webContentLink, size',
         ]);
 
+        // Make file public so it can be viewed by anyone with the link
+        $this->setFilePublic($uploadedFile->getId());
+
         return [
             'id' => $uploadedFile->getId(),
             'name' => $uploadedFile->getName(),
@@ -247,6 +250,23 @@ class GoogleDriveService
             'webContentLink' => $uploadedFile->getWebContentLink(),
             'size' => $uploadedFile->getSize(),
         ];
+    }
+
+    /**
+     * Set file permission to public (anyone with link)
+     */
+    public function setFilePublic(string $fileId): void
+    {
+        try {
+            $permission = new \Google\Service\Drive\Permission([
+                'type' => 'anyone',
+                'role' => 'reader',
+            ]);
+
+            $this->driveService->permissions->create($fileId, $permission);
+        } catch (\Exception $e) {
+            Log::error('Google Drive Permission Error: ' . $e->getMessage());
+        }
     }
 
     /**
