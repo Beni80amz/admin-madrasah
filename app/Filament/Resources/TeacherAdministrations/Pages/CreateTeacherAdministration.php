@@ -47,13 +47,25 @@ class CreateTeacherAdministration extends CreateRecord
             $googleDriveService = app(GoogleDriveService::class);
             $googleDriveService->initializeClient($user);
 
-            // Determine the folder based on category
+            // Determine the parent folder based on category
             $categoryEnum = AdministrationCategory::tryFrom($data['category']);
             $folderKey = $categoryEnum?->folderKey() ?? 'planning';
-            $folderId = $user->googleToken->getFolderIdForCategory($folderKey);
+            $parentFolderId = $user->googleToken->getFolderIdForCategory($folderKey);
 
-            if (!$folderId) {
-                throw new \Exception('Folder tidak ditemukan. Silakan segarkan struktur folder di menu Pengaturan Google Drive.');
+            if (!$parentFolderId) {
+                throw new \Exception('Folder kategori tidak ditemukan. Silakan segarkan struktur folder di menu Pengaturan Google Drive.');
+            }
+
+            // Determine the sub-category folder
+            $subcategory = $data['subcategory'] ?? null;
+            if ($subcategory) {
+                $subcategoryEnum = \App\Enums\AdministrationSubcategory::tryFrom($subcategory);
+                $subfolderName = $subcategoryEnum ? $subcategoryEnum->label() : $subcategory;
+
+                // Find or create sub-folder inside the category folder
+                $folderId = $googleDriveService->findOrCreateFolder($subfolderName, $parentFolderId);
+            } else {
+                $folderId = $parentFolderId;
             }
 
             $disk = Storage::disk('public');
