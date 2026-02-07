@@ -90,7 +90,7 @@ class MyProfile extends Page implements HasSchemas
                                     ->image()
                                     ->avatar()
                                     ->imageEditor()
-                                    ->circle()
+                                    ->circleCropper()
                                     ->disk('public')
                                     ->directory('teachers')
                                     ->columnSpanFull()
