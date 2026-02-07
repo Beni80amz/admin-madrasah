@@ -252,6 +252,29 @@ class TeacherAdministrationResource extends Resource
             ])
             ->bulkActions([
                 BulkActionGroup::make([
+                    \Filament\Tables\Actions\BulkAction::make('bulkDownload')
+                        ->label('Download Terpilih')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->color('success')
+                        ->visible(fn() => Auth::user()->hasAnyRole(['super_admin', 'Superadmin', 'kepala_sekolah', 'Kepala Sekolah']))
+                        ->action(function (\Illuminate\Support\Collection $records) {
+                            $urls = $records->pluck('file_url')->toArray();
+
+                            foreach ($urls as $index => $url) {
+                                // We use dispatching a browser event which is cleaner in Filament
+                                \Filament\Support\Facades\FilamentView::renderHook(
+                                    'panels::scripts.after',
+                                    fn() => new \Illuminate\Support\HtmlString("
+                                        <script>
+                                            setTimeout(() => {
+                                                window.open('{$url}', '_blank');
+                                            }, {$index} * 500);
+                                        </script>
+                                    ")
+                                );
+                            }
+                        })
+                        ->deselectRecordsAfterCompletion(),
                     DeleteBulkAction::make(),
                 ]),
             ]);
