@@ -72,6 +72,7 @@ class CreateTeacherAdministration extends CreateRecord
             $mimeType = $disk->mimeType($tempFile);
             $fileSize = $disk->size($tempFile);
             $fileName = basename($tempFile);
+            $originalName = $data['file_name'] ?? $fileName;
 
             // Create a temporary UploadedFile object for the service
             // We use the absolute path but avoid calling mime_content_type directly
@@ -83,8 +84,8 @@ class CreateTeacherAdministration extends CreateRecord
                 true
             );
 
-            // Upload to Google Drive
-            $result = $googleDriveService->uploadFile($uploadedFile, $folderId);
+            // Upload to Google Drive using original name
+            $result = $googleDriveService->uploadFile($uploadedFile, $folderId, $originalName);
 
             // Clean up temp file
             $disk->delete($tempFile);

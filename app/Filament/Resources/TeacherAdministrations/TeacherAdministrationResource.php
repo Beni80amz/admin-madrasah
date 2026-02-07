@@ -102,7 +102,8 @@ class TeacherAdministrationResource extends Resource
                             ->helperText('Format: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, JPG, PNG. Maksimal 10MB.')
                             ->disk('public')
                             ->directory('temp-uploads')
-                            ->visibility('public'),
+                            ->visibility('public')
+                            ->storeFileNamesIn('file_name'),
 
                         Textarea::make('notes')
                             ->label('Catatan')
