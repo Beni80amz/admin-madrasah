@@ -222,6 +222,12 @@
             </div>
         </div>
 
+        @if($waliKelas ?? null)
+            <div style="margin-bottom: 10px; font-size: 10px; font-weight: bold;">
+                Wali Kelas/Guru: <span style="color: #10b981;">{{ $waliKelas }}</span>
+            </div>
+        @endif
+
         <!-- Students Table -->
         <div class="section-title">DAFTAR SISWA</div>
         <table>

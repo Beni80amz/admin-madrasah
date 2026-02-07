@@ -198,7 +198,7 @@ class ListStudents extends ListRecords
                         ])
                         ->placeholder('Semua'),
                 ])
-                ->action(function (array $data) {
+                ->action(function (array $data) use ($romanToArabic) {
                     $siteProfile = ProfileMadrasah::first();
                     $tahunAjaran = TahunAjaran::where('is_active', true)->first();
                     $kelas = $data['kelas'] ?? null;
@@ -224,6 +224,16 @@ class ListStudents extends ListRecords
                         ->map(fn($items) => $items->count())
                         ->sortKeys();
 
+                    $waliKelasName = null;
+                    if ($kelas) {
+                        $allRombels = Rombel::with(['kelas', 'waliKelas'])->get();
+                        $targetRombel = $allRombels->first(function ($r) use ($kelas, $romanToArabic) {
+                            $tingkat = $romanToArabic($r->kelas?->tingkat ?? '');
+                            return ($tingkat . '-' . ($r->nama ?? '')) === $kelas;
+                        });
+                        $waliKelasName = $targetRombel?->waliKelas?->nama_lengkap;
+                    }
+
                     $pdf = Pdf::loadView('pdf.students', [
                         'siteProfile' => $siteProfile,
                         'tahunAjaran' => $tahunAjaran,
@@ -232,6 +242,7 @@ class ListStudents extends ListRecords
                         'byKelas' => $byKelas,
                         'filterKelas' => $kelas,
                         'filterGender' => $gender,
+                        'waliKelas' => $waliKelasName,
                     ]);
                     $pdf->setPaper('A4', 'landscape');
                     $pdf->setOptions(['isRemoteEnabled' => true]);
