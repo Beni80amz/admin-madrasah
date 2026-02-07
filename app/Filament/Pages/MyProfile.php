@@ -2,9 +2,14 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Resources\Teachers\Schemas\TeacherForm;
 use App\Models\Teacher;
 use Filament\Actions\Action;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
@@ -42,19 +47,116 @@ class MyProfile extends Page implements HasSchemas
         if ($this->teacher) {
             $this->form->fill($this->teacher->toArray());
         } else {
-            // If superadmin or user without teacher record, fill with user data
             $this->form->fill([
                 'nama_lengkap' => $user->name,
-                'nip' => $user->email, // Using email as filler if NIP missing
+                'nip' => $user->email,
             ]);
         }
     }
 
     public function form(Schema $schema): Schema
     {
-        return TeacherForm::configure($schema)
+        return $schema
             ->model($this->teacher)
-            ->statePath('data');
+            ->statePath('data')
+            ->components([
+                Grid::make(3)
+                    ->schema([
+                        Section::make('Informasi Pribadi')
+                            ->description('Perbarui foto dan informasi dasar profil Anda.')
+                            ->schema([
+                                FileUpload::make('photo')
+                                    ->label('Foto Profil')
+                                    ->image()
+                                    ->avatar()
+                                    ->imageEditor()
+                                    ->circle()
+                                    ->disk('public')
+                                    ->directory('teachers')
+                                    ->columnSpanFull()
+                                    ->alignCenter(),
+
+                                Grid::make(2)
+                                    ->schema([
+                                        TextInput::make('nama_lengkap')
+                                            ->label('Nama Lengkap')
+                                            ->required()
+                                            ->placeholder('Masukkan nama lengkap Anda'),
+
+                                        TextInput::make('nip')
+                                            ->label('NIP/NIK')
+                                            ->required()
+                                            ->placeholder('Masukkan NIP atau NIK'),
+
+                                        TextInput::make('nuptk')
+                                            ->label('NUPTK')
+                                            ->placeholder('Masukkan NUPTK (jika ada)'),
+
+                                        TextInput::make('npk_peg_id')
+                                            ->label('NPK/Peg.ID')
+                                            ->placeholder('Masukkan NPK atau Peg.ID'),
+                                    ]),
+                            ])
+                            ->columnSpan(2),
+
+                        Section::make('Detail Kepegawaian')
+                            ->description('Informasi terkait jabatan dan status di madrasah.')
+                            ->schema([
+                                Select::make('jabatan_id')
+                                    ->label('Jabatan')
+                                    ->relationship('jabatan', 'nama')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
+
+                                Select::make('tugas_pokok_id')
+                                    ->label('Tugas Pokok')
+                                    ->relationship('tugasPokok', 'nama')
+                                    ->searchable()
+                                    ->preload()
+                                    ->live(),
+
+                                Select::make('mata_pelajaran_id')
+                                    ->label('Mata Pelajaran')
+                                    ->relationship('mataPelajaran', 'nama')
+                                    ->searchable()
+                                    ->preload()
+                                    ->visible(
+                                        fn($get) =>
+                                        \App\Models\TugasPokok::find($get('tugas_pokok_id'))?->nama === 'Guru Mata Pelajaran'
+                                    ),
+
+                                Select::make('tugas_tambahan_id')
+                                    ->label('Tugas Tambahan')
+                                    ->relationship('tugasTambahan', 'nama')
+                                    ->searchable()
+                                    ->preload(),
+
+                                Select::make('status')
+                                    ->label('Status Kepegawaian')
+                                    ->options([
+                                        'PNS' => 'PNS',
+                                        'Non PNS' => 'Non PNS',
+                                        'P3K' => 'P3K',
+                                    ])
+                                    ->required(),
+
+                                Select::make('sertifikasi')
+                                    ->label('Sertifikasi')
+                                    ->options([
+                                        'Sudah' => 'Sudah',
+                                        'Belum' => 'Belum',
+                                    ])
+                                    ->required(),
+
+                                Toggle::make('is_active')
+                                    ->label('Status Akun Aktif')
+                                    ->disabled()
+                                    ->dehydrated(false),
+                            ])
+                            ->columnSpan(1),
+                    ]),
+            ]);
     }
 
     protected function getFormActions(): array
@@ -62,6 +164,7 @@ class MyProfile extends Page implements HasSchemas
         return [
             Action::make('save')
                 ->label('Simpan Perubahan')
+                ->icon('heroicon-m-check-circle')
                 ->submit('save')
                 ->color('primary'),
         ];
@@ -77,14 +180,10 @@ class MyProfile extends Page implements HasSchemas
             if ($teacher) {
                 $teacher->update($data);
 
-                // Also sync user name if nama_lengkap changed
                 if (isset($data['nama_lengkap']) && $user->name !== $data['nama_lengkap']) {
                     $user->update(['name' => $data['nama_lengkap']]);
                 }
             } else {
-                // If user doesn't have a teacher record, we don't handle creation here 
-                // as it usually requires specific IDs (jabatan, etc.)
-                // But we can update the user name
                 if (isset($data['nama_lengkap'])) {
                     $user->update(['name' => $data['nama_lengkap']]);
                 }
@@ -107,7 +206,6 @@ class MyProfile extends Page implements HasSchemas
     public static function canAccess(): bool
     {
         $user = Auth::user();
-        // Allow access to teachers and admins
         return $user && ($user->hasRole(['teacher', 'Teacher', 'Guru', 'super_admin', 'Superadmin', 'admin', 'Admin', 'kepala_sekolah', 'Kepala Sekolah']));
     }
 }
