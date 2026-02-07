@@ -223,81 +223,84 @@
         </div>
 
         @if($waliKelas ?? null)
-            <div style="margin-bottom: 10px; font-size: 10px; font-weight: bold;">
-                Wali Kelas/Guru: <span style="color: #10b981;">{{ $waliKelas }}</span>
-            </div>
+        <div style="margin-bottom: 15px; font-size: 10px; font-weight: bold; text-align: center;">
+            Wali Kelas/Guru: <span style="color: #10b981;">{{ $waliKelas }}</span>
+        </div>
         @endif
 
         <!-- Students Table -->
         <div class="section-title">DAFTAR SISWA</div>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 5%;">No</th>
-                    <th style="width: 30%;">Nama Lengkap</th>
-                    <th style="width: 12%;">NIS Lokal</th>
-                    <th style="width: 15%;">NISN</th>
-                    <th style="width: 12%;">Kelas</th>
-                    <th style="width: 13%;">L/P</th>
-                    <th style="width: 13%;">Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($students as $index => $student)
-                    <tr>
-                        <td style="text-align: center;">{{ $index + 1 }}</td>
-                        <td>{{ $student->nama_lengkap }}</td>
-                        <td>{{ $student->nis_lokal }}</td>
-                        <td>{{ $student->nisn }}</td>
-                        <td style="text-align: center;">
-                            <span class="kelas-badge">{{ $student->kelas }}</span>
-                        </td>
-                        <td style="text-align: center;">
-                            <span class="gender-badge {{ $student->gender == 'Laki-laki' ? 'gender-l' : 'gender-p' }}">
-                                {{ $student->gender == 'Laki-laki' ? 'L' : 'P' }}
-                            </span>
-                        </td>
-                        <td style="text-align: center;">
-                            <span class="status-badge {{ $student->is_active ? 'status-aktif' : 'status-tidak' }}">
-                                {{ $student->is_active ? 'Aktif' : 'Tidak Aktif' }}
-                            </span>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="7" style="text-align: center; color: #999;">Belum ada data siswa</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">No</th>
+                            <th style="width: 30%;">Nama Lengkap</th>
+                            <th style="width: 12%;">NIS Lokal</th>
+                            <th style="width: 15%;">NISN</th>
+                            <th style="width: 12%;">Kelas</th>
+                            <th style="width: 13%;">L/P</th>
+                            <th style="width: 13%;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($students as $index => $student)
+                            <tr>
+                                <td style="text-align: center;">{{ $index + 1 }}</td>
+                                <td>{{ $student->nama_lengkap }}</td>
+                                <td>{{ $student->nis_lokal }}</td>
+                                <td>{{ $student->nisn }}</td>
+                                <td style="text-align: center;">
+                                    <span class="kelas-badge">{{ $student->kelas }}</span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span
+                                        class="gender-badge {{ $student->gender == 'Laki-laki' ? 'gender-l' : 'gender-p' }}">
+                                        {{ $student->gender == 'Laki-laki' ? 'L' : 'P' }}
+                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span class="status-badge {{ $student->is_active ? 'status-aktif' : 'status-tidak' }}">
+                                        {{ $student->is_active ? 'Aktif' : 'Tidak Aktif' }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: #999;">Belum ada data siswa</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
 
-        <!-- Footer with QR Code -->
-        <div class="footer">
-            <table class="footer-table">
-                <tr>
-                    <td class="footer-left">
-                        <p>Dokumen ini dicetak pada {{ now()->setTimezone('Asia/Jakarta')->format('d F Y H:i') }} WIB
-                        </p>
-                        <p>{{ optional($siteProfile)->nama_madrasah ?? 'Madrasah' }} -
-                            {{ optional($siteProfile)->alamat ?? 'Alamat' }}
-                        </p>
-                        <p style="margin-top: 5px; font-size: 7px; color: #999;">Scan QR code untuk verifikasi dokumen
-                        </p>
-                    </td>
-                    <td class="footer-right">
+                <!-- Footer with QR Code -->
+                <div class="footer">
+                    <table class="footer-table">
+                        <tr>
+                            <td class="footer-left">
+                                <p>Dokumen ini dicetak pada
+                                    {{ now()->setTimezone('Asia/Jakarta')->format('d F Y H:i') }} WIB
+                                </p>
+                                <p>{{ optional($siteProfile)->nama_madrasah ?? 'Madrasah' }} -
+                                    {{ optional($siteProfile)->alamat ?? 'Alamat' }}
+                                </p>
+                                <p style="margin-top: 5px; font-size: 7px; color: #999;">Scan QR code untuk verifikasi
+                                    dokumen
+                                </p>
+                            </td>
+                            <td class="footer-right">
 
-                        @php
-                            $verificationUrl = url('/profil/verifikasi');
-                            $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=' .
-                                urlencode($verificationUrl);
-                        @endphp
-                        <img src="{{ $qrUrl }}" class="qr-code" alt="QR Code Verifikasi">
+                                @php
+                                    $verificationUrl = url('/profil/verifikasi');
+                                    $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=50x50&data=' .
+                                        urlencode($verificationUrl);
+                                @endphp
+                                <img src="{{ $qrUrl }}" class="qr-code" alt="QR Code Verifikasi">
 
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
 </body>
 
 </html>
