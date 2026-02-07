@@ -259,22 +259,27 @@ class TeacherAdministrationResource extends Resource
                         ->color('success')
                         ->visible(fn() => Auth::user() && Auth::user()->hasAnyRole(['super_admin', 'Superadmin', 'kepala_sekolah', 'Kepala Sekolah']))
                         ->action(function (\Illuminate\Support\Collection $records, $livewire) {
-                            $urlsJson = json_encode($records->pluck('file_url')->toArray());
+                            $urls = $records->pluck('file_url')->filter()->unique()->values()->toArray();
+                            if (empty($urls))
+                                return;
+
+                            $urlsJson = json_encode($urls);
+                            $requestId = uniqid('dl_');
 
                             $livewire->js("
+                                if (window.lastDownloadRequestId === '{$requestId}') return;
+                                window.lastDownloadRequestId = '{$requestId}';
+                                
                                 const urls = JSON.parse('{$urlsJson}');
                                 urls.forEach((url, index) => {
-                                    if (!url) return;
-                                    
                                     setTimeout(() => {
                                         const link = document.createElement('a');
                                         link.href = url;
                                         link.target = '_blank';
-                                        link.setAttribute('download', ''); // Trigger download
                                         document.body.appendChild(link);
                                         link.click();
                                         document.body.removeChild(link);
-                                    }, index * 1200); // 1.2 second delay to avoid browser blocking
+                                    }, index * 1000); // 1 second delay
                                 });
                             ");
                         })
