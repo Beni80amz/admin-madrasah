@@ -256,23 +256,19 @@ class TeacherAdministrationResource extends Resource
                         ->label('Download Terpilih')
                         ->icon('heroicon-o-arrow-down-tray')
                         ->color('success')
-                        ->visible(fn() => Auth::user()->hasAnyRole(['super_admin', 'Superadmin', 'kepala_sekolah', 'Kepala Sekolah']))
-                        ->action(function (\Illuminate\Support\Collection $records) {
+                        ->visible(fn() => Auth::user() && Auth::user()->hasAnyRole(['super_admin', 'Superadmin', 'kepala_sekolah', 'Kepala Sekolah']))
+                        ->action(function (\Illuminate\Support\Collection $records, $livewire) {
                             $urls = $records->pluck('file_url')->toArray();
+                            $urlsJson = json_encode($urls);
 
-                            foreach ($urls as $index => $url) {
-                                // We use dispatching a browser event which is cleaner in Filament
-                                \Filament\Support\Facades\FilamentView::renderHook(
-                                    'panels::scripts.after',
-                                    fn() => new \Illuminate\Support\HtmlString("
-                                        <script>
-                                            setTimeout(() => {
-                                                window.open('{$url}', '_blank');
-                                            }, {$index} * 500);
-                                        </script>
-                                    ")
-                                );
-                            }
+                            $livewire->js("
+                                const urls = {$urlsJson};
+                                urls.forEach((url, index) => {
+                                    setTimeout(() => {
+                                        window.open(url, '_blank');
+                                    }, index * 500);
+                                });
+                            ");
                         })
                         ->deselectRecordsAfterCompletion(),
                     DeleteBulkAction::make(),
