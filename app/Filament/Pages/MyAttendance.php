@@ -188,11 +188,11 @@ class MyAttendance extends Page implements HasTable
                         ->get();
 
                     $summary = [
-                        'Hadir' => $records->where('status', 'Hadir')->count(),
-                        'Telat' => $records->where('status', 'Telat')->count(),
-                        'Izin' => $records->where('status', 'Izin')->count(),
-                        'Sakit' => $records->where('status', 'Sakit')->count(),
-                        'Alpha' => $records->where('status', 'Alpha')->count(),
+                        'Hadir' => $records->where('status', 'hadir')->count(),
+                        'Telat' => $records->where('status', 'telat')->count(),
+                        'Izin' => $records->where('status', 'izin')->count(),
+                        'Sakit' => $records->where('status', 'sakit')->count(),
+                        'Alpha' => $records->where('status', 'alpha')->count(),
                     ];
 
                     $profileMadrasah = \App\Models\ProfileMadrasah::first();

@@ -158,7 +158,18 @@
                     <td>{{ $record->time_out ?? '-' }}</td>
                     <td>{{ $record->status }}</td>
                     <td>{{ $record->keterlambatan > 0 ? $record->keterlambatan . 'm' : '0m' }}</td>
-                    <td>{{ $record->lembur > 0 ? $record->lembur . 'm' : '0m' }}</td>
+                    <td>{{ $record->keterlambatan > 0 ? $record->keterlambatan . 'm' : '0m' }}</td>
+                    <td>
+                        @if ($record->lembur > 0)
+                            @php
+                                $jam = floor($record->lembur / 60);
+                                $menit = $record->lembur % 60;
+                            @endphp
+                            {{ $jam > 0 ? $jam . ' Jam ' : '' }}{{ $menit > 0 ? $menit . ' Menit' : '' }}
+                        @else
+                            0m
+                        @endif
+                    </td>
                 </tr>
             @empty
                 <tr>

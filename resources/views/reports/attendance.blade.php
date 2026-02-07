@@ -170,7 +170,18 @@
                     <td style="text-align: center;">{{ $row->time_out ?? '-' }}</td>
                     <td style="text-align: center; text-transform: capitalize;">{{ $row->status }}</td>
                     <td style="text-align: center;">{{ $row->keterlambatan }}m</td>
-                    <td style="text-align: center;">{{ $row->lembur }}m</td>
+                    <td style="text-align: center;">{{ $row->keterlambatan }}m</td>
+                    <td style="text-align: center;">
+                        @if ($row->lembur > 0)
+                            @php
+                                $jam = floor($row->lembur / 60);
+                                $menit = $row->lembur % 60;
+                            @endphp
+                            {{ $jam > 0 ? $jam . ' Jam ' : '' }}{{ $menit > 0 ? $menit . ' Menit' : '' }}
+                        @else
+                            -
+                        @endif
+                    </td>
                 </tr>
             @endforeach
         </tbody>
