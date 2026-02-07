@@ -77,6 +77,7 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
                 fn() => Blade::render('
+                    @vite("resources/css/app.css")
                     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                     <style>
                         /* Sticky columns for student table - Checkbox, Photo, Nama Lengkap */
