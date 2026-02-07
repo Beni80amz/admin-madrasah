@@ -2,8 +2,6 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\Teacher;
-use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -17,29 +15,46 @@ use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
-use UnitEnum;
 
 class MyProfile extends Page implements HasSchemas
 {
     use InteractsWithSchemas;
-
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
-
-    protected static ?string $navigationLabel = 'Profil Saya';
-
-    protected static ?string $title = 'Profil Saya';
-
-    protected static ?string $slug = 'my-profile';
-
-    protected static string|UnitEnum|null $navigationGroup = 'Setting';
-
-    protected static ?int $navigationSort = -1;
 
     protected string $view = 'filament.pages.my-profile';
 
     public ?array $data = [];
 
     public $teacher;
+
+    public static function getNavigationIcon(): \BackedEnum|\Illuminate\Contracts\Support\Htmlable|string|null
+    {
+        return 'heroicon-o-user-circle';
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Profil Saya';
+    }
+
+    public static function getNavigationGroup(): \UnitEnum|string|null
+    {
+        return 'Setting';
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return -1;
+    }
+
+    public function getTitle(): \Illuminate\Contracts\Support\Htmlable|string
+    {
+        return 'Profil Saya';
+    }
+
+    public static function getSlug(): string
+    {
+        return 'my-profile';
+    }
 
     public function mount(): void
     {
