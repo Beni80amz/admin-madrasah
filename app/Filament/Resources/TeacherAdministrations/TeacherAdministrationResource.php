@@ -119,7 +119,7 @@ class TeacherAdministrationResource extends Resource
     public static function table(Table $table): Table
     {
         $user = Auth::user();
-        $isAdmin = $user && ($user->hasRole('super_admin') || $user->hasRole('admin') || $user->hasRole('kepala_sekolah'));
+        $isAdmin = $user && $user->hasAnyRole(['super_admin', 'Superadmin', 'admin', 'Admin', 'kepala_sekolah', 'Kepala Sekolah', 'Admin Keuangan', 'Kurikulum', 'Kesiswaan']);
 
         return $table
             ->query(function () use ($user, $isAdmin) {
