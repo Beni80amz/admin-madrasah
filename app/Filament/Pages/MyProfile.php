@@ -16,7 +16,7 @@ class MyProfile extends Page implements HasSchemas
 {
     use InteractsWithSchemas;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-circle';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
     protected static ?string $navigationLabel = 'Profil Saya';
 
@@ -24,7 +24,7 @@ class MyProfile extends Page implements HasSchemas
 
     protected static ?string $slug = 'my-profile';
 
-    protected static ?string $navigationGroup = 'Setting';
+    protected static string|\UnitEnum|null $navigationGroup = 'Setting';
 
     protected static ?int $navigationSort = -1;
 
