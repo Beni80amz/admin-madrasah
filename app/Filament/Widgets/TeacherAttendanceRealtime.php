@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TeacherAttendanceRealtime extends Widget
 {
-    protected static string $view = 'filament.widgets.teacher-attendance-realtime';
+    protected string $view = 'filament.widgets.teacher-attendance-realtime';
 
     public static function getSort(): int
     {

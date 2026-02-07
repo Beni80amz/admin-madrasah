@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TeacherWelcome extends Widget
 {
-    protected static string $view = 'filament.widgets.teacher-welcome';
+    protected string $view = 'filament.widgets.teacher-welcome';
 
     protected int|string|array $columnSpan = 'full';
 
