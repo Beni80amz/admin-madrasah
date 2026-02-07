@@ -19,6 +19,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -252,18 +253,16 @@ class TeacherAdministrationResource extends Resource
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    \Filament\Tables\Actions\BulkAction::make('bulkDownload')
+                    BulkAction::make('bulkDownload')
                         ->label('Download Terpilih')
                         ->icon('heroicon-o-arrow-down-tray')
                         ->color('success')
                         ->visible(fn() => Auth::user() && Auth::user()->hasAnyRole(['super_admin', 'Superadmin', 'kepala_sekolah', 'Kepala Sekolah']))
                         ->action(function (\Illuminate\Support\Collection $records, $livewire) {
-                            $urls = $records->pluck('file_url')->toArray();
-                            $urlsJson = json_encode($urls);
+                            $urlsJson = json_encode($records->pluck('file_url')->toArray());
 
                             $livewire->js("
-                                const urls = {$urlsJson};
-                                urls.forEach((url, index) => {
+                                JSON.parse('{$urlsJson}').forEach((url, index) => {
                                     setTimeout(() => {
                                         window.open(url, '_blank');
                                     }, index * 500);
