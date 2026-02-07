@@ -71,10 +71,45 @@ class StudentResource extends Resource
                 return $query->whereRaw('1 = 0');
             }
 
-            $query->whereIn('rombel_id', $rombelIds);
+            // Convert Rombel IDs to "tingkat-nama" format matching students.kelas column
+            $kelasStrings = \App\Models\Rombel::whereIn('id', $rombelIds)
+                ->with('kelas')
+                ->get()
+                ->map(function ($rombel) {
+                    $tingkat = static::romanToArabic($rombel->kelas?->tingkat ?? '');
+                    return $tingkat . '-' . ($rombel->nama ?? '');
+                })
+                ->unique();
+
+            $query->whereIn('kelas', $kelasStrings);
         }
 
         return $query;
+    }
+
+    protected static function romanToArabic(string $roman): string
+    {
+        $romans = ['I' => 1, 'V' => 5, 'X' => 10, 'L' => 50, 'C' => 100];
+        $roman = strtoupper(trim($roman));
+
+        if (is_numeric($roman)) {
+            return $roman;
+        }
+
+        $result = 0;
+        $length = strlen($roman);
+        for ($i = 0; $i < $length; $i++) {
+            $current = $romans[$roman[$i]] ?? 0;
+            $next = ($i + 1 < $length) ? ($romans[$roman[$i + 1]] ?? 0) : 0;
+
+            if ($current < $next) {
+                $result -= $current;
+            } else {
+                $result += $current;
+            }
+        }
+
+        return $result > 0 ? (string) $result : $roman;
     }
 
     public static function canCreate(): bool
@@ -92,10 +127,17 @@ class StudentResource extends Resource
             return true;
         }
 
-        // Guru can only edit if they are the Wali Kelas for this specific student's rombel
+        // Guru can only edit if they are the Wali Kelas for this specific student's rombel (matched by 'kelas' string)
         if ($user->hasAnyRole(['Guru', 'teacher'])) {
             $teacher = $user->teacher;
-            return $teacher && $teacher->tugas_pokok_id == 2 && $teacher->rombel_id == $record->rombel_id;
+            if ($teacher && $teacher->tugas_pokok_id == 2 && $teacher->rombel_id) {
+                $rombel = \App\Models\Rombel::with('kelas')->find($teacher->rombel_id);
+                if ($rombel) {
+                    $tingkat = static::romanToArabic($rombel->kelas?->tingkat ?? '');
+                    $teacherKelas = $tingkat . '-' . ($rombel->nama ?? '');
+                    return $teacherKelas === $record->kelas;
+                }
+            }
         }
 
         return false;
