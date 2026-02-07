@@ -204,7 +204,7 @@
                             // URL verifikasi 
                             $verificationUrl = 'https://miamzdepok.sch.id/profil/verifikasi?user=' . $user->id . '&month=' . $month . '&year=' . $year;
 
-                            $qrCode = QrCode::format('png')->size(100)->errorCorrection('H');
+                            $qrCode = SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(100)->errorCorrection('H');
 
                             if (isset($profile->logo) && file_exists(storage_path('app/public/' . $profile->logo))) {
                                 $qrCode = $qrCode->merge(storage_path('app/public/' . $profile->logo), 0.3, true);
