@@ -58,7 +58,6 @@ class AdminPanelProvider extends PanelProvider
             ->darkMode($darkModeEnabled, $darkModeForced)
             ->brandName('Madrasah Portal')
             ->sidebarCollapsibleOnDesktop()
-            ->viteTheme('resources/css/app.css')
             ->userMenuItems([
                 'profile' => \Filament\Navigation\MenuItem::make()
                     ->label('Profil Saya')
