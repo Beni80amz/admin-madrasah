@@ -82,8 +82,9 @@ class MyProfile extends Page implements HasSchemas
             ->components([
                 Grid::make(3)
                     ->schema([
-                        Section::make('Informasi Pribadi')
-                            ->description('Perbarui foto dan informasi dasar profil Anda.')
+                        // Left Column: Profile Photo & Status (1 col)
+                        Section::make()
+                            ->columnSpan(1)
                             ->schema([
                                 FileUpload::make('photo')
                                     ->label('Foto Profil')
@@ -96,85 +97,101 @@ class MyProfile extends Page implements HasSchemas
                                     ->columnSpanFull()
                                     ->alignCenter(),
 
-                                Grid::make(2)
-                                    ->schema([
-                                        TextInput::make('nama_lengkap')
-                                            ->label('Nama Lengkap')
-                                            ->required()
-                                            ->placeholder('Masukkan nama lengkap Anda'),
-
-                                        TextInput::make('nip')
-                                            ->label('NIP/NIK')
-                                            ->required()
-                                            ->placeholder('Masukkan NIP atau NIK'),
-
-                                        TextInput::make('nuptk')
-                                            ->label('NUPTK')
-                                            ->placeholder('Masukkan NUPTK (jika ada)'),
-
-                                        TextInput::make('npk_peg_id')
-                                            ->label('NPK/Peg.ID')
-                                            ->placeholder('Masukkan NPK atau Peg.ID'),
-                                    ]),
-                            ])
-                            ->columnSpan(2),
-
-                        Section::make('Detail Kepegawaian')
-                            ->description('Informasi terkait jabatan dan status di madrasah.')
-                            ->schema([
-                                Select::make('jabatan_id')
-                                    ->label('Jabatan')
-                                    ->relationship('jabatan', 'nama')
-                                    ->searchable()
-                                    ->preload()
-                                    ->required(),
-
-                                Select::make('tugas_pokok_id')
-                                    ->label('Tugas Pokok')
-                                    ->relationship('tugasPokok', 'nama')
-                                    ->searchable()
-                                    ->preload()
-                                    ->live(),
-
-                                Select::make('mata_pelajaran_id')
-                                    ->label('Mata Pelajaran')
-                                    ->relationship('mataPelajaran', 'nama')
-                                    ->searchable()
-                                    ->preload()
-                                    ->visible(
-                                        fn($get) =>
-                                        \App\Models\TugasPokok::find($get('tugas_pokok_id'))?->nama === 'Guru Mata Pelajaran'
-                                    ),
-
-                                Select::make('tugas_tambahan_id')
-                                    ->label('Tugas Tambahan')
-                                    ->relationship('tugasTambahan', 'nama')
-                                    ->searchable()
-                                    ->preload(),
-
-                                Select::make('status')
-                                    ->label('Status Kepegawaian')
-                                    ->options([
-                                        'PNS' => 'PNS',
-                                        'Non PNS' => 'Non PNS',
-                                        'P3K' => 'P3K',
-                                    ])
-                                    ->required(),
-
-                                Select::make('sertifikasi')
-                                    ->label('Sertifikasi')
-                                    ->options([
-                                        'Sudah' => 'Sudah',
-                                        'Belum' => 'Belum',
-                                    ])
-                                    ->required(),
-
                                 Toggle::make('is_active')
                                     ->label('Status Akun Aktif')
+                                    ->onColor('success')
+                                    ->offColor('danger')
+                                    ->inline(false)
                                     ->disabled()
-                                    ->dehydrated(false),
-                            ])
-                            ->columnSpan(1),
+                                    ->default(true)
+                                    ->columnSpanFull(),
+                            ]),
+
+                        // Right Column: Personal & Employment Data (2 cols)
+                        Section::make()
+                            ->columnSpan(2)
+                            ->schema([
+                                Section::make('Informasi Pribadi')
+                                    ->description('Informasi dasar identitas Anda.')
+                                    ->icon('heroicon-o-user')
+                                    ->schema([
+                                        Grid::make(2)
+                                            ->schema([
+                                                TextInput::make('nama_lengkap')
+                                                    ->label('Nama Lengkap')
+                                                    ->disabled() // Read-only from Teacher data
+                                                    ->required(),
+                                                TextInput::make('nip')
+                                                    ->label('NIP/NIK')
+                                                    ->disabled()
+                                                    ->required(),
+                                                TextInput::make('nuptk')
+                                                    ->label('NUPTK')
+                                                    ->disabled(),
+                                                TextInput::make('npk_peg_id')
+                                                    ->label('NPK/Peg.ID')
+                                                    ->disabled(),
+                                            ]),
+                                    ])
+                                    ->collapsible(),
+
+                                Section::make('Detail Kepegawaian')
+                                    ->description('Informasi terkait jabatan dan status di madrasah.')
+                                    ->icon('heroicon-o-briefcase')
+                                    ->schema([
+                                        Grid::make(2)
+                                            ->schema([
+                                                Select::make('jabatan_id')
+                                                    ->label('Jabatan')
+                                                    ->relationship('jabatan', 'nama')
+                                                    ->disabled(),
+
+                                                Select::make('tugas_pokok_id')
+                                                    ->label('Tugas Pokok')
+                                                    ->relationship('tugasPokok', 'nama')
+                                                    ->disabled(),
+
+                                                Select::make('tugas_tambahan_id')
+                                                    ->label('Tugas Tambahan')
+                                                    ->relationship('tugasTambahan', 'nama')
+                                                    ->disabled(),
+
+                                                Select::make('mata_pelajaran_id')
+                                                    ->label('Mata Pelajaran (Jika Guru Mapel)')
+                                                    ->relationship('mataPelajaran', 'nama')
+                                                    ->disabled(),
+
+                                                Select::make('status')
+                                                    ->label('Status Kepegawaian')
+                                                    ->options([
+                                                        'PNS' => 'PNS',
+                                                        'Non PNS' => 'Non PNS',
+                                                        'P3K' => 'P3K',
+                                                    ])
+                                                    ->disabled(),
+
+                                                Select::make('sertifikasi')
+                                                    ->label('Sertifikasi')
+                                                    ->options([
+                                                        'Sudah' => 'Sudah',
+                                                        'Belum' => 'Belum',
+                                                    ])
+                                                    ->disabled(),
+                                            ]),
+                                    ])
+                                    ->collapsible(),
+
+                                // Form Actions Footer
+                                \Filament\Schemas\Components\Actions::make([
+                                    Action::make('save')
+                                        ->label('Simpan Perubahan')
+                                        ->icon('heroicon-m-check-circle')
+                                        ->submit('save')
+                                        ->keyBindings(['mod+s']),
+                                ])
+                                    ->fullWidth()
+                                    ->alignEnd(),
+                            ]),
                     ]),
             ]);
     }
