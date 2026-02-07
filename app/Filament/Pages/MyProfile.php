@@ -2,6 +2,8 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Teacher;
+use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -9,12 +11,15 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Panel;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Auth;
+use UnitEnum;
 
 class MyProfile extends Page implements HasSchemas
 {
@@ -26,7 +31,7 @@ class MyProfile extends Page implements HasSchemas
 
     public $teacher;
 
-    public static function getNavigationIcon(): \BackedEnum|\Illuminate\Contracts\Support\Htmlable|string|null
+    public static function getNavigationIcon(): string|BackedEnum|Htmlable|null
     {
         return 'heroicon-o-user-circle';
     }
@@ -36,7 +41,7 @@ class MyProfile extends Page implements HasSchemas
         return 'Profil Saya';
     }
 
-    public static function getNavigationGroup(): \UnitEnum|string|null
+    public static function getNavigationGroup(): string|UnitEnum|null
     {
         return 'Setting';
     }
@@ -46,14 +51,14 @@ class MyProfile extends Page implements HasSchemas
         return -1;
     }
 
-    public function getTitle(): \Illuminate\Contracts\Support\Htmlable|string
-    {
-        return 'Profil Saya';
-    }
-
-    public static function getSlug(): string
+    public static function getSlug(?Panel $panel = null): string
     {
         return 'my-profile';
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return 'Profil Saya';
     }
 
     public function mount(): void
