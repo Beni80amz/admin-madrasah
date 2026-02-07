@@ -75,6 +75,7 @@ class ListStudents extends ListRecords
                 ->label('Download Template')
                 ->icon('heroicon-o-document-text')
                 ->color('gray')
+                ->visible(fn() => !auth()->user()->hasAnyRole(['Guru', 'teacher']))
                 ->action(function () {
                     return Excel::download(new StudentTemplateExport, 'Template-Import-Siswa.xlsx');
                 }),
@@ -83,6 +84,7 @@ class ListStudents extends ListRecords
                 ->label('Import Excel')
                 ->icon('heroicon-o-arrow-up-tray')
                 ->color('success')
+                ->visible(fn() => !auth()->user()->hasAnyRole(['Guru', 'teacher']))
                 ->form([
                     FileUpload::make('file')
                         ->label('File Excel')
