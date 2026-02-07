@@ -32,13 +32,15 @@ class MyProfile extends Page implements HasSchemas
 
     public ?array $data = [];
 
+    public $teacher;
+
     public function mount(): void
     {
         $user = Auth::user();
-        $teacher = $user->teacher;
+        $this->teacher = $user->teacher;
 
-        if ($teacher) {
-            $this->form->fill($teacher->toArray());
+        if ($this->teacher) {
+            $this->form->fill($this->teacher->toArray());
         } else {
             // If superadmin or user without teacher record, fill with user data
             $this->form->fill([

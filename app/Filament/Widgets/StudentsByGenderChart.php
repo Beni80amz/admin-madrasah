@@ -11,7 +11,8 @@ class StudentsByGenderChart extends ChartWidget
 
     public static function canView(): bool
     {
-        return !auth()->user()->hasRole('Admin Keuangan');
+        $user = auth()->user();
+        return $user && $user->hasAnyRole(['super_admin', 'Superadmin', 'admin', 'Admin', 'kepala_sekolah', 'Kepala Sekolah']);
     }
 
     public function getHeading(): string

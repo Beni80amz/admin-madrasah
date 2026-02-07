@@ -14,7 +14,8 @@ class FinanceStatsOverview extends StatsOverviewWidget
 
     public static function canView(): bool
     {
-        return auth()->user()->hasRole('Admin Keuangan') || auth()->user()->hasRole('Superadmin');
+        $user = auth()->user();
+        return $user && $user->hasAnyRole(['super_admin', 'Superadmin', 'admin', 'Admin', 'kepala_sekolah', 'Kepala Sekolah', 'Admin Keuangan']);
     }
 
     protected function getStats(): array
