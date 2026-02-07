@@ -43,13 +43,12 @@
     now()->hour < 15 => 'Siang',
     now()->hour < 18 => 'Sore',
     default => 'Malam',
-} }}, <span
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">{{ explode(' ', $user->name)[0] }}</span>
+} }}, <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">{{ explode(' ', $user->name)[0] }}</span>
             </h2>
 
             <p class="text-gray-400 max-w-lg mx-auto text-sm leading-relaxed mb-8 font-light tracking-wide">
                 "Pendidikan adalah senjata paling mematikan di dunia, karena dengan pendidikan Anda dapat mengubah
-                dunia."
+                dunia. Semoga Hari ini Berkah untuk semuanya. Amiin"
             </p>
 
             <div
