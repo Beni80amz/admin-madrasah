@@ -5,51 +5,59 @@
          */
         $user = auth()->user();
     @endphp
-    <div
-        class="relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 p-8 text-white shadow-lg">
-        {{-- Decorative Background Pattern --}}
-        <div class="absolute right-0 top-0 -mt-4 -mr-4 h-48 w-48 rounded-full bg-white/10 blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 -mb-4 -ml-4 h-32 w-32 rounded-full bg-emerald-500/20 blur-2xl"></div>
+    <div class="relative overflow-hidden rounded-2xl bg-gray-900 border border-gray-800 shadow-2xl p-8 isolate group">
+        {{-- Glow Effect --}}
+        <div
+            class="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-emerald-500/5 blur-3xl transition-all duration-500 group-hover:bg-emerald-500/10">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 -ml-16 -mb-16 h-48 w-48 rounded-full bg-blue-500/5 blur-3xl transition-all duration-500 group-hover:bg-blue-500/10">
+        </div>
 
-        <div class="relative flex items-center justify-between">
-            <div>
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="rounded-full bg-white/20 p-1.5 backdrop-blur-sm">
-                        @if(now()->hour < 18 && now()->hour > 5)
-                            <x-heroicon-m-sun class="h-6 w-6 text-yellow-300" style="width: 24px; height: 24px;" />
-                        @else
-                            <x-heroicon-m-moon class="h-6 w-6 text-blue-200" style="width: 24px; height: 24px;" />
-                        @endif
-                    </div>
-                    <span class="font-medium text-emerald-100 tracking-wide text-sm uppercase">Dashboard Guru</span>
+        <div class="relative flex flex-col items-center text-center z-10">
+            {{-- Icon Container --}}
+            <div class="mb-6 relative">
+                <div class="absolute inset-0 rounded-full bg-emerald-500/20 blur-xl animate-pulse"></div>
+                <div
+                    class="relative flex h-24 w-24 items-center justify-center rounded-full bg-gray-800 border-2 border-gray-700/50 shadow-inner overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+                    @if(now()->hour < 18 && now()->hour > 5)
+                        <x-heroicon-m-sun class="h-12 w-12 text-yellow-400 drop-shadow-md"
+                            style="width: 48px; height: 48px;" />
+                    @else
+                        <x-heroicon-m-moon class="h-12 w-12 text-blue-400 drop-shadow-md"
+                            style="width: 48px; height: 48px;" />
+                    @endif
                 </div>
-
-                <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                    Selamat {{ match (true) {
-    now()->hour < 11 => 'Pagi',
-    now()->hour < 15 => 'Siang',
-    now()->hour < 18 => 'Sore',
-    default => 'Malam',
-} }}, <br>
-                    <span class="text-emerald-100">{{ $user->name }}</span>
-                </h2>
-
-                <p class="mt-4 max-w-2xl text-lg text-emerald-50/90 font-light">
-                    "Semoga hari Anda menyenangkan dan penuh berkah dalam mendidik generasi penerus bangsa."
-                </p>
-
-                <div class="mt-6 flex items-center gap-4">
+                {{-- Status Indicator Badge --}}
+                <div class="absolute bottom-1 right-1 rounded-full bg-gray-900 p-1.5 ring-1 ring-black/20">
                     <div
-                        class="flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 backdrop-blur-md border border-white/10">
-                        <x-heroicon-m-calendar class="h-5 w-5 text-emerald-200" style="width: 20px; height: 20px;" />
-                        <span class="font-medium">{{ now()->translatedFormat('l, d F Y') }}</span>
+                        class="h-4 w-4 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] border-2 border-gray-900">
                     </div>
                 </div>
             </div>
 
-            {{-- Illustration/Icon Side --}}
-            <div class="hidden md:block opacity-90">
-                <x-heroicon-o-academic-cap class="h-40 w-40 text-white/10 rotate-12 transform" style="width: 160px; height: 160px;" />
+            <h2 class="text-3xl font-bold tracking-tight text-white mb-2 font-display">
+                Selamat {{ match (true) {
+    now()->hour < 11 => 'Pagi',
+    now()->hour < 15 => 'Siang',
+    now()->hour < 18 => 'Sore',
+    default => 'Malam',
+} }}, <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">{{ explode(' ', $user->name)[0] }}</span>
+            </h2>
+
+            <p class="text-gray-400 max-w-lg mx-auto text-sm leading-relaxed mb-8 font-light tracking-wide">
+                "Pendidikan adalah senjata paling mematikan di dunia, karena dengan pendidikan Anda dapat mengubah
+                dunia."
+            </p>
+
+            <div
+                class="inline-flex items-center gap-3 rounded-full bg-gray-800/80 px-5 py-2 text-sm font-medium text-gray-300 ring-1 ring-inset ring-white/10 backdrop-blur-sm">
+                <x-heroicon-m-calendar class="h-4 w-4 text-emerald-500" style="width: 16px; height: 16px;" />
+                <span class="tracking-wide">{{ now()->translatedFormat('l, d F Y') }}</span>
+                <span class="mx-1 text-gray-600">|</span>
+                <span class="font-mono text-emerald-400">{{ now()->format('H:i') }} WIB</span>
             </div>
         </div>
     </div>
