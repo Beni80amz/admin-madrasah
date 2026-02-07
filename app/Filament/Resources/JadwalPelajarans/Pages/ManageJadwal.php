@@ -43,6 +43,12 @@ class ManageJadwal extends Page implements HasForms
     public function mount(): void
     {
         $this->tahunAjaranId = TahunAjaran::where('is_active', true)->first()?->id;
+
+        $allowedRombelIds = JadwalPelajaranResource::getAllowedRombelIds(auth()->user());
+        if ($allowedRombelIds !== null) {
+            $this->rombelId = $allowedRombelIds->first();
+        }
+
         $this->loadJadwal();
     }
 
@@ -109,10 +115,16 @@ class ManageJadwal extends Page implements HasForms
 
     public function getRombelOptions(): array
     {
+        $user = auth()->user();
+        $allowedRombelIds = JadwalPelajaranResource::getAllowedRombelIds($user);
+
         return Rombel::with('kelas')
             ->whereHas('kelas')
             ->join('kelas', 'rombels.kelas_id', '=', 'kelas.id')
             ->where('kelas.nama', '!=', 'Alumni')
+            ->when($allowedRombelIds !== null, function ($query) use ($allowedRombelIds) {
+                return $query->whereIn('rombels.id', $allowedRombelIds);
+            })
             ->orderBy('kelas.tingkat')
             ->orderBy('rombels.nama')
             ->select('rombels.*')
@@ -222,10 +234,22 @@ class ManageJadwal extends Page implements HasForms
 
     public function saveJamKe(int $jamKe): void
     {
+        $user = auth()->user();
+        $allowedRombelIds = JadwalPelajaranResource::getAllowedRombelIds($user);
+
         if (!$this->tahunAjaranId || !$this->rombelId) {
             $this->dispatch('swal:error', [
                 'title' => 'Error!',
                 'text' => 'Pilih Tahun Ajaran dan Rombel terlebih dahulu.',
+            ]);
+            return;
+        }
+
+        // Authorization check
+        if ($allowedRombelIds !== null && !$allowedRombelIds->contains($this->rombelId)) {
+            $this->dispatch('swal:error', [
+                'title' => 'Akses Ditolak!',
+                'text' => 'Anda tidak memiliki akses untuk mengelola jadwal kelas ini.',
             ]);
             return;
         }
@@ -356,10 +380,22 @@ class ManageJadwal extends Page implements HasForms
 
     public function exportExcel(): BinaryFileResponse|StreamedResponse
     {
+        $user = auth()->user();
+        $allowedRombelIds = JadwalPelajaranResource::getAllowedRombelIds($user);
+
         if (!$this->tahunAjaranId || !$this->rombelId) {
             $this->dispatch('swal:error', [
                 'title' => 'Error!',
                 'text' => 'Pilih Tahun Ajaran dan Rombel terlebih dahulu.',
+            ]);
+            return response()->streamDownload(fn() => null, 'error.xlsx');
+        }
+
+        // Authorization check
+        if ($allowedRombelIds !== null && !$allowedRombelIds->contains($this->rombelId)) {
+            $this->dispatch('swal:error', [
+                'title' => 'Akses Ditolak!',
+                'text' => 'Anda tidak memiliki akses untuk mengekspor jadwal kelas ini.',
             ]);
             return response()->streamDownload(fn() => null, 'error.xlsx');
         }
@@ -377,10 +413,22 @@ class ManageJadwal extends Page implements HasForms
 
     public function exportPdf(): StreamedResponse
     {
+        $user = auth()->user();
+        $allowedRombelIds = JadwalPelajaranResource::getAllowedRombelIds($user);
+
         if (!$this->tahunAjaranId || !$this->rombelId) {
             $this->dispatch('swal:error', [
                 'title' => 'Error!',
                 'text' => 'Pilih Tahun Ajaran dan Rombel terlebih dahulu.',
+            ]);
+            return response()->streamDownload(fn() => null, 'error.pdf');
+        }
+
+        // Authorization check
+        if ($allowedRombelIds !== null && !$allowedRombelIds->contains($this->rombelId)) {
+            $this->dispatch('swal:error', [
+                'title' => 'Akses Ditolak!',
+                'text' => 'Anda tidak memiliki akses untuk mengekspor jadwal kelas ini.',
             ]);
             return response()->streamDownload(fn() => null, 'error.pdf');
         }
