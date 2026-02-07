@@ -1,4 +1,9 @@
 <x-filament-widgets::widget>
+    @php
+        /**
+         * @var \App\Models\Attendance|null $attendance
+         */
+    @endphp
     <x-filament::section>
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200">
@@ -60,7 +65,7 @@
         <div class="mt-4 text-center">
             @if($attendance)
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                                {{ match (strtolower($attendance->status)) {
+                                            {{ match (strtolower($attendance->status)) {
                     'hadir' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
                     'telat' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
                     'izin' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
