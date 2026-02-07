@@ -119,18 +119,14 @@ class MyProfile extends Page implements HasSchemas
                                             ->schema([
                                                 TextInput::make('nama_lengkap')
                                                     ->label('Nama Lengkap')
-                                                    ->disabled() // Read-only from Teacher data
                                                     ->required(),
                                                 TextInput::make('nip')
                                                     ->label('NIP/NIK')
-                                                    ->disabled()
                                                     ->required(),
                                                 TextInput::make('nuptk')
-                                                    ->label('NUPTK')
-                                                    ->disabled(),
+                                                    ->label('NUPTK'),
                                                 TextInput::make('npk_peg_id')
-                                                    ->label('NPK/Peg.ID')
-                                                    ->disabled(),
+                                                    ->label('NPK/Peg.ID'),
                                             ]),
                                     ])
                                     ->collapsible(),
@@ -144,22 +140,32 @@ class MyProfile extends Page implements HasSchemas
                                                 Select::make('jabatan_id')
                                                     ->label('Jabatan')
                                                     ->relationship('jabatan', 'nama')
-                                                    ->disabled(),
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->required(),
 
                                                 Select::make('tugas_pokok_id')
                                                     ->label('Tugas Pokok')
                                                     ->relationship('tugasPokok', 'nama')
-                                                    ->disabled(),
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->live(),
 
                                                 Select::make('tugas_tambahan_id')
                                                     ->label('Tugas Tambahan')
                                                     ->relationship('tugasTambahan', 'nama')
-                                                    ->disabled(),
+                                                    ->searchable()
+                                                    ->preload(),
 
                                                 Select::make('mata_pelajaran_id')
                                                     ->label('Mata Pelajaran (Jika Guru Mapel)')
                                                     ->relationship('mataPelajaran', 'nama')
-                                                    ->disabled(),
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->visible(
+                                                        fn($get) =>
+                                                        \App\Models\TugasPokok::find($get('tugas_pokok_id'))?->nama === 'Guru Mata Pelajaran'
+                                                    ),
 
                                                 Select::make('status')
                                                     ->label('Status Kepegawaian')
@@ -168,7 +174,7 @@ class MyProfile extends Page implements HasSchemas
                                                         'Non PNS' => 'Non PNS',
                                                         'P3K' => 'P3K',
                                                     ])
-                                                    ->disabled(),
+                                                    ->required(),
 
                                                 Select::make('sertifikasi')
                                                     ->label('Sertifikasi')
@@ -176,7 +182,7 @@ class MyProfile extends Page implements HasSchemas
                                                         'Sudah' => 'Sudah',
                                                         'Belum' => 'Belum',
                                                     ])
-                                                    ->disabled(),
+                                                    ->required(),
                                             ]),
                                     ])
                                     ->collapsible(),
