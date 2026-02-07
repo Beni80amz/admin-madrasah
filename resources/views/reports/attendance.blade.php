@@ -170,7 +170,6 @@
                     <td style="text-align: center;">{{ $row->time_out ?? '-' }}</td>
                     <td style="text-align: center; text-transform: capitalize;">{{ $row->status }}</td>
                     <td style="text-align: center;">{{ $row->keterlambatan }}m</td>
-                    <td style="text-align: center;">{{ $row->keterlambatan }}m</td>
                     <td style="text-align: center;">
                         @if ($row->lembur > 0)
                             @php

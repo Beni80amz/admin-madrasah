@@ -158,7 +158,6 @@
                     <td>{{ $record->time_out ?? '-' }}</td>
                     <td>{{ $record->status }}</td>
                     <td>{{ $record->keterlambatan > 0 ? $record->keterlambatan . 'm' : '0m' }}</td>
-                    <td>{{ $record->keterlambatan > 0 ? $record->keterlambatan . 'm' : '0m' }}</td>
                     <td>
                         @if ($record->lembur > 0)
                             @php
