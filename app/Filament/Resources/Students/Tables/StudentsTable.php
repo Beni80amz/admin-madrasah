@@ -117,14 +117,18 @@ class StudentsTable
                             return $result > 0 ? (string) $result : $roman;
                         };
 
-                        return Rombel::with('kelas')
-                            ->get()
-                            ->mapWithKeys(function ($rombel) use ($romanToArabic) {
-                                $tingkat = $romanToArabic($rombel->kelas?->tingkat ?? '');
-                                $rombelNama = $rombel->nama ?? '';
-                                $value = $tingkat . '-' . $rombelNama;
-                                $label = ($rombel->kelas?->nama ?? '') . ' - ' . $value;
-                                return [$value => $label];
+                        $options = Rombel::with('kelas')->get();
+                        $allowedKelas = \App\Filament\Resources\Students\StudentResource::getAllowedKelasStrings(auth()->user());
+
+                        return $options->mapWithKeys(function ($rombel) use ($romanToArabic) {
+                            $tingkat = $romanToArabic($rombel->kelas?->tingkat ?? '');
+                            $rombelNama = $rombel->nama ?? '';
+                            $value = $tingkat . '-' . $rombelNama;
+                            $label = ($rombel->kelas?->nama ?? '') . ' - ' . $value;
+                            return [$value => $label];
+                        })
+                            ->when($allowedKelas !== null, function ($collection) use ($allowedKelas) {
+                                return $collection->filter(fn($label, $value) => $allowedKelas->contains($value));
                             })
                             ->sort()
                             ->toArray();

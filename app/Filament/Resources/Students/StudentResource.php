@@ -44,47 +44,58 @@ class StudentResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
 
-        // If not admin/kurikulum, filter by teacher assignments
-        if ($user && $user->hasAnyRole(['Guru', 'teacher']) && !$user->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum'])) {
-            $teacher = $user->teacher;
+        $allowedKelas = static::getAllowedKelasStrings($user);
 
-            if (!$teacher) {
-                return $query->whereRaw('1 = 0'); // No teacher record, no students
-            }
-
-            $rombelIds = collect();
-
-            // 1. Wali Kelas Logic (Guru Kelas MI - ID 2)
-            if ($teacher->tugas_pokok_id == 2 && $teacher->rombel_id) {
-                $rombelIds->push($teacher->rombel_id);
-            }
-
-            // 2. Guru Mata Pelajaran Logic (ID 1)
-            // Fetch rombels from schedule
-            $scheduleRombels = \App\Models\JadwalPelajaran::where('teacher_id', $teacher->id)
-                ->pluck('rombel_id')
-                ->unique();
-
-            $rombelIds = $rombelIds->merge($scheduleRombels)->unique();
-
-            if ($rombelIds->isEmpty()) {
+        if ($allowedKelas !== null) {
+            if ($allowedKelas->isEmpty()) {
                 return $query->whereRaw('1 = 0');
             }
-
-            // Convert Rombel IDs to "tingkat-nama" format matching students.kelas column
-            $kelasStrings = \App\Models\Rombel::whereIn('id', $rombelIds)
-                ->with('kelas')
-                ->get()
-                ->map(function ($rombel) {
-                    $tingkat = static::romanToArabic($rombel->kelas?->tingkat ?? '');
-                    return $tingkat . '-' . ($rombel->nama ?? '');
-                })
-                ->unique();
-
-            $query->whereIn('kelas', $kelasStrings);
+            $query->whereIn('kelas', $allowedKelas);
         }
 
         return $query;
+    }
+
+    public static function getAllowedKelasStrings(\App\Models\User $user): ?\Illuminate\Support\Collection
+    {
+        // If admin/kurikulum/kepala sekolah, return null meaning all classes allowed
+        if ($user->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum', 'kepala_sekolah', 'Kepala Sekolah'])) {
+            return null;
+        }
+
+        $teacher = $user->teacher;
+        if (!$teacher) {
+            return collect(); // No teacher record, no students
+        }
+
+        $rombelIds = collect();
+
+        // 1. Wali Kelas Logic (Guru Kelas MI - ID 2)
+        if ($teacher->tugas_pokok_id == 2 && $teacher->rombel_id) {
+            $rombelIds->push($teacher->rombel_id);
+        }
+
+        // 2. Guru Mata Pelajaran Logic (ID 1)
+        // Fetch rombels from schedule
+        $scheduleRombels = \App\Models\JadwalPelajaran::where('teacher_id', $teacher->id)
+            ->pluck('rombel_id')
+            ->unique();
+
+        $rombelIds = $rombelIds->merge($scheduleRombels)->unique();
+
+        if ($rombelIds->isEmpty()) {
+            return collect();
+        }
+
+        // Convert Rombel IDs to "tingkat-nama" format matching students.kelas column
+        return \App\Models\Rombel::whereIn('id', $rombelIds)
+            ->with('kelas')
+            ->get()
+            ->map(function ($rombel) {
+                $tingkat = static::romanToArabic($rombel->kelas?->tingkat ?? '');
+                return $tingkat . '-' . ($rombel->nama ?? '');
+            })
+            ->unique();
     }
 
     protected static function romanToArabic(string $roman): string

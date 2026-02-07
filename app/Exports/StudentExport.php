@@ -27,7 +27,8 @@ class StudentExport implements FromCollection, WithHeadings, WithStyles, WithEve
 
     public function collection()
     {
-        $query = Student::where('status', Student::STATUS_AKTIF);
+        $query = \App\Filament\Resources\Students\StudentResource::getEloquentQuery()
+            ->where('status', Student::STATUS_AKTIF);
 
         if ($this->kelas) {
             $query->where('kelas', $this->kelas);

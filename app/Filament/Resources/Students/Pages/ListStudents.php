@@ -54,9 +54,17 @@ class ListStudents extends ListRecords
                 $value = $tingkat . '-' . $rombelNama;
                 $label = ($rombel->kelas?->nama ?? '') . ' - ' . $value;
                 return [$value => $label];
-            })
-            ->sort()
-            ->toArray();
+            });
+
+        $allowedKelas = StudentResource::getAllowedKelasStrings(auth()->user());
+
+        if ($allowedKelas !== null) {
+            $kelasOptions = $kelasOptions->filter(function ($label, $value) use ($allowedKelas) {
+                return $allowedKelas->contains($value);
+            });
+        }
+
+        $kelasOptions = $kelasOptions->sort()->toArray();
 
         return [
             CreateAction::make()
@@ -196,7 +204,7 @@ class ListStudents extends ListRecords
                     $kelas = $data['kelas'] ?? null;
                     $gender = $data['gender'] ?? null;
 
-                    $query = Student::where('status', Student::STATUS_AKTIF);
+                    $query = StudentResource::getEloquentQuery()->where('status', Student::STATUS_AKTIF);
 
                     if ($kelas) {
                         $query->where('kelas', $kelas);
