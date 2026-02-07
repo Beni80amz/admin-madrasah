@@ -42,7 +42,7 @@ class MyAttendance extends Page implements HasTable
         return 'Riwayat Absensi';
     }
 
-    protected static string $view = 'filament.pages.my-attendance';
+    protected string $view = 'filament.pages.my-attendance';
 
     public static function shouldRegisterNavigation(): bool
     {
