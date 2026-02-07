@@ -143,7 +143,7 @@ class StudentsTable
                         'Perempuan' => 'Perempuan',
                     ]),
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 \Filament\Actions\Action::make('resetDevice')
                     ->label('Reset Perangkat')
@@ -171,7 +171,7 @@ class StudentsTable
                         }
                     }),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
                         ->visible(fn() => auth()->user()->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum'])),

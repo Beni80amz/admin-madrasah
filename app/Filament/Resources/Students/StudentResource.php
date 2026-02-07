@@ -141,14 +141,22 @@ class StudentResource extends Resource
         // Guru can only edit if they are the Wali Kelas for this specific student's rombel (matched by 'kelas' string)
         if ($user->hasAnyRole(['Guru', 'teacher'])) {
             $teacher = $user->teacher;
-            if ($teacher && $teacher->tugas_pokok_id == 2 && $teacher->rombel_id) {
-                $rombel = \App\Models\Rombel::with('kelas')->find($teacher->rombel_id);
-                if ($rombel) {
-                    $tingkat = static::romanToArabic($rombel->kelas?->tingkat ?? '');
-                    $teacherKelas = $tingkat . '-' . ($rombel->nama ?? '');
-                    return $teacherKelas === $record->kelas;
-                }
+            if (!$teacher) {
+                return false;
             }
+
+            // A Wali Kelas is a teacher whose ID is set as wali_kelas_id in a Rombel 
+            // that matches the student's 'kelas' label.
+            $isWaliKelas = \App\Models\Rombel::where('wali_kelas_id', $teacher->id)
+                ->with('kelas')
+                ->get()
+                ->contains(function ($rombel) use ($record) {
+                    $tingkat = static::romanToArabic($rombel->kelas?->tingkat ?? '');
+                    $rombelKelasLabel = $tingkat . '-' . ($rombel->nama ?? '');
+                    return $rombelKelasLabel === $record->kelas;
+                });
+
+            return $isWaliKelas;
         }
 
         return false;
