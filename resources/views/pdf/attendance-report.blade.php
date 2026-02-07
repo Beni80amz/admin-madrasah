@@ -161,8 +161,8 @@
             @forelse($records as $index => $record)
                 <tr>
                     <td>{{ $index + 1 }}</td>
-                    <td>{{ \Carbon\Carbon::parse($record->date)->translatedFormat('d F Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($record->date)->translatedFormat('l') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($record->date)->locale('id')->translatedFormat('d F Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($record->date)->locale('id')->translatedFormat('l') }}</td>
                     <td>{{ $record->time_in ?? '-' }}</td>
                     <td>{{ $record->time_out ?? '-' }}</td>
                     <td>{{ $record->status }}</td>
