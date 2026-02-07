@@ -173,7 +173,8 @@ class StudentsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn() => auth()->user()->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum'])),
                 ]),
             ]);
     }
