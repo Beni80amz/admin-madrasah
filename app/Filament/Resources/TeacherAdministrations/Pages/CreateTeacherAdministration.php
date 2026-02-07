@@ -72,7 +72,13 @@ class CreateTeacherAdministration extends CreateRecord
             $mimeType = $disk->mimeType($tempFile);
             $fileSize = $disk->size($tempFile);
             $fileName = basename($tempFile);
+
+            \Log::info('Upload Debug - Data:', $data);
+            \Log::info('Upload Debug - Temp File:', ['path' => $tempFile, 'base' => $fileName]);
+
             $originalName = $data['file_name'] ?? $fileName;
+
+            \Log::info('Upload Debug - Original Name:', ['name' => $originalName]);
 
             // Create a temporary UploadedFile object for the service
             // We use the absolute path but avoid calling mime_content_type directly

@@ -103,7 +103,10 @@ class TeacherAdministrationResource extends Resource
                             ->disk('public')
                             ->directory('temp-uploads')
                             ->visibility('public')
-                            ->storeFileNamesIn('file_name'),
+                            ->storeFileNamesIn('file_name')
+                            ->live(),
+
+                        Hidden::make('file_name'),
 
                         Textarea::make('notes')
                             ->label('Catatan')
