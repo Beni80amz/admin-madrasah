@@ -262,7 +262,8 @@ class TeacherAdministrationResource extends Resource
                             $urlsJson = json_encode($records->pluck('file_url')->toArray());
 
                             $livewire->js("
-                                JSON.parse('{$urlsJson}').forEach((url, index) => {
+                                const data = '{$urlsJson}';
+                                JSON.parse(data).forEach((url, index) => {
                                     setTimeout(() => {
                                         window.open(url, '_blank');
                                     }, index * 500);

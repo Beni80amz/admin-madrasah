@@ -69,7 +69,7 @@ class CreateTeacherAdministration extends CreateRecord
 
             // Get file info using Storage abstraction
             $filePath = $disk->path($tempFile);
-            $mimeType = $disk->mimeType($tempFile);
+            $mimeType = mime_content_type($filePath);
             $fileSize = $disk->size($tempFile);
             $fileName = basename($tempFile);
 
