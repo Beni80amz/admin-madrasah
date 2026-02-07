@@ -262,11 +262,19 @@ class TeacherAdministrationResource extends Resource
                             $urlsJson = json_encode($records->pluck('file_url')->toArray());
 
                             $livewire->js("
-                                const data = '{$urlsJson}';
-                                JSON.parse(data).forEach((url, index) => {
+                                const urls = JSON.parse('{$urlsJson}');
+                                urls.forEach((url, index) => {
+                                    if (!url) return;
+                                    
                                     setTimeout(() => {
-                                        window.open(url, '_blank');
-                                    }, index * 500);
+                                        const link = document.createElement('a');
+                                        link.href = url;
+                                        link.target = '_blank';
+                                        link.setAttribute('download', ''); // Trigger download
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                    }, index * 1200); // 1.2 second delay to avoid browser blocking
                                 });
                             ");
                         })
