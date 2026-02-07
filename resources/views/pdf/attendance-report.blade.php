@@ -106,6 +106,15 @@
     </div>
 
     @php
+        /**
+         * @var int $month
+         * @var int $year
+         * @var \App\Models\User $user
+         * @var \App\Models\ProfileMadrasah|null $profile
+         * @var \App\Models\Teacher|null $teacher
+         * @var \Illuminate\Database\Eloquent\Collection $records
+         * @var array $summary
+         */
         $months = [
             1 => 'Januari',
             2 => 'Februari',
