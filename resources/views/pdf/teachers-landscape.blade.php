@@ -8,7 +8,7 @@
     <style>
         @page {
             size: A4 landscape;
-            margin: 1cm 2cm;
+            margin: 0.5cm 1cm;
         }
 
         * {
@@ -18,7 +18,7 @@
         }
 
         body {
-            padding: 20px 40px;
+            padding: 10px 20px;
             font-family: 'DejaVu Sans', sans-serif;
             font-size: 9px;
             color: #333;
