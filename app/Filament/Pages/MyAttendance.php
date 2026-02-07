@@ -22,15 +22,32 @@ class MyAttendance extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    public static function getNavigationIcon(): ?string
+    {
+        return 'heroicon-o-clock';
+    }
 
-    protected static ?string $navigationLabel = 'Absensi Saya';
+    public static function getNavigationLabel(): string
+    {
+        return 'Absensi Saya';
+    }
 
-    protected static ?string $navigationGroup = 'Administrasi Guru';
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Administrasi Guru';
+    }
 
-    protected static ?string $title = 'Riwayat Absensi';
+    public function getTitle(): string
+    {
+        return 'Riwayat Absensi';
+    }
 
     protected static string $view = 'filament.pages.my-attendance';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return true;
+    }
 
     public function table(Table $table): Table
     {
