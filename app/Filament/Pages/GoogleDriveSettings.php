@@ -36,7 +36,7 @@ class GoogleDriveSettings extends Page implements HasInfolists, HasSchemas
 
     protected static ?string $title = 'Pengaturan Google Drive';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Administrasi Guru';
+    protected static string|UnitEnum|null $navigationGroup = 'Setting';
 
     protected static ?int $navigationSort = 0;
 

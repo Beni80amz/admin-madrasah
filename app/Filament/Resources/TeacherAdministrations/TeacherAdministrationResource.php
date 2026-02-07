@@ -35,20 +35,20 @@ class TeacherAdministrationResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Administrasi Guru';
+    public static function getNavigationGroup(): ?string
+    {
+        $user = Auth::user();
+        if ($user && $user->hasRole('Kurikulum')) {
+            return 'Akademik';
+        }
 
-    protected static ?int $navigationSort = 1;
-
-    protected static ?string $navigationLabel = 'Berkas Administrasi';
-
-    protected static ?string $modelLabel = 'Berkas Administrasi';
-
-    protected static ?string $pluralModelLabel = 'Berkas Administrasi';
+        return 'Administrasi Guru';
+    }
 
     public static function canAccess(): bool
     {
         $user = Auth::user();
-        return $user && ($user->hasRole(['teacher', 'Teacher', 'Guru', 'super_admin', 'Superadmin', 'admin', 'Admin', 'kepala_sekolah', 'Kepala Sekolah']));
+        return $user && ($user->hasRole(['teacher', 'Teacher', 'Guru', 'super_admin', 'Superadmin', 'admin', 'Admin', 'kepala_sekolah', 'Kepala Sekolah', 'Kurikulum']));
     }
 
     public static function form(Schema $schema): Schema
