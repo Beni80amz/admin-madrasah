@@ -36,6 +36,11 @@ class StudentResource extends Resource
 
     public static function getNavigationLabel(): string
     {
+        $user = auth()->user();
+        if ($user && $user->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum'])) {
+            return 'Siswa';
+        }
+
         return 'Siswa Saya';
     }
 

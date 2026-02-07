@@ -26,6 +26,36 @@ class TeacherResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'nama_lengkap';
 
+    public static function getNavigationLabel(): string
+    {
+        $user = auth()->user();
+        if ($user && $user->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum'])) {
+            return 'GTK';
+        }
+
+        return 'Teachers';
+    }
+
+    public static function getModelLabel(): string
+    {
+        $user = auth()->user();
+        if ($user && $user->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum'])) {
+            return 'GTK';
+        }
+
+        return 'Teacher';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        $user = auth()->user();
+        if ($user && $user->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum'])) {
+            return 'GTK';
+        }
+
+        return 'Teachers';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return TeacherForm::configure($schema);
