@@ -58,6 +58,12 @@ class AdminPanelProvider extends PanelProvider
             ->darkMode($darkModeEnabled, $darkModeForced)
             ->brandName('Madrasah Portal')
             ->sidebarCollapsibleOnDesktop()
+            ->userMenuItems([
+                'profile' => \Filament\Navigation\MenuItem::make()
+                    ->label('Profil Saya')
+                    ->url(fn(): string => \App\Filament\Pages\MyProfile::getUrl())
+                    ->icon('heroicon-o-user-circle'),
+            ])
             ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
                 fn() => Blade::render('
