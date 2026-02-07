@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Teacher;
+use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -16,12 +17,13 @@ use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
+use UnitEnum;
 
 class MyProfile extends Page implements HasSchemas
 {
     use InteractsWithSchemas;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-user-circle';
 
     protected static ?string $navigationLabel = 'Profil Saya';
 
@@ -29,7 +31,7 @@ class MyProfile extends Page implements HasSchemas
 
     protected static ?string $slug = 'my-profile';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Setting';
+    protected static string|UnitEnum|null $navigationGroup = 'Setting';
 
     protected static ?int $navigationSort = -1;
 
@@ -44,14 +46,12 @@ class MyProfile extends Page implements HasSchemas
         $user = Auth::user();
         $this->teacher = $user->teacher;
 
-        if ($this->teacher) {
-            $this->form->fill($this->teacher->toArray());
-        } else {
-            $this->form->fill([
-                'nama_lengkap' => $user->name,
-                'nip' => $user->email,
-            ]);
-        }
+        $state = $this->teacher ? $this->teacher->toArray() : [
+            'nama_lengkap' => $user->name,
+            'nip' => $user->email,
+        ];
+
+        $this->getSchema('form')->fill($state);
     }
 
     public function form(Schema $schema): Schema
@@ -173,7 +173,7 @@ class MyProfile extends Page implements HasSchemas
     public function save(): void
     {
         try {
-            $data = $this->form->getState();
+            $data = $this->getSchema('form')->getState();
             $user = Auth::user();
             $teacher = $user->teacher;
 
