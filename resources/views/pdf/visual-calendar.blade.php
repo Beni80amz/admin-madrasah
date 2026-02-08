@@ -368,7 +368,7 @@
                                     <div class="event-item">
                                         <span
                                             class="event-date">{{ \Carbon\Carbon::parse($event->tanggal_mulai)->format('d') }}{{ $event->tanggal_selesai && $event->tanggal_selesai != $event->tanggal_mulai ? '-' . \Carbon\Carbon::parse($event->tanggal_selesai)->format('d') : '' }}</span>
-                                        {{ Str::limit($event->nama_kegiatan, 35) }}
+                                        {{ $event->nama_kegiatan }}
                                     </div>
                                 @endforeach
                             </div>
@@ -431,7 +431,7 @@
                                     <div class="event-item">
                                         <span
                                             class="event-date">{{ \Carbon\Carbon::parse($event->tanggal_mulai)->format('d') }}{{ $event->tanggal_selesai && $event->tanggal_selesai != $event->tanggal_mulai ? '-' . \Carbon\Carbon::parse($event->tanggal_selesai)->format('d') : '' }}</span>
-                                        {{ Str::limit($event->nama_kegiatan, 35) }}
+                                        {{ $event->nama_kegiatan }}
                                     </div>
                                 @endforeach
                             </div>
