@@ -66,6 +66,18 @@ class StudentForm
                     ])
                     ->columns(2),
 
+                Section::make('Data Kartu Keluarga')
+                    ->schema([
+                        TextInput::make('no_kk')
+                            ->label('Nomor KK')
+                            ->placeholder('Masukan 16 digit No. KK')
+                            ->maxLength(16),
+                        TextInput::make('nama_kepala_keluarga_diKK')
+                            ->label('Nama Kepala Keluarga (di KK)')
+                            ->placeholder('Contoh: Budi Rahman'),
+                    ])
+                    ->columns(2),
+
                 Section::make('Data Pribadi')
                     ->schema([
                         TextInput::make('nama_lengkap')
@@ -157,17 +169,209 @@ class StudentForm
                     ])
                     ->columns(2),
 
-                Section::make('Data Orang Tua')
+                Section::make('Data Ayah Kandung')
                     ->schema([
-                        TextInput::make('nama_ibu')
-                            ->label('Nama Ibu')
-                            ->placeholder('Contoh: Siti Aminah')
-                            ->required(),
-
                         TextInput::make('nama_ayah')
-                            ->label('Nama Ayah')
+                            ->label('Nama Lengkap Ayah')
                             ->placeholder('Contoh: Budi Rahman')
                             ->required(),
+                        Select::make('status_ayah')
+                            ->label('Status Ayah')
+                            ->options([
+                                'Masih Hidup' => 'Masih Hidup',
+                                'Meninggal' => 'Meninggal',
+                            ])
+                            ->native(false),
+                        TextInput::make('nik_ayah_kandung')
+                            ->label('NIK Ayah')
+                            ->placeholder('16 digit NIK')
+                            ->maxLength(16),
+                        TextInput::make('tempat_lahir_ayah_kandung')
+                            ->label('Tempat Lahir Ayah'),
+                        DatePicker::make('tgl_lahir_ayah_kandung')
+                            ->label('Tanggal Lahir Ayah'),
+                        Select::make('pendidikan_ayah_kandung')
+                            ->label('Pendidikan Terakhir Ayah')
+                            ->options([
+                                'Lulus SD/Sederajat' => 'Lulus SD/Sederajat',
+                                'Lulus SMP/Sederajat' => 'Lulus SMP/Sederajat',
+                                'Lulus SMA/MA/Sederajat' => 'Lulus SMA/MA/Sederajat',
+                                'Lulus D1' => 'Lulus D1',
+                                'Lulus D2' => 'Lulus D2',
+                                'Lulus D3' => 'Lulus D3',
+                                'Lulus S1' => 'Lulus S1',
+                                'Lulus S2' => 'Lulus S2',
+                                'Lulus S3' => 'Lulus S3',
+                            ])
+                            ->native(false),
+                        Select::make('pekerjaan_ayah_kandung')
+                            ->label('Pekerjaan Ayah')
+                            ->options([
+                                'Tidak Bekerja' => 'Tidak Bekerja',
+                                'Pensiunan' => 'Pensiunan',
+                                'PNS' => 'PNS',
+                                'TNI/Polri' => 'TNI/Polri',
+                                'Guru/Dosen' => 'Guru/Dosen',
+                                'Pegawai Swasta' => 'Pegawai Swasta',
+                                'Wiraswasta' => 'Wiraswasta',
+                                'Pengacara/Notaris' => 'Pengacara/Notaris',
+                                'Dokter/Bidan/Perawat' => 'Dokter/Bidan/Perawat',
+                                'Petani/Nelayan' => 'Petani/Nelayan',
+                                'Buruh (Pabrik/Bangunan)' => 'Buruh (Pabrik/Bangunan)',
+                                'Sopir/Kondektur/Gojek' => 'Sopir/Kondektur/Gojek',
+                                'Politikus' => 'Politikus',
+                                'Lainnya' => 'Lainnya',
+                            ])
+                            ->native(false)
+                            ->live(),
+                        TextInput::make('pekerjaan_ayah_kandung_lainnya')
+                            ->label('Pekerjaan Ayah Lainnya')
+                            ->visible(fn($get) => $get('pekerjaan_ayah_kandung') === 'Lainnya')
+                            ->required(fn($get) => $get('pekerjaan_ayah_kandung') === 'Lainnya'),
+                    ])
+                    ->columns(2),
+
+                Section::make('Data Ibu Kandung')
+                    ->schema([
+                        TextInput::make('nama_ibu')
+                            ->label('Nama Lengkap Ibu')
+                            ->placeholder('Contoh: Siti Aminah')
+                            ->required(),
+                        Select::make('status_ibu')
+                            ->label('Status Ibu')
+                            ->options([
+                                'Masih Hidup' => 'Masih Hidup',
+                                'Meninggal' => 'Meninggal',
+                            ])
+                            ->native(false),
+                        TextInput::make('nik_ibu')
+                            ->label('NIK Ibu')
+                            ->placeholder('16 digit NIK')
+                            ->maxLength(16),
+                        TextInput::make('tempat_lahir_ibu')
+                            ->label('Tempat Lahir Ibu'),
+                        DatePicker::make('tanggal_lahir_ibu')
+                            ->label('Tanggal Lahir Ibu'),
+                        Select::make('pendidikan_ibu')
+                            ->label('Pendidikan Terakhir Ibu')
+                            ->options([
+                                'Lulus SD/Sederajat' => 'Lulus SD/Sederajat',
+                                'Lulus SMP/Sederajat' => 'Lulus SMP/Sederajat',
+                                'Lulus SMA/MA/Sederajat' => 'Lulus SMA/MA/Sederajat',
+                                'Lulus D1' => 'Lulus D1',
+                                'Lulus D2' => 'Lulus D2',
+                                'Lulus D3' => 'Lulus D3',
+                                'Lulus S1' => 'Lulus S1',
+                                'Lulus S2' => 'Lulus S2',
+                                'Lulus S3' => 'Lulus S3',
+                            ])
+                            ->native(false),
+                        Select::make('pekerjaan_ibu')
+                            ->label('Pekerjaan Ibu')
+                            ->options([
+                                'Tidak Bekerja' => 'Tidak Bekerja',
+                                'Pensiunan' => 'Pensiunan',
+                                'PNS' => 'PNS',
+                                'TNI/Polri' => 'TNI/Polri',
+                                'Guru/Dosen' => 'Guru/Dosen',
+                                'Pegawai Swasta' => 'Pegawai Swasta',
+                                'Wiraswasta' => 'Wiraswasta',
+                                'Pengacara/Notaris' => 'Pengacara/Notaris',
+                                'Dokter/Bidan/Perawat' => 'Dokter/Bidan/Perawat',
+                                'Petani/Nelayan' => 'Petani/Nelayan',
+                                'Buruh (Pabrik/Bangunan)' => 'Buruh (Pabrik/Bangunan)',
+                                'Sopir/Kondektur/Gojek' => 'Sopir/Kondektur/Gojek',
+                                'Politikus' => 'Politikus',
+                                'Lainnya' => 'Lainnya',
+                            ])
+                            ->native(false)
+                            ->live(),
+                        TextInput::make('pekerjaan_ibu_lainnya')
+                            ->label('Pekerjaan Ibu Lainnya')
+                            ->visible(fn($get) => $get('pekerjaan_ibu') === 'Lainnya')
+                            ->required(fn($get) => $get('pekerjaan_ibu') === 'Lainnya'),
+                    ])
+                    ->columns(2),
+
+                Section::make('Data Wali (Opsional)')
+                    ->schema([
+                        TextInput::make('nik_wali')
+                            ->label('NIK Wali')
+                            ->placeholder('16 digit NIK')
+                            ->maxLength(16),
+                        TextInput::make('tempat_lahir_wali')
+                            ->label('Tempat Lahir Wali'),
+                        DatePicker::make('tanggal_lahir_wali')
+                            ->label('Tanggal Lahir Wali'),
+                        Select::make('pendidikan_wali')
+                            ->label('Pendidikan Terakhir Wali')
+                            ->options([
+                                'Lulus SD/Sederajat' => 'Lulus SD/Sederajat',
+                                'Lulus SMP/Sederajat' => 'Lulus SMP/Sederajat',
+                                'Lulus SMA/MA/Sederajat' => 'Lulus SMA/MA/Sederajat',
+                                'Lulus D1' => 'Lulus D1',
+                                'Lulus D2' => 'Lulus D2',
+                                'Lulus D3' => 'Lulus D3',
+                                'Lulus S1' => 'Lulus S1',
+                                'Lulus S2' => 'Lulus S2',
+                                'Lulus S3' => 'Lulus S3',
+                            ])
+                            ->native(false),
+                        Select::make('pekerjaan_wali')
+                            ->label('Pekerjaan Wali')
+                            ->options([
+                                'Tidak Bekerja' => 'Tidak Bekerja',
+                                'Pensiunan' => 'Pensiunan',
+                                'PNS' => 'PNS',
+                                'TNI/Polri' => 'TNI/Polri',
+                                'Guru/Dosen' => 'Guru/Dosen',
+                                'Pegawai Swasta' => 'Pegawai Swasta',
+                                'Wiraswasta' => 'Wiraswasta',
+                                'Pengacara/Notaris' => 'Pengacara/Notaris',
+                                'Dokter/Bidan/Perawat' => 'Dokter/Bidan/Perawat',
+                                'Petani/Nelayan' => 'Petani/Nelayan',
+                                'Buruh (Pabrik/Bangunan)' => 'Buruh (Pabrik/Bangunan)',
+                                'Sopir/Kondektur/Gojek' => 'Sopir/Kondektur/Gojek',
+                                'Politikus' => 'Politikus',
+                                'Lainnya' => 'Lainnya',
+                            ])
+                            ->native(false)
+                            ->live(),
+                        TextInput::make('pekerjaan_wali_lainnya')
+                            ->label('Pekerjaan Wali Lainnya')
+                            ->visible(fn($get) => $get('pekerjaan_wali') === 'Lainnya')
+                            ->required(fn($get) => $get('pekerjaan_wali') === 'Lainnya'),
+                    ])
+                    ->columns(2),
+
+                Section::make('Informasi Ekonomi & Domisili')
+                    ->schema([
+                        Select::make('penghasilan_orangtua')
+                            ->label('Penghasilan Orang Tua')
+                            ->options([
+                                'Kurang dari Rp. 500.000' => 'Kurang dari Rp. 500.000',
+                                'Rp. 500.000-Rp. 1.000.000' => 'Rp. 500.000-Rp. 1.000.000',
+                                'Rp. 1.000.000-2.000.000' => 'Rp. 1.000.000-2.000.000',
+                                'Rp. 2 Juta-4 Juta' => 'Rp. 2 Juta-4 Juta',
+                                'Rp. 4 Juta-5 Juta' => 'Rp. 4 Juta-5 Juta',
+                                'Lebih dari Rp. 5 Juta' => 'Lebih dari Rp. 5 Juta',
+                            ])
+                            ->native(false),
+                        Select::make('status_rumah')
+                            ->label('Status Rumah')
+                            ->options([
+                                'Rumah Sendiri' => 'Rumah Sendiri',
+                                'Rumah Orang Tua' => 'Rumah Orang Tua',
+                                'Sewa/Kontrak' => 'Sewa/Kontrak',
+                                'Asrama/Rumah Dinas' => 'Asrama/Rumah Dinas',
+                                'Lainnya' => 'Lainnya',
+                            ])
+                            ->native(false)
+                            ->live(),
+                        TextInput::make('status_rumah_lainnya')
+                            ->label('Status Rumah Lainnya')
+                            ->visible(fn($get) => $get('status_rumah') === 'Lainnya')
+                            ->required(fn($get) => $get('status_rumah') === 'Lainnya'),
 
                         TextInput::make('nomor_mobile')
                             ->label('Nomor Mobile/HP')
@@ -179,11 +383,7 @@ class StudentForm
                             ->label('Nomor PIP')
                             ->placeholder('Contoh: 1234567890123456')
                             ->maxLength(20),
-                    ])
-                    ->columns(2),
 
-                Section::make('Alamat')
-                    ->schema([
                         Textarea::make('alamat_kk')
                             ->label('Alamat KK')
                             ->placeholder('Contoh: Jl. Merdeka No. 10, Kota Depok')
@@ -196,7 +396,8 @@ class StudentForm
                             ->placeholder('Kosongkan jika sama dengan alamat KK')
                             ->rows(2)
                             ->columnSpanFull(),
-                    ]),
+                    ])
+                    ->columns(2),
             ]);
     }
 }
