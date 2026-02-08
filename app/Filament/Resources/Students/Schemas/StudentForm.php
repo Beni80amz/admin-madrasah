@@ -174,22 +174,27 @@ class StudentForm
                         TextInput::make('nama_ayah')
                             ->label('Nama Lengkap Ayah')
                             ->placeholder('Contoh: Budi Rahman')
-                            ->required(),
+                            ->required()
+                            ->disabled(fn($get) => $get('status_ayah') === 'Meninggal'),
                         Select::make('status_ayah')
                             ->label('Status Ayah')
                             ->options([
                                 'Masih Hidup' => 'Masih Hidup',
                                 'Meninggal' => 'Meninggal',
                             ])
-                            ->native(false),
+                            ->native(false)
+                            ->live(),
                         TextInput::make('nik_ayah_kandung')
                             ->label('NIK Ayah')
                             ->placeholder('16 digit NIK')
-                            ->maxLength(16),
+                            ->maxLength(16)
+                            ->disabled(fn($get) => $get('status_ayah') === 'Meninggal'),
                         TextInput::make('tempat_lahir_ayah_kandung')
-                            ->label('Tempat Lahir Ayah'),
+                            ->label('Tempat Lahir Ayah')
+                            ->disabled(fn($get) => $get('status_ayah') === 'Meninggal'),
                         DatePicker::make('tgl_lahir_ayah_kandung')
-                            ->label('Tanggal Lahir Ayah'),
+                            ->label('Tanggal Lahir Ayah')
+                            ->disabled(fn($get) => $get('status_ayah') === 'Meninggal'),
                         Select::make('pendidikan_ayah_kandung')
                             ->label('Pendidikan Terakhir Ayah')
                             ->options([
@@ -203,7 +208,8 @@ class StudentForm
                                 'Lulus S2' => 'Lulus S2',
                                 'Lulus S3' => 'Lulus S3',
                             ])
-                            ->native(false),
+                            ->native(false)
+                            ->disabled(fn($get) => $get('status_ayah') === 'Meninggal'),
                         Select::make('pekerjaan_ayah_kandung')
                             ->label('Pekerjaan Ayah')
                             ->options([
@@ -223,7 +229,8 @@ class StudentForm
                                 'Lainnya' => 'Lainnya',
                             ])
                             ->native(false)
-                            ->live(),
+                            ->live()
+                            ->disabled(fn($get) => $get('status_ayah') === 'Meninggal'),
                         TextInput::make('pekerjaan_ayah_kandung_lainnya')
                             ->label('Pekerjaan Ayah Lainnya')
                             ->visible(fn($get) => $get('pekerjaan_ayah_kandung') === 'Lainnya')
@@ -236,22 +243,27 @@ class StudentForm
                         TextInput::make('nama_ibu')
                             ->label('Nama Lengkap Ibu')
                             ->placeholder('Contoh: Siti Aminah')
-                            ->required(),
+                            ->required()
+                            ->disabled(fn($get) => $get('status_ibu') === 'Meninggal'),
                         Select::make('status_ibu')
                             ->label('Status Ibu')
                             ->options([
                                 'Masih Hidup' => 'Masih Hidup',
                                 'Meninggal' => 'Meninggal',
                             ])
-                            ->native(false),
+                            ->native(false)
+                            ->live(),
                         TextInput::make('nik_ibu')
                             ->label('NIK Ibu')
                             ->placeholder('16 digit NIK')
-                            ->maxLength(16),
+                            ->maxLength(16)
+                            ->disabled(fn($get) => $get('status_ibu') === 'Meninggal'),
                         TextInput::make('tempat_lahir_ibu')
-                            ->label('Tempat Lahir Ibu'),
+                            ->label('Tempat Lahir Ibu')
+                            ->disabled(fn($get) => $get('status_ibu') === 'Meninggal'),
                         DatePicker::make('tanggal_lahir_ibu')
-                            ->label('Tanggal Lahir Ibu'),
+                            ->label('Tanggal Lahir Ibu')
+                            ->disabled(fn($get) => $get('status_ibu') === 'Meninggal'),
                         Select::make('pendidikan_ibu')
                             ->label('Pendidikan Terakhir Ibu')
                             ->options([
@@ -265,7 +277,8 @@ class StudentForm
                                 'Lulus S2' => 'Lulus S2',
                                 'Lulus S3' => 'Lulus S3',
                             ])
-                            ->native(false),
+                            ->native(false)
+                            ->disabled(fn($get) => $get('status_ibu') === 'Meninggal'),
                         Select::make('pekerjaan_ibu')
                             ->label('Pekerjaan Ibu')
                             ->options([
@@ -285,7 +298,8 @@ class StudentForm
                                 'Lainnya' => 'Lainnya',
                             ])
                             ->native(false)
-                            ->live(),
+                            ->live()
+                            ->disabled(fn($get) => $get('status_ibu') === 'Meninggal'),
                         TextInput::make('pekerjaan_ibu_lainnya')
                             ->label('Pekerjaan Ibu Lainnya')
                             ->visible(fn($get) => $get('pekerjaan_ibu') === 'Lainnya')
