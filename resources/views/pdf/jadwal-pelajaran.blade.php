@@ -223,16 +223,25 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @for($i = 1; $i <= 8; $i++)
+                                    @for($i = 1; $i <= 12; $i++)
                                         @php
                                             $jadwal = $jadwals->where('hari', $day)->where('jam_ke', $i)->first();
+
+                                            // Calculate default time
+                                            $baseMinutes = 7 * 60; // 07:00
+                                            $slotDuration = 35;
+                                            $startMinutes = $baseMinutes + (($i - 1) * $slotDuration);
+                                            $endMinutes = $startMinutes + $slotDuration;
+                                            $displayMulai = sprintf('%02d:%02d', floor($startMinutes / 60), $startMinutes % 60);
+                                            $displaySelesai = sprintf('%02d:%02d', floor($endMinutes / 60), $endMinutes % 60);
+
+                                            $startTime = $jadwal ? substr($jadwal->jam_mulai, 0, 5) : $displayMulai;
+                                            $endTime = $jadwal ? substr($jadwal->jam_selesai, 0, 5) : $displaySelesai;
                                         @endphp
                                         <tr>
                                             <td class="text-center">{{ $i }}</td>
                                             <td class="text-center">
-                                                @if($jadwal)
-                                                    {{ substr($jadwal->jam_mulai, 0, 5) }} - {{ substr($jadwal->jam_selesai, 0, 5) }}
-                                                @endif
+                                                {{ $startTime }} - {{ $endTime }}
                                             </td>
                                             <td>{{ $jadwal->mataPelajaran?->nama ?? '' }}</td>
                                             <td>{{ $jadwal->teacher?->nama_lengkap ?? '' }}</td>

@@ -81,18 +81,27 @@
                 @endforeach
             </tr>
 
-            {{-- Data Rows (Max 8 rows fixed or dynamic) --}}
-            @for($i = 1; $i <= 8; $i++)
+            {{-- Data Rows (12 rows by default) --}}
+            @for($i = 1; $i <= 12; $i++)
                 <tr>
                     @foreach($chunk as $day)
                         @php
                             $jadwal = $jadwals->where('hari', $day)->where('jam_ke', $i)->first();
+
+                            // Calculate default time
+                            $baseMinutes = 7 * 60; // 07:00
+                            $slotDuration = 35;
+                            $startMinutes = $baseMinutes + (($i - 1) * $slotDuration);
+                            $endMinutes = $startMinutes + $slotDuration;
+                            $displayMulai = sprintf('%02d:%02d', floor($startMinutes / 60), $startMinutes % 60);
+                            $displaySelesai = sprintf('%02d:%02d', floor($endMinutes / 60), $endMinutes % 60);
+
+                            $startTime = $jadwal ? substr($jadwal->jam_mulai, 0, 5) : $displayMulai;
+                            $endTime = $jadwal ? substr($jadwal->jam_selesai, 0, 5) : $displaySelesai;
                         @endphp
                         <td style="text-align: center; border: 1px solid #000000;">{{ $i }}</td>
                         <td style="text-align: center; border: 1px solid #000000;">
-                            @if($jadwal)
-                                {{ substr($jadwal->jam_mulai, 0, 5) }} - {{ substr($jadwal->jam_selesai, 0, 5) }}
-                            @endif
+                            {{ $startTime }} - {{ $endTime }}
                         </td>
                         <td style="border: 1px solid #000000;">{{ $jadwal->mataPelajaran?->nama ?? '' }}</td>
                         <td style="border: 1px solid #000000;">{{ $jadwal->teacher?->nama_lengkap ?? '' }}</td>
