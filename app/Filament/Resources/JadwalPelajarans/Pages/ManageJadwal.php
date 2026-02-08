@@ -480,7 +480,7 @@ class ManageJadwal extends Page implements HasForms
             'tahunAjaran' => $tahunAjaran,
             'semester' => $this->semester,
             'profile' => $profile,
-        ])->setPaper('a4', 'landscape');
+        ])->setPaper('a4', 'portrait');
 
         return response()->streamDownload(
             fn() => print ($pdf->output()),

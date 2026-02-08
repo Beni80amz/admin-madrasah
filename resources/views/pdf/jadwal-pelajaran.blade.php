@@ -96,8 +96,8 @@
 
         .day-column {
             display: table-cell;
-            width: 33.33%;
-            /* 3 columns */
+            width: 50%;
+            /* 2 columns for Portrait */
             vertical-align: top;
             padding-bottom: 10px;
         }
@@ -204,7 +204,7 @@
 
         @php
             $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            $chunks = array_chunk($days, 3);
+            $chunks = array_chunk($days, 2);
         @endphp
 
         <div class="grid-container">
