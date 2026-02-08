@@ -14,51 +14,51 @@
 
         body {
             font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 9px;
+            font-size: 8px;
             /* Smaller font for layout */
-            line-height: 1.3;
+            line-height: 1.2;
             color: #1f2937;
         }
 
         .container {
-            padding: 10px;
+            padding: 5px;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 10px;
-            padding-bottom: 5px;
+            margin-bottom: 5px;
+            padding-bottom: 2px;
             border-bottom: 2px solid #10b981;
         }
 
         .header h1 {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             color: #10b981;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
             text-transform: uppercase;
         }
 
         .header p {
-            font-size: 9px;
+            font-size: 8px;
             color: #4b5563;
         }
 
         .page-title {
             text-align: center;
-            font-size: 12px;
+            font-size: 10px;
             font-weight: bold;
             color: #10b981;
-            margin: 10px 0;
+            margin: 5px 0;
             text-transform: uppercase;
         }
 
         .info-box {
             background: #f0fdf4;
             border: 1px solid #10b981;
-            padding: 5px 10px;
+            padding: 3px 8px;
             /* Reduced padding */
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
 
         .info-box table {
@@ -68,12 +68,12 @@
         .info-box td {
             padding: 1px 0;
             /* Reduced padding */
-            font-size: 9px;
+            font-size: 8px;
             vertical-align: top;
         }
 
         .info-box td.label {
-            width: 80px;
+            width: 70px;
             font-weight: bold;
         }
 
@@ -86,7 +86,7 @@
             display: table;
             /* Simulate Flexbox using table for PDF/Dompdf */
             width: 100%;
-            border-spacing: 10px;
+            border-spacing: 5px;
             table-layout: fixed;
         }
 
@@ -96,19 +96,19 @@
 
         .day-column {
             display: table-cell;
-            width: 50%;
-            /* 2 columns for Portrait */
+            width: 33.33%;
+            /* 3 columns to save height */
             vertical-align: top;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
         }
 
         .day-header {
             background: #10b981;
             color: white;
-            padding: 4px;
+            padding: 2px;
             /* Reduced padding */
             font-weight: bold;
-            font-size: 10px;
+            font-size: 9px;
             text-align: center;
             border: 1px solid #059669;
             text-transform: uppercase;
@@ -117,7 +117,7 @@
         table.jadwal {
             width: 100%;
             border-collapse: collapse;
-            font-size: 8px;
+            font-size: 7px;
             /* Compact */
         }
 
@@ -125,7 +125,7 @@
         table.jadwal td {
             border: 1px solid #6b7280;
             /* Darker border for visibility */
-            padding: 3px;
+            padding: 2px;
             /* Reduced padding */
         }
 
@@ -146,7 +146,7 @@
         .footer {
             margin-top: 5px;
             text-align: right;
-            font-size: 8px;
+            font-size: 7px;
             color: #9ca3af;
             font-style: italic;
         }
@@ -176,7 +176,7 @@
                         <table style="width: 100%;">
                             <tr>
                                 <td class="label">Kelas/Rombel</td>
-                                <td class="value">: Kelas {{ $rombel->kelas?->nama ?? '' }} - {{ $rombel->nama ?? '' }}
+                                <td class="value">: {{ $rombel->kelas?->nama ?? '' }} - {{ $rombel->nama ?? '' }}
                                 </td>
                             </tr>
                             <tr>
@@ -204,7 +204,7 @@
 
         @php
             $days = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            $chunks = array_chunk($days, 2);
+            $chunks = array_chunk($days, 3);
         @endphp
 
         <div class="grid-container">
