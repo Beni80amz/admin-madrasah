@@ -31,7 +31,8 @@
                 <div>
                     <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Tahun Ajaran</p>
                     <p class="text-text-primary-light dark:text-text-primary-dark font-bold text-lg">
-                        {{ $tahunAjaran->nama ?? '-' }}</p>
+                        {{ $tahunAjaran->nama ?? '-' }}
+                    </p>
                 </div>
             </div>
             <div
@@ -54,7 +55,8 @@
                 <div>
                     <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Total Hari Efektif</p>
                     <p class="text-text-primary-light dark:text-text-primary-dark font-bold text-lg">
-                        {{ $totalHariEfektif }} Hari</p>
+                        {{ $totalHariEfektif }} Hari
+                    </p>
                 </div>
             </div>
         </div>
@@ -70,7 +72,8 @@
                     <h2 class="text-text-primary-light dark:text-text-primary-dark text-2xl font-bold">Semester Ganjil
                     </h2>
                     <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Juli - Desember
-                        {{ $tahunGanjil ?? date('Y') }}</p>
+                        {{ $tahunGanjil ?? date('Y') }}
+                    </p>
                 </div>
             </div>
 
@@ -94,9 +97,9 @@
                         <tbody class="divide-y divide-border-light dark:divide-border-dark">
                             @forelse($semesterGanjil as $item)
                                 @php
-                                    $dateDisplay = $item->tanggal_mulai->format('d M Y');
+                                    $dateDisplay = $item->tanggal_mulai->translatedFormat('d F Y');
                                     if ($item->tanggal_selesai && $item->tanggal_selesai != $item->tanggal_mulai) {
-                                        $dateDisplay = $item->tanggal_mulai->format('d M') . ' - ' . $item->tanggal_selesai->format('d M Y');
+                                        $dateDisplay = $item->tanggal_mulai->translatedFormat('d F') . ' - ' . $item->tanggal_selesai->translatedFormat('d F Y');
                                     }
                                     $type = match ($item->kategori) {
                                         'Hari Libur' => 'libur',
@@ -109,7 +112,8 @@
                                 <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                                     <td
                                         class="py-4 px-6 text-text-primary-light dark:text-text-primary-dark text-sm whitespace-nowrap">
-                                        {{ $dateDisplay }}</td>
+                                        {{ $dateDisplay }}
+                                    </td>
                                     <td class="py-4 px-6">
                                         <div class="flex items-center gap-3">
                                             @if($type === 'libur')
@@ -129,12 +133,12 @@
                                     </td>
                                     <td class="py-4 px-6">
                                         <span class="text-xs font-medium px-3 py-1 rounded-full
-                                                                        @if($type === 'libur') bg-red-500/10 text-red-400 border border-red-500/20
-                                                                        @elseif($type === 'ujian') bg-amber-500/10 text-amber-400 border border-amber-500/20
-                                                                        @elseif($type === 'raport_pts') bg-violet-500/10 text-violet-400 border border-violet-500/20
-                                                                        @elseif($type === 'raport_aas') bg-pink-500/10 text-pink-400 border border-pink-500/20
-                                                                        @else bg-primary/10 text-primary border border-primary/20
-                                                                        @endif">
+                                                                            @if($type === 'libur') bg-red-500/10 text-red-400 border border-red-500/20
+                                                                            @elseif($type === 'ujian') bg-amber-500/10 text-amber-400 border border-amber-500/20
+                                                                            @elseif($type === 'raport_pts') bg-violet-500/10 text-violet-400 border border-violet-500/20
+                                                                            @elseif($type === 'raport_aas') bg-pink-500/10 text-pink-400 border border-pink-500/20
+                                                                            @else bg-primary/10 text-primary border border-primary/20
+                                                                            @endif">
                                             {{ $item->keterangan ?? $item->kategori }}
                                         </span>
                                     </td>
@@ -161,7 +165,8 @@
                     <h2 class="text-text-primary-light dark:text-text-primary-dark text-2xl font-bold">Semester Genap
                     </h2>
                     <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Januari - Juni
-                        {{ $tahunGenap ?? (date('Y') + 1) }}</p>
+                        {{ $tahunGenap ?? (date('Y') + 1) }}
+                    </p>
                 </div>
             </div>
 
@@ -185,9 +190,9 @@
                         <tbody class="divide-y divide-border-light dark:divide-border-dark">
                             @forelse($semesterGenap as $item)
                                 @php
-                                    $dateDisplay = $item->tanggal_mulai->format('d M Y');
+                                    $dateDisplay = $item->tanggal_mulai->translatedFormat('d F Y');
                                     if ($item->tanggal_selesai && $item->tanggal_selesai != $item->tanggal_mulai) {
-                                        $dateDisplay = $item->tanggal_mulai->format('d M') . ' - ' . $item->tanggal_selesai->format('d M Y');
+                                        $dateDisplay = $item->tanggal_mulai->translatedFormat('d F') . ' - ' . $item->tanggal_selesai->translatedFormat('d F Y');
                                     }
                                     $type = match ($item->kategori) {
                                         'Hari Libur' => 'libur',
@@ -200,7 +205,8 @@
                                 <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                                     <td
                                         class="py-4 px-6 text-text-primary-light dark:text-text-primary-dark text-sm whitespace-nowrap">
-                                        {{ $dateDisplay }}</td>
+                                        {{ $dateDisplay }}
+                                    </td>
                                     <td class="py-4 px-6">
                                         <div class="flex items-center gap-3">
                                             @if($type === 'libur')
@@ -220,12 +226,12 @@
                                     </td>
                                     <td class="py-4 px-6">
                                         <span class="text-xs font-medium px-3 py-1 rounded-full
-                                                                    @if($type === 'libur') bg-red-500/10 text-red-400 border border-red-500/20
-                                                                    @elseif($type === 'ujian') bg-amber-500/10 text-amber-400 border border-amber-500/20
-                                                                    @elseif($type === 'raport_pts') bg-violet-500/10 text-violet-400 border border-violet-500/20
-                                                                    @elseif($type === 'raport_aas') bg-pink-500/10 text-pink-400 border border-pink-500/20
-                                                                    @else bg-primary/10 text-primary border border-primary/20
-                                                                    @endif">
+                                                                        @if($type === 'libur') bg-red-500/10 text-red-400 border border-red-500/20
+                                                                        @elseif($type === 'ujian') bg-amber-500/10 text-amber-400 border border-amber-500/20
+                                                                        @elseif($type === 'raport_pts') bg-violet-500/10 text-violet-400 border border-violet-500/20
+                                                                        @elseif($type === 'raport_aas') bg-pink-500/10 text-pink-400 border border-pink-500/20
+                                                                        @else bg-primary/10 text-primary border border-primary/20
+                                                                        @endif">
                                             {{ $item->keterangan ?? $item->kategori }}
                                         </span>
                                     </td>

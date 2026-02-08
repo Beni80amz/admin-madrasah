@@ -245,9 +245,9 @@
                 <tbody>
                     @forelse($semesterGanjil as $item)
                         @php
-                            $dateDisplay = $item->tanggal_mulai->format('d M Y');
+                            $dateDisplay = $item->tanggal_mulai->translatedFormat('d F Y');
                             if ($item->tanggal_selesai && $item->tanggal_selesai != $item->tanggal_mulai) {
-                                $dateDisplay = $item->tanggal_mulai->format('d M') . ' - ' . $item->tanggal_selesai->format('d M Y');
+                                $dateDisplay = $item->tanggal_mulai->translatedFormat('d F') . ' - ' . $item->tanggal_selesai->translatedFormat('d F Y');
                             }
                             $type = match ($item->kategori) {
                                 'Hari Libur' => 'libur',
@@ -290,9 +290,9 @@
                 <tbody>
                     @forelse($semesterGenap as $item)
                         @php
-                            $dateDisplay = $item->tanggal_mulai->format('d M Y');
+                            $dateDisplay = $item->tanggal_mulai->translatedFormat('d F Y');
                             if ($item->tanggal_selesai && $item->tanggal_selesai != $item->tanggal_mulai) {
-                                $dateDisplay = $item->tanggal_mulai->format('d M') . ' - ' . $item->tanggal_selesai->format('d M Y');
+                                $dateDisplay = $item->tanggal_mulai->translatedFormat('d F') . ' - ' . $item->tanggal_selesai->translatedFormat('d F Y');
                             }
                             $type = match ($item->kategori) {
                                 'Hari Libur' => 'libur',
@@ -345,7 +345,8 @@
             <table class="footer-table">
                 <tr>
                     <td class="footer-left">
-                        <p>Dokumen ini dicetak pada {{ now()->setTimezone('Asia/Jakarta')->format('d F Y H:i') }} WIB
+                        <p>Dokumen ini dicetak pada
+                            {{ now()->setTimezone('Asia/Jakarta')->translatedFormat('d F Y H:i') }} WIB
                         </p>
                         <p>{{ $siteProfile->nama_madrasah ?? 'Madrasah' }} - {{ $siteProfile->alamat ?? 'Alamat' }}</p>
                         <p style="margin-top: 5px; font-size: 7px; color: #999;">Scan QR code untuk verifikasi dokumen

@@ -17,10 +17,10 @@ class AcademicCalendarsTable
                 TextColumn::make('nama_kegiatan')
                     ->searchable(),
                 TextColumn::make('tanggal_mulai')
-                    ->date()
+                    ->formatStateUsing(fn($state) => \Carbon\Carbon::parse($state)->translatedFormat('d F Y'))
                     ->sortable(),
                 TextColumn::make('tanggal_selesai')
-                    ->date()
+                    ->formatStateUsing(fn($state) => \Carbon\Carbon::parse($state)->translatedFormat('d F Y'))
                     ->sortable(),
                 TextColumn::make('semester')
                     ->searchable(),

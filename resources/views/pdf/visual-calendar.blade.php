@@ -474,7 +474,8 @@
             <table class="footer-table">
                 <tr>
                     <td class="footer-left">
-                        <p>Dokumen ini dicetak pada {{ now()->setTimezone('Asia/Jakarta')->format('d F Y H:i') }} WIB
+                        <p>Dokumen ini dicetak pada
+                            {{ now()->setTimezone('Asia/Jakarta')->translatedFormat('d F Y H:i') }} WIB
                         </p>
                         <p>{{ $siteProfile->nama_madrasah ?? 'Madrasah' }} - {{ $siteProfile->alamat ?? 'Alamat' }}</p>
                         <p style="margin-top: 5px; font-size: 6px; color: #999;">Scan QR code untuk verifikasi dokumen
