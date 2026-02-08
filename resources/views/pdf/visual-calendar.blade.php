@@ -336,7 +336,7 @@
                                     <th>Selasa</th>
                                     <th>Rabu</th>
                                     <th>Kamis</th>
-                                    <th>Jum'a</th>
+                                    <th>Jum'at</th>
                                     <th>Sabtu</th>
                                 </tr>
                             </thead>
