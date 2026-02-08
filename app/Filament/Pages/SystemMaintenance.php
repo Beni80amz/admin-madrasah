@@ -1105,6 +1105,101 @@ class SystemMaintenance extends Page
     /**
      * Check if app is in maintenance mode
      */
+    /**
+     * Switch Git remote to SSH
+     */
+    public function switchRemoteToSSH(): void
+    {
+        $this->commandOutput = "Switching remote to SSH...\n";
+        try {
+            $process = new SymfonyProcess(['git', 'remote', 'set-url', 'origin', 'git@github.com:Beni80amz/admin-madrasah.git']);
+            $process->setWorkingDirectory(base_path());
+            $process->run();
+
+            if ($process->isSuccessful()) {
+                $this->commandOutput .= "✓ Remote switched to SSH: git@github.com:Beni80amz/admin-madrasah.git\n";
+                $this->loadVersionInfo(); // Refresh info
+                Notification::make()
+                    ->title('Remote Switched')
+                    ->body('Git remote set to SSH.')
+                    ->success()
+                    ->send();
+            } else {
+                $this->commandOutput .= "✗ Failed: " . $process->getErrorOutput();
+            }
+        } catch (\Exception $e) {
+            $this->commandOutput .= "Exception: " . $e->getMessage();
+        }
+    }
+
+    /**
+     * Switch Git remote to HTTPS
+     */
+    public function switchRemoteToHTTPS(): void
+    {
+        $this->commandOutput = "Switching remote to HTTPS...\n";
+        try {
+            $process = new SymfonyProcess(['git', 'remote', 'set-url', 'origin', 'https://github.com/Beni80amz/admin-madrasah.git']);
+            $process->setWorkingDirectory(base_path());
+            $process->run();
+
+            if ($process->isSuccessful()) {
+                $this->commandOutput .= "✓ Remote switched to HTTPS: https://github.com/Beni80amz/admin-madrasah.git\n";
+                $this->loadVersionInfo(); // Refresh info
+                Notification::make()
+                    ->title('Remote Switched')
+                    ->body('Git remote set to HTTPS.')
+                    ->success()
+                    ->send();
+            } else {
+                $this->commandOutput .= "✗ Failed: " . $process->getErrorOutput();
+            }
+        } catch (\Exception $e) {
+            $this->commandOutput .= "Exception: " . $e->getMessage();
+        }
+    }
+
+    /**
+     * Test Git Connection
+     */
+    public function testGitConnection(): void
+    {
+        $this->commandOutput = "Testing Git connection to GitHub...\n";
+        try {
+            $homeDir = $this->getHomeDirectory();
+
+            // Try DNS resolve first
+            $this->commandOutput .= "1. Checking DNS for github.com...\n";
+            $ip = gethostbyname('github.com');
+            if ($ip === 'github.com') {
+                $this->commandOutput .= "✗ FAILED: DNS cannot resolve github.com. This is likely the root cause.\n";
+            } else {
+                $this->commandOutput .= "✓ DNS Resolved: github.com -> {$ip}\n";
+            }
+
+            // Try SSH -T if it's SSH or just git ls-remote if HTTPS
+            $this->commandOutput .= "\n2. Testing reachability (git ls-remote)...\n";
+            $process = new SymfonyProcess(['git', 'ls-remote', '-h', 'origin']);
+            $process->setWorkingDirectory(base_path());
+            $process->setEnv([
+                'HOME' => $homeDir,
+                'GIT_SSH_COMMAND' => 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no',
+            ]);
+            $process->setTimeout(30);
+            $process->run();
+
+            if ($process->isSuccessful()) {
+                $this->commandOutput .= "✓ SUCCESS: GitHub is reachable!\n";
+                $this->commandOutput .= $process->getOutput();
+            } else {
+                $this->commandOutput .= "✗ FAILED: " . $process->getErrorOutput() . "\n";
+                $this->commandOutput .= "\nTIP: Jika DNS gagal, hubungi support hosting atau coba gunakan SSH and Deploy Key.\n";
+            }
+        } catch (\Exception $e) {
+            $this->commandOutput .= "Exception: " . $e->getMessage();
+        }
+    }
+
     public function isInMaintenanceMode(): bool
     {
         return app()->isDownForMaintenance();

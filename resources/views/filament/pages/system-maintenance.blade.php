@@ -196,6 +196,31 @@
                 </div>
             </x-filament::section>
 
+            {{-- Git Connectivity --}}
+            <x-filament::section compact>
+                <x-slot name="heading">
+                    <span style="font-size: 0.875rem;">Git Connectivity</span>
+                </x-slot>
+
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <x-filament::button wire:click="testGitConnection" size="sm" color="info" style="width: 100%;">
+                        🔍 Test Koneksi
+                    </x-filament::button>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+                        <x-filament::button wire:click="switchRemoteToSSH" size="xs" color="gray"
+                            title="Set remote to git@github.com:..."
+                            onclick="return confirm('PENTING: Gunakan ini jika ingin menggunakan SSH/Deploy Key.') || event.stopImmediatePropagation()">
+                            🔗 Mode SSH
+                        </x-filament::button>
+                        <x-filament::button wire:click="switchRemoteToHTTPS" size="xs" color="gray"
+                            title="Set remote to https://github.com/...">
+                            🌐 Mode HTTPS
+                        </x-filament::button>
+                    </div>
+                </div>
+            </x-filament::section>
+
             {{-- Update Manual --}}
             <x-filament::section compact>
                 <x-slot name="heading">
