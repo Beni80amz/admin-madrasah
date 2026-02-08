@@ -6,6 +6,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Jadwal Pelajaran - {{ $rombel->kelas?->nama ?? '' }} {{ $rombel->nama ?? '' }}</title>
     <style>
+        @page {
+            margin: 30px;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -21,7 +25,7 @@
         }
 
         .container {
-            padding: 5px;
+            padding: 10px;
         }
 
         .header {
@@ -127,6 +131,7 @@
             /* Darker border for visibility */
             padding: 2px;
             /* Reduced padding */
+            word-wrap: break-word;
         }
 
         table.jadwal thead th {
