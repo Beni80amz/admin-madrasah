@@ -258,8 +258,8 @@ class ManageJadwal extends Page implements HasForms
         $mapelId = $data['mata_pelajaran_id'] ?? null;
         $teacherId = $data['teacher_id'] ?? null;
 
-        if (!$mapelId || !$teacherId) {
-            // If both empty, delete existing
+        if (!$mapelId) {
+            // If mapel empty, delete existing
             if ($data['id']) {
                 JadwalPelajaran::destroy($data['id']);
                 $this->jadwalData[$jamKe]['id'] = null;
@@ -267,23 +267,45 @@ class ManageJadwal extends Page implements HasForms
             return;
         }
 
-        // Check teacher conflict
-        $conflict = JadwalPelajaran::getTeacherConflict(
-            $teacherId,
-            $this->tahunAjaranId,
-            $this->semester,
-            $this->selectedHari,
-            $jamKe,
-            $data['id']
-        );
+        // Special subjects that can have null teacher
+        $specialSubjects = ['Upacara Bendera', 'Shalat Dluha', 'Istirahat', 'Soliskan'];
+        $selectedMapel = MataPelajaran::find($mapelId);
+        $isSpecialSubject = $selectedMapel && in_array($selectedMapel->nama, $specialSubjects);
 
-        if ($conflict) {
-            $rombelName = $conflict->rombel?->kelas?->nama . ' - ' . $conflict->rombel?->nama;
-            $this->dispatch('swal:error', [
-                'title' => 'Jadwal Bentrok!',
-                'text' => "Guru sudah mengajar di {$rombelName} pada waktu yang sama.",
-            ]);
+        if (!$isSpecialSubject && !$teacherId) {
+            // If not special and no teacher, do nothing or delete
+            if ($data['id']) {
+                JadwalPelajaran::destroy($data['id']);
+                $this->jadwalData[$jamKe]['id'] = null;
+            }
             return;
+        }
+
+        // Check teacher conflict only if teacher is assigned
+        if ($teacherId) {
+            $conflict = JadwalPelajaran::getTeacherConflict(
+                $teacherId,
+                $this->tahunAjaranId,
+                $this->semester,
+                $this->selectedHari,
+                $jamKe,
+                $data['id']
+            );
+
+            if ($conflict) {
+                $teacher = Teacher::find($teacherId);
+                $teacherName = $teacher?->nama_lengkap ?? 'Guru';
+                $currentRombel = Rombel::with('kelas')->find($this->rombelId);
+                $currentRombelName = $currentRombel?->kelas?->nama . ' - ' . $currentRombel?->nama;
+                $conflictRombelName = $conflict->rombel?->kelas?->nama . ' - ' . $conflict->rombel?->nama;
+                $jamMulai = $data['jam_mulai'] ?? '00:00';
+
+                $this->dispatch('swal:error', [
+                    'title' => 'Jadwal Bentrok!',
+                    'text' => "{$teacherName} terjadi Jam Bentrok antara Rombel {$currentRombelName} dan {$conflictRombelName} di Jam {$jamMulai}",
+                ]);
+                return;
+            }
         }
 
         // Get time from manual input
