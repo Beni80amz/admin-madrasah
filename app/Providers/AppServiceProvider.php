@@ -30,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Gate::policy(\App\Models\LeaveRequest::class, \App\Policies\LeaveRequestPolicy::class);
 
         \App\Models\ProfileMadrasah::observe(\App\Observers\ProfileMadrasahObserver::class);
+        \App\Models\AcademicCalendar::observe(\App\Observers\AcademicCalendarObserver::class);
     }
 }

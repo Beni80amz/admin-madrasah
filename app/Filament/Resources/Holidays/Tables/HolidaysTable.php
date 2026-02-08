@@ -27,6 +27,12 @@ class HolidaysTable
                     ->date('d M Y')
                     ->sortable()
                     ->placeholder('-'),
+                TextColumn::make('academic_calendar_id')
+                    ->label('Sumber')
+                    ->badge()
+                    ->formatStateUsing(fn($state) => $state ? 'Kalender Akademik' : 'Manual')
+                    ->color(fn($state) => $state ? 'success' : 'info')
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -23,6 +23,11 @@ class HolidayForm
                     ->label('Tanggal Akhir')
                     ->afterOrEqual('start_date')
                     ->helperText('Kosongkan jika hanya 1 hari'),
+                TextInput::make('academic_calendar_id')
+                    ->label('ID Kalender Akademik')
+                    ->helperText('ID referensi dari Kalender Akademik (Otomatis)')
+                    ->visible(fn($state) => (bool) $state)
+                    ->readOnly(),
                 Textarea::make('description')
                     ->label('Keterangan')
                     ->columnSpanFull(),
