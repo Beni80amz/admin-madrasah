@@ -19,11 +19,11 @@
                     </p>
                 </div>
                 @if($totalAlumni > 0)
-                    <a href="{{ route('akademik.data-alumni.download') }}"
+                    <button wire:click="downloadPdf"
                         class="flex items-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full transition-all self-start md:self-center">
                         <span class="material-symbols-outlined text-xl">print</span>
                         Cetak
-                    </a>
+                    </button>
                 @endif
             </div>
         </div>
@@ -199,5 +199,72 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- Export Password Modal -->
+    <div 
+        x-data="{ show: @entangle('showExportModal') }"
+        x-show="show"
+        x-cloak
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background-dark/80 backdrop-blur-sm"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+    >
+        <div 
+            class="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-3xl w-full max-w-md overflow-hidden shadow-2xl"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            @click.away="show = false"
+        >
+            <div class="p-8">
+                <div class="flex flex-col items-center text-center gap-6">
+                    <!-- Icon -->
+                    <div class="size-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary text-4xl">lock</span>
+                    </div>
+
+                    <!-- Text -->
+                    <div class="flex flex-col gap-2">
+                        <h3 class="text-text-primary-light dark:text-text-primary-dark text-xl font-bold">Proteksi Ekspor Data</h3>
+                        <p class="text-text-secondary-light dark:text-text-secondary-dark text-sm leading-relaxed">
+                            Silahkan masukan Password pada kotak dibawah untuk mendownload Data yang Anda Inginkan atau Silahkan Hubungi Admin Madrasah. Terima Kasih!
+                        </p>
+                    </div>
+
+                    <!-- Input -->
+                    <div class="w-full">
+                        <input 
+                            type="password" 
+                            wire:model="exportPasswordInput"
+                            wire:keydown.enter="confirmExport"
+                            placeholder="Masukan Password..."
+                            class="w-full px-5 py-4 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark rounded-2xl text-text-primary-light dark:text-text-primary-dark placeholder-gray-400 dark:placeholder-gray-500 focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none transition-all text-center text-lg tracking-widest"
+                            autofocus
+                        >
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex flex-col sm:flex-row gap-3 w-full">
+                        <button 
+                            @click="show = false"
+                            class="flex-1 px-6 py-4 bg-gray-100 dark:bg-white/5 text-text-primary-light dark:text-text-primary-dark font-bold rounded-2xl hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                        >
+                            Batal
+                        </button>
+                        <button 
+                            wire:click="confirmExport"
+                            class="flex-1 px-6 py-4 bg-primary text-white font-bold rounded-2xl hover:brightness-110 transition-all shadow-lg shadow-primary/25"
+                        >
+                            Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

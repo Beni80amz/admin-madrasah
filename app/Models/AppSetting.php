@@ -206,4 +206,20 @@ class AppSetting extends Model
     {
         static::setValue('ppdb_persyaratan', json_encode($persyaratan));
     }
+
+    /**
+     * Get Export Password
+     */
+    public static function getExportPassword(): ?string
+    {
+        return static::getValue('export_password');
+    }
+
+    /**
+     * Set Export Password
+     */
+    public static function setExportPassword(?string $password): void
+    {
+        static::setValue('export_password', $password);
+    }
 }

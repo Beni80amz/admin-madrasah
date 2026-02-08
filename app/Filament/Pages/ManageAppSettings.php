@@ -65,6 +65,7 @@ class ManageAppSettings extends Page implements HasForms
             'ppdb_biaya' => $ppdbInfo['biaya'],
             'ppdb_alur' => $ppdbInfo['alur'],
             'ppdb_persyaratan' => $ppdbInfo['persyaratan'],
+            'export_password' => AppSetting::getExportPassword(),
         ]);
     }
 
@@ -224,6 +225,19 @@ class ManageAppSettings extends Page implements HasForms
                             ->itemLabel(fn(array $state): ?string => $state['item'] ?? null)
                             ->addActionLabel('Tambah Persyaratan'),
                     ]),
+
+                Section::make('Pengamanan Data')
+                    ->description('Pengaturan keamanan untuk ekspor data (Excel & PDF)')
+                    ->icon('heroicon-o-lock-closed')
+                    ->schema([
+                        TextInput::make('export_password')
+                            ->label('Password Ekspor Data')
+                            ->helperText('Jika diisi, user harus memasukan password ini sebelum mendownload data Siswa, Guru, atau Alumni.')
+                            ->password()
+                            ->dehydrated(true)
+                            ->revealable()
+                            ->placeholder('Kosongkan jika tidak ingin dipassword'),
+                    ]),
             ])
             ->statePath('data');
     }
@@ -255,6 +269,9 @@ class ManageAppSettings extends Page implements HasForms
 
         // Save full structure for requirements
         AppSetting::setPpdbPersyaratan($data['ppdb_persyaratan']);
+
+        // Save export password
+        AppSetting::setExportPassword($data['export_password']);
 
         Notification::make()
             ->title('Pengaturan berhasil disimpan!')

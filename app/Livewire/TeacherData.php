@@ -12,11 +12,12 @@ use Livewire\WithPagination;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\ProfileMadrasah;
 use App\Models\TahunAjaran;
+use App\Traits\HasExportPassword;
 
 #[Layout('components.layouts.public')]
 class TeacherData extends Component
 {
-    use WithPagination;
+    use WithPagination, HasExportPassword;
 
     #[Url]
     public string $search = '';
@@ -74,6 +75,11 @@ class TeacherData extends Component
     }
 
     public function downloadPdf()
+    {
+        return $this->openExportModal('pdf');
+    }
+
+    protected function executeExport()
     {
         $teachers = $this->teachersQuery->get();
         $profile = ProfileMadrasah::first();
