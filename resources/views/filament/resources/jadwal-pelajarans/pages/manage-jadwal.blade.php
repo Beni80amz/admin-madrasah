@@ -279,19 +279,6 @@
                     </thead>
                     <tbody>
                         @for($jamKe = 1; $jamKe <= $totalJam; $jamKe++)
-                            @php
-                                // Calculate time for this jam
-                                $baseMinutes = 7 * 60; // 07:00
-                                $slotDuration = 35;
-                                $breakAfter4 = 15;
-                                $startMinutes = $baseMinutes + (($jamKe - 1) * $slotDuration);
-                                if ($jamKe > 4) {
-                                    $startMinutes += $breakAfter4;
-                                }
-                                $endMinutes = $startMinutes + $slotDuration;
-                                $jamMulai = sprintf('%02d:%02d', floor($startMinutes / 60), $startMinutes % 60);
-                                $jamSelesai = sprintf('%02d:%02d', floor($endMinutes / 60), $endMinutes % 60);
-                            @endphp
                             <tr style="border-top: 1px solid rgba(156, 163, 175, 0.2);">
                                 <td style="padding: 12px 16px; text-align: center;">
                                     <span class="jam-badge">{{ $jamKe }}</span>

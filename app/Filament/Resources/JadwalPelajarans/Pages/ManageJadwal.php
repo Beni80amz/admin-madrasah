@@ -36,7 +36,7 @@ class ManageJadwal extends Page implements HasForms
     public ?string $semester = 'ganjil';
     public ?int $rombelId = null;
     public string $selectedHari = 'Senin';
-    public int $totalJam = 8;
+    public int $totalJam = 12;
 
     public array $jadwalData = [];
 
