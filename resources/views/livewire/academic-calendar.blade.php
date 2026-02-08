@@ -97,7 +97,7 @@
                         <tbody class="divide-y divide-border-light dark:divide-border-dark">
                             @forelse($semesterGanjil as $item)
                                 @php
-                                    $dateDisplay = $item->tanggal_mulai->translatedFormat('d F Y');
+                                    $dateDisplay = $item->tanggal_mulai->locale('id')->translatedFormat('d F Y');
                                     if ($item->tanggal_selesai && $item->tanggal_selesai != $item->tanggal_mulai) {
                                         $dateDisplay = $item->tanggal_mulai->translatedFormat('d F') . ' - ' . $item->tanggal_selesai->translatedFormat('d F Y');
                                     }
@@ -133,12 +133,12 @@
                                     </td>
                                     <td class="py-4 px-6">
                                         <span class="text-xs font-medium px-3 py-1 rounded-full
-                                                                            @if($type === 'libur') bg-red-500/10 text-red-400 border border-red-500/20
-                                                                            @elseif($type === 'ujian') bg-amber-500/10 text-amber-400 border border-amber-500/20
-                                                                            @elseif($type === 'raport_pts') bg-violet-500/10 text-violet-400 border border-violet-500/20
-                                                                            @elseif($type === 'raport_aas') bg-pink-500/10 text-pink-400 border border-pink-500/20
-                                                                            @else bg-primary/10 text-primary border border-primary/20
-                                                                            @endif">
+                                                                                @if($type === 'libur') bg-red-500/10 text-red-400 border border-red-500/20
+                                                                                @elseif($type === 'ujian') bg-amber-500/10 text-amber-400 border border-amber-500/20
+                                                                                @elseif($type === 'raport_pts') bg-violet-500/10 text-violet-400 border border-violet-500/20
+                                                                                @elseif($type === 'raport_aas') bg-pink-500/10 text-pink-400 border border-pink-500/20
+                                                                                @else bg-primary/10 text-primary border border-primary/20
+                                                                                @endif">
                                             {{ $item->keterangan ?? $item->kategori }}
                                         </span>
                                     </td>
@@ -190,7 +190,7 @@
                         <tbody class="divide-y divide-border-light dark:divide-border-dark">
                             @forelse($semesterGenap as $item)
                                 @php
-                                    $dateDisplay = $item->tanggal_mulai->translatedFormat('d F Y');
+                                    $dateDisplay = $item->tanggal_mulai->locale('id')->translatedFormat('d F Y');
                                     if ($item->tanggal_selesai && $item->tanggal_selesai != $item->tanggal_mulai) {
                                         $dateDisplay = $item->tanggal_mulai->translatedFormat('d F') . ' - ' . $item->tanggal_selesai->translatedFormat('d F Y');
                                     }
@@ -226,12 +226,12 @@
                                     </td>
                                     <td class="py-4 px-6">
                                         <span class="text-xs font-medium px-3 py-1 rounded-full
-                                                                        @if($type === 'libur') bg-red-500/10 text-red-400 border border-red-500/20
-                                                                        @elseif($type === 'ujian') bg-amber-500/10 text-amber-400 border border-amber-500/20
-                                                                        @elseif($type === 'raport_pts') bg-violet-500/10 text-violet-400 border border-violet-500/20
-                                                                        @elseif($type === 'raport_aas') bg-pink-500/10 text-pink-400 border border-pink-500/20
-                                                                        @else bg-primary/10 text-primary border border-primary/20
-                                                                        @endif">
+                                                                            @if($type === 'libur') bg-red-500/10 text-red-400 border border-red-500/20
+                                                                            @elseif($type === 'ujian') bg-amber-500/10 text-amber-400 border border-amber-500/20
+                                                                            @elseif($type === 'raport_pts') bg-violet-500/10 text-violet-400 border border-violet-500/20
+                                                                            @elseif($type === 'raport_aas') bg-pink-500/10 text-pink-400 border border-pink-500/20
+                                                                            @else bg-primary/10 text-primary border border-primary/20
+                                                                            @endif">
                                             {{ $item->keterangan ?? $item->kategori }}
                                         </span>
                                     </td>

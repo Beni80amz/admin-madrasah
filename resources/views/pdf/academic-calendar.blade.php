@@ -245,9 +245,9 @@
                 <tbody>
                     @forelse($semesterGanjil as $item)
                         @php
-                            $dateDisplay = $item->tanggal_mulai->translatedFormat('d F Y');
+                            $dateDisplay = $item->tanggal_mulai->locale('id')->translatedFormat('d F Y');
                             if ($item->tanggal_selesai && $item->tanggal_selesai != $item->tanggal_mulai) {
-                                $dateDisplay = $item->tanggal_mulai->translatedFormat('d F') . ' - ' . $item->tanggal_selesai->translatedFormat('d F Y');
+                                $dateDisplay = $item->tanggal_mulai->locale('id')->translatedFormat('d F') . ' - ' . $item->tanggal_selesai->locale('id')->translatedFormat('d F Y');
                             }
                             $type = match ($item->kategori) {
                                 'Hari Libur' => 'libur',
@@ -290,9 +290,9 @@
                 <tbody>
                     @forelse($semesterGenap as $item)
                         @php
-                            $dateDisplay = $item->tanggal_mulai->translatedFormat('d F Y');
+                            $dateDisplay = $item->tanggal_mulai->locale('id')->translatedFormat('d F Y');
                             if ($item->tanggal_selesai && $item->tanggal_selesai != $item->tanggal_mulai) {
-                                $dateDisplay = $item->tanggal_mulai->translatedFormat('d F') . ' - ' . $item->tanggal_selesai->translatedFormat('d F Y');
+                                $dateDisplay = $item->tanggal_mulai->locale('id')->translatedFormat('d F') . ' - ' . $item->tanggal_selesai->locale('id')->translatedFormat('d F Y');
                             }
                             $type = match ($item->kategori) {
                                 'Hari Libur' => 'libur',
