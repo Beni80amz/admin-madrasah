@@ -58,13 +58,9 @@ class ManageJadwal extends Page implements HasForms
         $jamKe = $this->totalJam;
 
         // Calculate default time for new jam
-        $baseMinutes = 7 * 60;
+        $baseMinutes = 7 * 60; // 07:00
         $slotDuration = 35;
-        $breakAfter4 = 15;
         $startMinutes = $baseMinutes + (($jamKe - 1) * $slotDuration);
-        if ($jamKe > 4) {
-            $startMinutes += $breakAfter4;
-        }
         $endMinutes = $startMinutes + $slotDuration;
 
         $this->jadwalData[$this->totalJam] = [
@@ -165,11 +161,7 @@ class ManageJadwal extends Page implements HasForms
         $getDefaultTime = function ($jamKe) {
             $baseMinutes = 7 * 60; // 07:00
             $slotDuration = 35;
-            $breakAfter4 = 15;
             $startMinutes = $baseMinutes + (($jamKe - 1) * $slotDuration);
-            if ($jamKe > 4) {
-                $startMinutes += $breakAfter4;
-            }
             $endMinutes = $startMinutes + $slotDuration;
             return [
                 sprintf('%02d:%02d', floor($startMinutes / 60), $startMinutes % 60),
@@ -207,9 +199,20 @@ class ManageJadwal extends Page implements HasForms
         for ($i = 1; $i <= $this->totalJam; $i++) {
             $jadwal = $jadwals->get($i);
             $defaultTime = $getDefaultTime($i);
+
+            $mapelId = $jadwal?->mata_pelajaran_id;
+
+            // Auto-fill Monday Jam 1 with Upacara Bendera (ID 46) if empty
+            if ($this->selectedHari === 'Senin' && $i === 1 && !$mapelId) {
+                $upacara = MataPelajaran::where('nama', 'Upacara Bendera')->first();
+                if ($upacara) {
+                    $mapelId = $upacara->id;
+                }
+            }
+
             $this->jadwalData[$i] = [
                 'id' => $jadwal?->id,
-                'mata_pelajaran_id' => $jadwal?->mata_pelajaran_id,
+                'mata_pelajaran_id' => $mapelId,
                 'teacher_id' => $jadwal?->teacher_id,
                 'jam_mulai' => $jadwal?->jam_mulai ? substr($jadwal->jam_mulai, 0, 5) : $defaultTime[0],
                 'jam_selesai' => $jadwal?->jam_selesai ? substr($jadwal->jam_selesai, 0, 5) : $defaultTime[1],
