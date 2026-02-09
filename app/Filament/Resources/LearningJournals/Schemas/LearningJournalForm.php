@@ -18,22 +18,24 @@ class LearningJournalForm
 {
     public static function configure(Schema $schema): Schema
     {
+        Log::info('Configuring LearningJournalForm - Version 2xl');
+
         return $schema
             ->schema([
-                // Responsive Grid: 1 col on mobile, 3 cols ONLY on Large screens
-                Grid::make(['default' => 1, 'lg' => 3])
+                // Responsive Grid: 1 col by default, 3 cols ONLY on 2XL screens (>= 1536px)
+                Grid::make(['default' => 1, '2xl' => 3])
                     ->schema([
-                        // -- LEFT: Main Content (Span 2 on Large)
+                        // -- LEFT: Main Content (Full width until 2xl, then Span 2)
                         Group::make()
-                            ->columnSpan(['lg' => 2])
+                            ->columnSpan(['2xl' => 2])
                             ->schema([
                                 // 1. Data Administrasi
                                 Section::make('Data Administrasi')
                                     ->description('Informasi dasar terkait pelaksanaan pembelajaran.')
                                     ->icon('heroicon-o-clipboard-document-list')
                                     ->schema([
-                                        // Inner Grid: 1 col on mobile, 2 cols on Medium+
-                                        Grid::make(['default' => 1, 'md' => 2])
+                                        // Inner Grid: 1 col default, 2 cols ONLY on 2XL screens
+                                        Grid::make(['default' => 1, '2xl' => 2])
                                             ->schema([
                                                 Select::make('user_id')
                                                     ->label('Guru Pengampu')
@@ -107,8 +109,8 @@ class LearningJournalForm
                                     ->icon('heroicon-o-users')
                                     ->collapsible()
                                     ->schema([
-                                        // Inner Grid for Absensi Inputs: 1 col mobile, 3 cols Medium+
-                                        Grid::make(['default' => 1, 'md' => 3])
+                                        // 3 columns for S/I/A because they are just numbers
+                                        Grid::make(['default' => 3])
                                             ->schema([
                                                 TextInput::make('absensi_s')
                                                     ->label('Sakit (S)')
@@ -161,7 +163,7 @@ class LearningJournalForm
                                     ->collapsible()
                                     ->collapsed()
                                     ->schema([
-                                        Grid::make(1) // Keep reflection stacking for better writing space
+                                        Grid::make(1)
                                             ->schema([
                                                 Textarea::make('hambatan')
                                                     ->label('Hambatan / Catatan Khusus')
@@ -175,9 +177,9 @@ class LearningJournalForm
                                     ]),
                             ]),
 
-                        // -- RIGHT: Sidebar (Span 1 on Large)
+                        // -- RIGHT: Sidebar (Full width until 2xl, then Span 1)
                         Group::make()
-                            ->columnSpan(['lg' => 1])
+                            ->columnSpan(['2xl' => 1])
                             ->schema([
                                 Section::make('Petunjuk Pengisian')
                                     ->icon('heroicon-o-information-circle')
@@ -220,8 +222,6 @@ class LearningJournalForm
 
             $tingkat = self::romanToArabic($rombel->kelas?->tingkat ?? '');
             $kelasString = $tingkat . '-' . ($rombel->nama ?? '');
-
-            Log::info("Searching students for class: " . $kelasString);
 
             return \App\Models\Student::where('kelas', $kelasString)
                 ->where('is_active', true)
