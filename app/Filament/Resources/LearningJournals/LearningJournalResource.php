@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\LearningJournals;
 
-use App\Filament\Resources\LearningJournals\Pages;
+use App\Filament\Resources\LearningJournals\Pages\CreateLearningJournal;
+use App\Filament\Resources\LearningJournals\Pages\EditLearningJournal;
+use App\Filament\Resources\LearningJournals\Pages\ListLearningJournals;
 use App\Filament\Resources\LearningJournals\Schemas\LearningJournalForm;
 use App\Filament\Resources\LearningJournals\Tables\LearningJournalTable;
 use App\Models\LearningJournal;
@@ -61,9 +63,9 @@ class LearningJournalResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLearningJournals::route('/'),
-            'create' => Pages\CreateLearningJournal::route('/create'),
-            'edit' => Pages\EditLearningJournal::route('/{record}/edit'),
+            'index' => ListLearningJournals::route('/'),
+            'create' => CreateLearningJournal::route('/create'),
+            'edit' => EditLearningJournal::route('/{record}/edit'),
         ];
     }
 }
