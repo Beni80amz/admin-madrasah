@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-surface-light dark:bg-background-dark">
     <!-- Hero Section -->
-    <section class="relative pt-32 pb-20 overflow-hidden">
+    <section class="relative pt-32 pb-24 overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent"></div>
         <div class="layout-container relative z-10 px-5 md:px-10 lg:px-40">
             <div class="max-w-3xl">
@@ -22,10 +22,10 @@
     </section>
 
     <!-- Content Section -->
-    <section class="pb-32 relative">
+    <section class="pb-40 relative">
         <div class="layout-container px-5 md:px-10 lg:px-40">
             <!-- Category Filter Tabs -->
-            <div class="flex flex-wrap items-center justify-center gap-3 mb-16 animate-fade-in-up"
+            <div class="flex flex-wrap items-center justify-center gap-3 mb-20 animate-fade-in-up"
                 style="animation-delay: 300ms">
                 @foreach($categories as $category)
                     <button wire:click="setCategory('{{ $category }}')"
