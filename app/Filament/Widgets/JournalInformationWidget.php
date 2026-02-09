@@ -12,6 +12,6 @@ class JournalInformationWidget extends Widget
 
     public static function canView(): bool
     {
-        return false;
+        return !request()->routeIs('filament.admin.pages.dashboard');
     }
 }
