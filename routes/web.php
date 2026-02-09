@@ -10,6 +10,7 @@ Route::get('/galeri', App\Livewire\Gallery::class)->name('gallery');
 Route::get('/profil', App\Livewire\Profile::class)->name('profile');
 Route::get('/berita', App\Livewire\News::class)->name('news');
 Route::get('/berita/{slug}', App\Livewire\NewsShow::class)->name('news.show');
+Route::get('/unduhan', App\Livewire\Download::class)->name('download');
 
 // Akademik
 Route::get('/akademik/kurikulum', App\Livewire\Curriculum::class)->name('akademik.kurikulum');

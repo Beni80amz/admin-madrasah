@@ -104,6 +104,12 @@
                     <span
                         class="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 {{ request()->routeIs('gallery') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
                 </a>
+                <a class="relative text-sm font-medium transition-colors group py-2 {{ request()->routeIs('download') ? 'text-primary dark:text-primary-light font-bold' : 'text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white' }}"
+                    href="{{ route('download') }}" wire:navigate>
+                    Unduhan
+                    <span
+                        class="absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 {{ request()->routeIs('download') ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
+                </a>
                 <a class="relative text-sm font-medium transition-colors group py-2 {{ request()->routeIs('contact') ? 'text-primary dark:text-primary-light font-bold' : 'text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white' }}"
                     href="{{ route('contact') }}" wire:navigate>
                     Kontak
@@ -229,6 +235,8 @@
                     class="text-base font-semibold leading-7 text-text-primary-light dark:text-white hover:text-primary transition-colors border-b border-border-light dark:border-white/5 pb-2">Berita</a>
                 <a href="{{ route('gallery') }}" wire:navigate
                     class="text-base font-semibold leading-7 text-text-primary-light dark:text-white hover:text-primary transition-colors border-b border-border-light dark:border-white/5 pb-2">Galeri</a>
+                <a href="{{ route('download') }}" wire:navigate
+                    class="text-base font-semibold leading-7 text-text-primary-light dark:text-white hover:text-primary transition-colors border-b border-border-light dark:border-white/5 pb-2">Unduhan</a>
                 <a href="{{ route('contact') }}" wire:navigate
                     class="text-base font-semibold leading-7 text-text-primary-light dark:text-white hover:text-primary transition-colors border-b border-border-light dark:border-white/5 pb-2">Kontak</a>
             </div>
