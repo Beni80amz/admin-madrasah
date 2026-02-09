@@ -103,7 +103,7 @@
 
             <!-- Help Info -->
             <div class="rounded-[40px] bg-white dark:bg-surface-dark/30 border border-border-light dark:border-border-dark relative overflow-hidden text-center max-w-4xl mx-auto shadow-sm animate-fade-in-up"
-                style="margin-top: 100px !important; padding: 40px !important;">
+                style="margin-top: 70px !important; padding: 40px !important;">
                 <div class="relative z-10">
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Butuh Dokumen Lain?</h3>
                     <p class="text-gray-600 dark:text-gray-400 mb-0">
