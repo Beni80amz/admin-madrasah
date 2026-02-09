@@ -4,10 +4,12 @@ namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
+use UnitEnum;
+use BackedEnum;
 
 class FormUnduhan extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-arrow-down';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-arrow-down';
 
     protected static ?string $navigationLabel = 'Form Unduhan';
 
@@ -15,7 +17,7 @@ class FormUnduhan extends Page
 
     protected static ?string $slug = 'form-unduhan';
 
-    protected static ?string $navigationGroup = 'Setting';
+    protected static UnitEnum|string|null $navigationGroup = 'Setting';
 
     protected static ?int $navigationSort = 4;
 
