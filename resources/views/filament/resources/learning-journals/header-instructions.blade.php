@@ -30,15 +30,12 @@
                 </div>
 
                 <ul class="space-y-4">
-                    <li class="flex items-start gap-3">
-                        <div
-                            class="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700">
-                            <span class="text-[10px] font-bold">1</span>
+                    <li class="flex items-start gap-4 group/item">
+                        <div class="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.4)] border border-emerald-400">
+                            <span class="text-[11px] font-black italic">1</span>
                         </div>
                         <p class="text-gray-900 dark:text-white leading-relaxed font-medium">
-                            <strong
-                                class="text-emerald-950 dark:text-emerald-300 font-bold underline decoration-emerald-500/30 underline-offset-4">Disiplin
-                                Waktu:</strong> Segera isi jurnal setelah KBM selesai agar data tetap akurat.
+                            <strong class="text-emerald-950 dark:text-emerald-300 font-bold underline decoration-emerald-500/30 underline-offset-4">Disiplin Waktu:</strong> Segera isi jurnal setelah KBM selesai agar data tetap akurat.
                         </p>
                     </li>
                     <li class="flex items-start gap-4 group/item">
