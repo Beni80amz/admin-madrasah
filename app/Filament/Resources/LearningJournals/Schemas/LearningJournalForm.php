@@ -17,6 +17,29 @@ class LearningJournalForm
     {
         return $schema
             ->components([
+                Grid::make(3)
+                    ->schema([
+                        Section::make('Informasi !')
+                            ->columnSpan(2)
+                            ->schema([
+                                \Filament\Forms\Components\Placeholder::make('info_text')
+                                    ->hiddenLabel()
+                                    ->content('Jurnal Pembelajaran adalah dokumen yang bersifat retrospektif (melihat ke belakang) dan reflektif. Dokumen ini mencatat apa yang sebenarnya terjadi di dalam kelas selama proses pembelajaran berlangsung. Fokus utamanya adalah dokumentasi pelaksanaan dan evaluasi spontan.'),
+                            ]),
+                        Section::make('Petunjuk Pengisian')
+                            ->columnSpan(1)
+                            ->schema([
+                                \Filament\Forms\Components\Placeholder::make('instruction_text')
+                                    ->hiddenLabel()
+                                    ->content(new \Illuminate\Support\HtmlString('
+                                        <ol style="list-style-type: decimal; padding-left: 1rem;">
+                                            <li><strong>Jurnal Pembelajaran:</strong> Isi segera setelah keluar dari kelas agar detail kejadian, respon siswa, dan kendala teknis tidak terlupakan.</li>
+                                            <li><strong>Kolom Absensi:</strong> Diisi dengan jumlah siswa yang tidak hadir (S: Sakit, I: Izin, A: Alpha).</li>
+                                            <li><strong>Hambatan & Solusi:</strong> Bagian ini sangat penting untuk akreditasi dan supervisi karena menunjukkan proses refleksi guru.</li>
+                                        </ol>
+                                    ')),
+                            ]),
+                    ]),
                 Section::make('Informasi Pelajaran')
                     ->schema([
                         Grid::make(3)
