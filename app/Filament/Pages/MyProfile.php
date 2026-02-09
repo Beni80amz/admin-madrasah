@@ -77,7 +77,7 @@ class MyProfile extends Page implements HasSchemas
     public function form(Schema $schema): Schema
     {
         return $schema
-            ->model($this->teacher)
+            ->model($this->teacher ?? Teacher::class)
             ->statePath('data')
             ->components([
                 Grid::make(3)

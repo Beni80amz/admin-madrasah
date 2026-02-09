@@ -18,13 +18,12 @@ class LearningJournalForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
-            ->components([
+            ->schema([
                 Grid::make(3)
                     ->schema([
                         Section::make('Informasi !')
                             ->columnSpan(2)
                             ->icon('heroicon-o-information-circle')
-                            ->color('info')
                             ->schema([
                                 \Filament\Forms\Components\Placeholder::make('info_text')
                                     ->hiddenLabel()
@@ -33,7 +32,6 @@ class LearningJournalForm
                         Section::make('Petunjuk Pengisian')
                             ->columnSpan(1)
                             ->icon('heroicon-o-book-open')
-                            ->color('success')
                             ->schema([
                                 \Filament\Forms\Components\Placeholder::make('instruction_text')
                                     ->hiddenLabel()
@@ -124,25 +122,25 @@ class LearningJournalForm
                                 Select::make('students_sakit')
                                     ->label('Siswa Sakit')
                                     ->multiple()
-                                    ->options([
-                                        1 => 'Test Student',
-                                    ])
+                                    ->options(function ($get) {
+                                        return LearningJournalForm::getStudentOptions($get('rombel_id'));
+                                    })
                                     ->preload()
                                     ->searchable(),
                                 Select::make('students_izin')
                                     ->label('Siswa Izin')
                                     ->multiple()
-                                    ->options([
-                                        1 => 'Test Student',
-                                    ])
+                                    ->options(function ($get) {
+                                        return LearningJournalForm::getStudentOptions($get('rombel_id'));
+                                    })
                                     ->preload()
                                     ->searchable(),
                                 Select::make('students_alpha')
                                     ->label('Siswa Alpha')
                                     ->multiple()
-                                    ->options([
-                                        1 => 'Test Student',
-                                    ])
+                                    ->options(function ($get) {
+                                        return LearningJournalForm::getStudentOptions($get('rombel_id'));
+                                    })
                                     ->preload()
                                     ->searchable(),
                             ]),
