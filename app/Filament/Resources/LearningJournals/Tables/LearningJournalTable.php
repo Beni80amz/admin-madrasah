@@ -51,8 +51,7 @@ class LearningJournalTable
             ->filters([
                 SelectFilter::make('user_id')
                     ->label('Guru')
-                    ->relationship('user', 'name')
-                    ->getOptionLabelFromRecordUsing(fn($record) => $record->teacher?->nama_lengkap ?? $record->name)
+                    ->options(\App\Models\Teacher::whereNotNull('user_id')->pluck('nama_lengkap', 'user_id'))
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('mata_pelajaran_id')
