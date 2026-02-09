@@ -9,8 +9,10 @@ class CreateLearningJournal extends CreateRecord
 {
     protected static string $resource = LearningJournalResource::class;
 
-    public function getMaxContentWidth(): string
+    protected function getHeaderWidgets(): array
     {
-        return 'full';
+        return [
+            \App\Filament\Widgets\LJInstructionWidget::class,
+        ];
     }
 }

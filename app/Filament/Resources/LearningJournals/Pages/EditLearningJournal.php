@@ -10,9 +10,11 @@ class EditLearningJournal extends EditRecord
 {
     protected static string $resource = LearningJournalResource::class;
 
-    public function getMaxContentWidth(): string
+    protected function getHeaderWidgets(): array
     {
-        return 'full';
+        return [
+            \App\Filament\Widgets\LJInstructionWidget::class,
+        ];
     }
 
     protected function getHeaderActions(): array

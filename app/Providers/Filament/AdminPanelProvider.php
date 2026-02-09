@@ -65,14 +65,6 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-user-circle'),
             ])
             ->renderHook(
-                PanelsRenderHook::CONTENT_START,
-                fn() => Blade::render('
-                    @if(request()->routeIs("filament.admin.resources.learning-journals.create") || request()->routeIs("filament.admin.resources.learning-journals.edit"))
-                        @include("filament.resources.learning-journals.widgets.instruction-card")
-                    @endif
-                ')
-            )
-            ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
                 fn() => Blade::render('
                     <div class="mt-6 pt-6 border-t border-gray-700 text-center">
