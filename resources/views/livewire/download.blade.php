@@ -35,7 +35,7 @@
                 @endforeach
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-20" style="gap: 48px !important;">
                 @forelse($downloads as $download)
                     <div wire:key="download-{{ $download->id }}"
                         class="group bg-white dark:bg-surface-dark p-6 rounded-3xl border border-border-light dark:border-border-dark hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-2 animate-fade-in-up">
