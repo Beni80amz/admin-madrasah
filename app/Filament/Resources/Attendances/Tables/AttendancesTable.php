@@ -14,6 +14,7 @@ class AttendancesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('date', 'desc')
             ->headerActions([
                 \Filament\Actions\Action::make('export')
                     ->label('Export Laporan')
