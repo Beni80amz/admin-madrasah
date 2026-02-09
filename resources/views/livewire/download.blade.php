@@ -25,58 +25,51 @@
     <section class="pb-32 relative">
         <div class="layout-container px-5 md:px-10 lg:px-40">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Placeholder Card 1 -->
-                <div
-                    class="group bg-white dark:bg-surface-dark p-8 rounded-3xl border border-border-light dark:border-border-dark hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-2">
+                @forelse($downloads as $download)
                     <div
-                        class="size-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
-                        <span class="material-symbols-outlined text-3xl">description</span>
+                        class="group bg-white dark:bg-surface-dark p-8 rounded-3xl border border-border-light dark:border-border-dark hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-2 animate-fade-in-up">
+                        <div
+                            class="size-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                            @php
+                                $icon = match ($download->category) {
+                                    'Pendaftaran' => 'description',
+                                    'Akademik' => 'event_note',
+                                    'Brosur' => 'auto_stories',
+                                    'Surat' => 'mail',
+                                    default => 'draft',
+                                };
+                            @endphp
+                            <span class="material-symbols-outlined text-3xl">{{ $icon }}</span>
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">
+                                {{ $download->title }}
+                            </h3>
+                            @if($download->description)
+                                <p class="text-gray-600 dark:text-gray-400 line-clamp-2">
+                                    {{ $download->description }}
+                                </p>
+                            @endif
+                        </div>
+                        <button wire:click="downloadFile({{ $download->id }})" wire:loading.attr="disabled"
+                            class="flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all disabled:opacity-50">
+                            <span wire:loading.remove wire:target="downloadFile({{ $download->id }})">Unduh File</span>
+                            <span wire:loading wire:target="downloadFile({{ $download->id }})">Mengunduh...</span>
+                            <span class="material-symbols-outlined text-sm">download</span>
+                        </button>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">Formulir Pendaftaran
-                    </h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-6 line-clamp-2">
-                        Surat pernyataan dan berkas fisik pendaftaran peserta didik baru tahun ajaran 2024/2025.
-                    </p>
-                    <button class="flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all">
-                        <span>Unduh File</span>
-                        <span class="material-symbols-outlined text-sm">download</span>
-                    </button>
-                </div>
-
-                <!-- Placeholder Card 2 -->
-                <div
-                    class="group bg-white dark:bg-surface-dark p-8 rounded-3xl border border-border-light dark:border-border-dark hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-2">
-                    <div
-                        class="size-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
-                        <span class="material-symbols-outlined text-3xl">event_note</span>
+                @empty
+                    <div class="col-span-full py-20 text-center">
+                        <div
+                            class="size-20 bg-gray-100 dark:bg-surface-dark rounded-full flex items-center justify-center mx-auto mb-6 text-gray-400">
+                            <span class="material-symbols-outlined text-4xl">folder_off</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Belum Ada Dokumen</h3>
+                        <p class="text-gray-600 dark:text-gray-400">
+                            Silakan cek kembali nanti untuk dokumen terbaru.
+                        </p>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">Kalender Akademik
-                    </h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-6 line-clamp-2">
-                        Jadwal kegiatan belajar mengajar, hari libur, dan agenda penting madrasah semester ganjil.
-                    </p>
-                    <button class="flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all">
-                        <span>Unduh File</span>
-                        <span class="material-symbols-outlined text-sm">download</span>
-                    </button>
-                </div>
-
-                <!-- Placeholder Card 3 -->
-                <div
-                    class="group bg-white dark:bg-surface-dark p-8 rounded-3xl border border-border-light dark:border-border-dark hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-2">
-                    <div
-                        class="size-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
-                        <span class="material-symbols-outlined text-3xl">auto_stories</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">Brosur Madrasah</h3>
-                    <p class="text-gray-600 dark:text-gray-400 mb-6 line-clamp-2">
-                        Informasi lengkap mengenai program unggulan, fasilitas, dan biaya pendidikan di madrasah kami.
-                    </p>
-                    <button class="flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all">
-                        <span>Unduh File</span>
-                        <span class="material-symbols-outlined text-sm">download</span>
-                    </button>
-                </div>
+                @endforelse
             </div>
 
             <!-- Coming Soon Info -->
