@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-surface-light dark:bg-background-dark">
     <!-- Hero Section -->
-    <section class="relative pt-32 pb-32 overflow-hidden" style="padding-bottom: 120px !important;">
+    <section class="relative pt-32 overflow-hidden" style="padding-bottom: 20px !important;">
         <div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent"></div>
         <div class="layout-container relative z-10 px-5 md:px-10 lg:px-40">
             <div class="max-w-3xl">
@@ -22,11 +22,11 @@
     </section>
 
     <!-- Content Section -->
-    <section class="pb-40 relative" style="padding-top: 100px !important;">
-        <div class="layout-container px-5 md:px-10 lg:px-40" style="margin-top: 40px !important;">
+    <section class="relative" style="padding-top: 0px !important; padding-bottom: 160px !important;">
+        <div class="layout-container px-5 md:px-10 lg:px-40" style="margin-top: 0px !important;">
             <!-- Category Filter Tabs -->
             <div class="flex flex-wrap items-center justify-center gap-3 animate-fade-in-up"
-                style="animation-delay: 300ms; margin-top: 60px !important; margin-bottom: 100px !important;">
+                style="animation-delay: 300ms; margin-top: 20px !important; margin-bottom: 60px !important;">
                 @foreach($categories as $category)
                     <button wire:click="setCategory('{{ $category }}')"
                         class="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 {{ $selectedCategory === $category ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-105' : 'bg-white dark:bg-surface-dark text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 border border-border-light dark:border-border-dark' }}">
