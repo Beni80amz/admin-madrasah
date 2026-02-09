@@ -11,7 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Get;
-use Filament\Forms\Set;
+use Illuminate\Support\Facades\Log;
 
 class LearningJournalForm
 {
@@ -165,27 +165,32 @@ class LearningJournalForm
             ]);
     }
 
-    protected static function getStudentOptions($rombelId): array
+    public static function getStudentOptions($rombelId): array
     {
         if (!$rombelId) {
             return [];
         }
 
-        $rombel = \App\Models\Rombel::with('kelas')->find($rombelId);
-        if (!$rombel) {
+        try {
+            $rombel = \App\Models\Rombel::with('kelas')->find($rombelId);
+            if (!$rombel) {
+                return [];
+            }
+
+            $tingkat = self::romanToArabic($rombel->kelas?->tingkat ?? '');
+            $kelasString = $tingkat . '-' . ($rombel->nama ?? '');
+
+            return \App\Models\Student::where('kelas', $kelasString)
+                ->where('is_active', true)
+                ->pluck('nama_lengkap', 'id')
+                ->toArray();
+        } catch (\Exception $e) {
+            Log::error("Error in getStudentOptions: " . $e->getMessage());
             return [];
         }
-
-        $tingkat = self::romanToArabic($rombel->kelas?->tingkat ?? '');
-        $kelasString = $tingkat . '-' . ($rombel->nama ?? '');
-
-        return \App\Models\Student::where('kelas', $kelasString)
-            ->where('is_active', true)
-            ->pluck('nama_lengkap', 'id')
-            ->toArray();
     }
 
-    protected static function romanToArabic(string $roman): string
+    public static function romanToArabic(string $roman): string
     {
         $romans = ['I' => 1, 'V' => 5, 'X' => 10, 'L' => 50, 'C' => 100];
         $roman = strtoupper(trim($roman));
