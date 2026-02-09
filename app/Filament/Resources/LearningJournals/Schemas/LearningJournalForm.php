@@ -22,7 +22,7 @@ class LearningJournalForm
 
         return $schema
             ->columns(1) // STRICT SINGLE COLUMN FOR ENTIRE PAGE
-            ->schema([
+            ->components([
                 // 1. Data Administrasi
                 Section::make('Data Administrasi')
                     ->description('Informasi dasar terkait pelaksanaan pembelajaran.')
