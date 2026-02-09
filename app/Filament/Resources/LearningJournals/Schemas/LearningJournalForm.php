@@ -124,25 +124,25 @@ class LearningJournalForm
                                 Select::make('students_sakit')
                                     ->label('Siswa Sakit')
                                     ->multiple()
-                                    ->options(function ($get) {
-                                        return LearningJournalForm::getStudentOptions($get('rombel_id'));
-                                    })
+                                    ->options([
+                                        1 => 'Test Student',
+                                    ])
                                     ->preload()
                                     ->searchable(),
                                 Select::make('students_izin')
                                     ->label('Siswa Izin')
                                     ->multiple()
-                                    ->options(function ($get) {
-                                        return LearningJournalForm::getStudentOptions($get('rombel_id'));
-                                    })
+                                    ->options([
+                                        1 => 'Test Student',
+                                    ])
                                     ->preload()
                                     ->searchable(),
                                 Select::make('students_alpha')
                                     ->label('Siswa Alpha')
                                     ->multiple()
-                                    ->options(function ($get) {
-                                        return LearningJournalForm::getStudentOptions($get('rombel_id'));
-                                    })
+                                    ->options([
+                                        1 => 'Test Student',
+                                    ])
                                     ->preload()
                                     ->searchable(),
                             ]),
