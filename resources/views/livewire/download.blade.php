@@ -41,7 +41,8 @@
                     <div wire:key="download-{{ $download->id }}"
                         class="group bg-white dark:bg-surface-dark p-6 rounded-3xl border border-border-light dark:border-border-dark hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-2 animate-fade-in-up">
                         <div
-                            class="size-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-5 transition-colors group-hover:bg-primary group-hover:text-white">
+                            class="size-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary transition-colors group-hover:bg-primary group-hover:text-white"
+                            style="margin-bottom: 24px !important;">
                             @php
                                 $icon = match ($download->category) {
                                     'Pendaftaran' => 'description',
