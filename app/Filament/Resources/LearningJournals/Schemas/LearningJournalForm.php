@@ -52,6 +52,14 @@ class LearningJournalForm
                                     ->getOptionLabelFromRecordUsing(fn($record) => "{$record->kelas?->nama} - {$record->nama}")
                                     ->searchable()
                                     ->preload()
+                                    ->default(function () {
+                                        $user = Auth::user();
+                                        if ($user && $user->teacher) {
+                                            $rombel = \App\Models\Rombel::where('wali_kelas_id', $user->teacher->id)->first();
+                                            return $rombel ? $rombel->id : null;
+                                        }
+                                        return null;
+                                    })
                                     ->required(),
                             ]),
                     ]),
