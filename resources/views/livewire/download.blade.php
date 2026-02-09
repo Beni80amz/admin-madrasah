@@ -75,7 +75,8 @@
                         <div
                             class="pt-4 border-t border-border-light dark:border-white/5 flex items-center justify-between">
                             <button wire:click="downloadFile({{ $download->id }})" wire:loading.attr="disabled"
-                                class="flex items-center gap-2 text-primary text-sm font-bold hover:gap-3 transition-all disabled:opacity-50">
+                                class="flex items-center gap-2 text-primary text-sm font-bold hover:gap-3 transition-all disabled:opacity-50"
+                                style="cursor: pointer !important;">
                                 <span wire:loading.remove wire:target="downloadFile({{ $download->id }})">Unduh</span>
                                 <span wire:loading wire:target="downloadFile({{ $download->id }})">...</span>
                                 <span class="material-symbols-outlined text-sm">download</span>
