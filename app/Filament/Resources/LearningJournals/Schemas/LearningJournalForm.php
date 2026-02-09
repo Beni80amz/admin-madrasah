@@ -119,29 +119,29 @@ class LearningJournalForm
                             ]),
 
                         Grid::make(3)
-                            ->visible(fn(Get $get) => $get('rombel_id'))
+                            ->visible(fn($get) => $get('rombel_id'))
                             ->schema([
                                 Select::make('students_sakit')
                                     ->label('Siswa Sakit')
                                     ->multiple()
-                                    ->options(function (Get $get) {
-                                        return self::getStudentOptions($get('rombel_id'));
+                                    ->options(function ($get) {
+                                        return LearningJournalForm::getStudentOptions($get('rombel_id'));
                                     })
                                     ->preload()
                                     ->searchable(),
                                 Select::make('students_izin')
                                     ->label('Siswa Izin')
                                     ->multiple()
-                                    ->options(function (Get $get) {
-                                        return self::getStudentOptions($get('rombel_id'));
+                                    ->options(function ($get) {
+                                        return LearningJournalForm::getStudentOptions($get('rombel_id'));
                                     })
                                     ->preload()
                                     ->searchable(),
                                 Select::make('students_alpha')
                                     ->label('Siswa Alpha')
                                     ->multiple()
-                                    ->options(function (Get $get) {
-                                        return self::getStudentOptions($get('rombel_id'));
+                                    ->options(function ($get) {
+                                        return LearningJournalForm::getStudentOptions($get('rombel_id'));
                                     })
                                     ->preload()
                                     ->searchable(),
