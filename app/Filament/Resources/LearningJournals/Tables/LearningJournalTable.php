@@ -79,7 +79,7 @@ class LearningJournalTable
                             );
                     }),
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])

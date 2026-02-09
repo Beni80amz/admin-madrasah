@@ -18,8 +18,6 @@ class LearningJournalForm
         return $schema
             ->components([
                 Section::make('Informasi Pelajaran')
-                    ->description('Detail waktu dan subjek pembelajaran.')
-                    ->icon('heroicon-o-book-open')
                     ->schema([
                         Grid::make(3)
                             ->schema([
@@ -29,7 +27,7 @@ class LearningJournalForm
                                     ->searchable()
                                     ->preload()
                                     ->default(Auth::id())
-                                    ->disabled(!Auth::user()->hasRole(['Superadmin', 'super_admin']))
+                                    ->disabled(fn() => !Auth::user()->hasRole(['Superadmin', 'super_admin']))
                                     ->required(),
                                 DatePicker::make('date')
                                     ->label('Tanggal')
@@ -58,8 +56,6 @@ class LearningJournalForm
                     ]),
 
                 Section::make('Pelaksanaan Pembelajaran')
-                    ->description('Materi yang disampaikan dan catatan absensi.')
-                    ->icon('heroicon-o-document-text')
                     ->schema([
                         Textarea::make('materi')
                             ->label('Materi / ATP')
@@ -68,7 +64,6 @@ class LearningJournalForm
                             ->required(),
 
                         Grid::make(3)
-                            ->label('Absensi Siswa')
                             ->schema([
                                 TextInput::make('absensi_s')
                                     ->label('Sakit (S)')
@@ -86,8 +81,6 @@ class LearningJournalForm
                     ]),
 
                 Section::make('Refleksi & Evaluasi')
-                    ->description('Evaluasi pelaksanaan dan tindak lanjut.')
-                    ->icon('heroicon-o-chat-bubble-left-right')
                     ->schema([
                         Grid::make(2)
                             ->schema([
