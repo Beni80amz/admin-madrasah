@@ -4,8 +4,8 @@ namespace App\Filament\Resources\LearningJournals\Schemas;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section; // Use Filament\Schemas for Section/Grid
-use Filament\Schemas\Components\Group;   // Use Filament\Schemas for Group
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -20,18 +20,20 @@ class LearningJournalForm
     {
         return $schema
             ->schema([
-                Grid::make(['default' => 1, 'sm' => 3, 'xl' => 3])
+                // Responsive Grid: 1 col on mobile, 3 cols ONLY on Large screens
+                Grid::make(['default' => 1, 'lg' => 3])
                     ->schema([
-                        // -- LEFT: Main Content (Span 2)
+                        // -- LEFT: Main Content (Span 2 on Large)
                         Group::make()
-                            ->columnSpan(['sm' => 2])
+                            ->columnSpan(['lg' => 2])
                             ->schema([
                                 // 1. Data Administrasi
                                 Section::make('Data Administrasi')
                                     ->description('Informasi dasar terkait pelaksanaan pembelajaran.')
                                     ->icon('heroicon-o-clipboard-document-list')
                                     ->schema([
-                                        Grid::make(2)
+                                        // Inner Grid: 1 col on mobile, 2 cols on Medium+
+                                        Grid::make(['default' => 1, 'md' => 2])
                                             ->schema([
                                                 Select::make('user_id')
                                                     ->label('Guru Pengampu')
@@ -57,7 +59,7 @@ class LearningJournalForm
                                                     ->searchable()
                                                     ->preload()
                                                     ->required()
-                                                    ->columnSpanFull(), // Full width for better readability
+                                                    ->columnSpanFull(),
 
                                                 Select::make('rombel_id')
                                                     ->label('Kelas / Rombel')
@@ -105,7 +107,8 @@ class LearningJournalForm
                                     ->icon('heroicon-o-users')
                                     ->collapsible()
                                     ->schema([
-                                        Grid::make(3)
+                                        // Inner Grid for Absensi Inputs: 1 col mobile, 3 cols Medium+
+                                        Grid::make(['default' => 1, 'md' => 3])
                                             ->schema([
                                                 TextInput::make('absensi_s')
                                                     ->label('Sakit (S)')
@@ -124,7 +127,7 @@ class LearningJournalForm
                                                     ->default(0),
                                             ]),
 
-                                        Grid::make(1) // Use Grid for lists inside Group
+                                        Grid::make(1)
                                             ->visible(fn($get) => $get('rombel_id'))
                                             ->schema([
                                                 Select::make('students_sakit')
@@ -156,9 +159,9 @@ class LearningJournalForm
                                     ->description('Evaluasi pelaksanaan untuk perbaikan.')
                                     ->icon('heroicon-o-arrow-path-rounded-square')
                                     ->collapsible()
-                                    ->collapsed() // Collapse by default to save space
+                                    ->collapsed()
                                     ->schema([
-                                        Grid::make(2)
+                                        Grid::make(1) // Keep reflection stacking for better writing space
                                             ->schema([
                                                 Textarea::make('hambatan')
                                                     ->label('Hambatan / Catatan Khusus')
@@ -172,9 +175,9 @@ class LearningJournalForm
                                     ]),
                             ]),
 
-                        // -- RIGHT: Sidebar (Span 1)
+                        // -- RIGHT: Sidebar (Span 1 on Large)
                         Group::make()
-                            ->columnSpan(['sm' => 1])
+                            ->columnSpan(['lg' => 1])
                             ->schema([
                                 Section::make('Petunjuk Pengisian')
                                     ->icon('heroicon-o-information-circle')
