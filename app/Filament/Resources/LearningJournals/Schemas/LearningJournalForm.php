@@ -4,7 +4,8 @@ namespace App\Filament\Resources\LearningJournals\Schemas;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Section; // Use Filament\Schemas for Section/Grid
+use Filament\Schemas\Components\Group;   // Use Filament\Schemas for Group
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -21,11 +22,11 @@ class LearningJournalForm
             ->schema([
                 Grid::make(['default' => 1, 'sm' => 3, 'xl' => 3])
                     ->schema([
-                        // -- LEFT: Main Form (2/3)
-                        Grid::make(1)
+                        // -- LEFT: Main Content (Span 2)
+                        Group::make()
                             ->columnSpan(['sm' => 2])
                             ->schema([
-                                // 1. Informasi Pembelajaran
+                                // 1. Data Administrasi
                                 Section::make('Data Administrasi')
                                     ->description('Informasi dasar terkait pelaksanaan pembelajaran.')
                                     ->icon('heroicon-o-clipboard-document-list')
@@ -40,15 +41,15 @@ class LearningJournalForm
                                                     ->preload()
                                                     ->default(Auth::id())
                                                     ->disabled(fn() => !Auth::user()->hasRole(['Superadmin', 'super_admin']))
-                                                    ->required(),
+                                                    ->required()
+                                                    ->columnSpan(1),
                                                 DatePicker::make('date')
                                                     ->label('Tanggal Pelaksanaan')
                                                     ->prefixIcon('heroicon-m-calendar-days')
                                                     ->default(now())
-                                                    ->required(),
-                                            ]),
-                                        Grid::make(3)
-                                            ->schema([
+                                                    ->required()
+                                                    ->columnSpan(1),
+
                                                 Select::make('mata_pelajaran_id')
                                                     ->label('Mata Pelajaran')
                                                     ->prefixIcon('heroicon-m-book-open')
@@ -56,7 +57,8 @@ class LearningJournalForm
                                                     ->searchable()
                                                     ->preload()
                                                     ->required()
-                                                    ->columnSpan(1),
+                                                    ->columnSpanFull(), // Full width for better readability
+
                                                 Select::make('rombel_id')
                                                     ->label('Kelas / Rombel')
                                                     ->prefixIcon('heroicon-m-user-group')
@@ -84,7 +86,7 @@ class LearningJournalForm
                                             ]),
                                     ]),
 
-                                // 2. Materi & Kegiatan
+                                // 2. Jurnal Kegiatan
                                 Section::make('Jurnal Kegiatan')
                                     ->description('Deskripsi materi dan aktivitas yang dilakukan.')
                                     ->icon('heroicon-o-pencil-square')
@@ -97,7 +99,7 @@ class LearningJournalForm
                                             ->columnSpanFull(),
                                     ]),
 
-                                // 3. Presensi Siswa
+                                // 3. Presensi
                                 Section::make('Presensi Peserta Didik')
                                     ->description('Catat kehadiran siswa secara detail.')
                                     ->icon('heroicon-o-users')
@@ -122,7 +124,7 @@ class LearningJournalForm
                                                     ->default(0),
                                             ]),
 
-                                        Grid::make(1)
+                                        Grid::make(1) // Use Grid for lists inside Group
                                             ->visible(fn($get) => $get('rombel_id'))
                                             ->schema([
                                                 Select::make('students_sakit')
@@ -151,26 +153,27 @@ class LearningJournalForm
 
                                 // 4. Refleksi
                                 Section::make('Refleksi & Evaluasi')
-                                    ->description('Evaluasi pelaksanaan pembelajaran untuk perbaikan.')
+                                    ->description('Evaluasi pelaksanaan untuk perbaikan.')
                                     ->icon('heroicon-o-arrow-path-rounded-square')
                                     ->collapsible()
+                                    ->collapsed() // Collapse by default to save space
                                     ->schema([
                                         Grid::make(2)
                                             ->schema([
                                                 Textarea::make('hambatan')
                                                     ->label('Hambatan / Catatan Khusus')
-                                                    ->placeholder('Contoh: Siswa kurang fokus saat diskusi kelompok...')
-                                                    ->rows(4),
+                                                    ->placeholder('Contoh: Siswa kurang fokus...')
+                                                    ->rows(3),
                                                 Textarea::make('solusi')
                                                     ->label('Solusi / Tindak Lanjut')
-                                                    ->placeholder('Contoh: Menggunakan media video agar lebih menarik...')
-                                                    ->rows(4),
+                                                    ->placeholder('Contoh: Menggunakan media video...')
+                                                    ->rows(3),
                                             ]),
                                     ]),
                             ]),
 
-                        // -- RIGHT: Sidebar (Info & Petunjuk) (1/3)
-                        Grid::make(1)
+                        // -- RIGHT: Sidebar (Span 1)
+                        Group::make()
                             ->columnSpan(['sm' => 1])
                             ->schema([
                                 Section::make('Petunjuk Pengisian')
@@ -181,29 +184,19 @@ class LearningJournalForm
                                             ->hiddenLabel()
                                             ->content(new \Illuminate\Support\HtmlString('
                                                 <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400">
-                                                    <div>
-                                                        <strong>1. Jurnal Pembelajaran</strong>
-                                                        <p class="mt-1">Isi jurnal segera setelah pembelajaran selesai agar detail kejadian masih segar dalam ingatan.</p>
-                                                    </div>
-                                                    <div>
-                                                        <strong>2. Kolom Absensi</strong>
-                                                        <p class="mt-1">Pastikan jumlah siswa (S/I/A) sesuai dengan daftar nama yang dipilih di bawahnya.</p>
-                                                    </div>
-                                                    <div>
-                                                        <strong>3. Refleksi Guru</strong>
-                                                        <p class="mt-1">Bagian ini penting untuk akreditasi. Tuliskan hambatan nyata dan solusi yang konkret.</p>
-                                                    </div>
+                                                    <p>1. <strong>Isi Segera:</strong> Semakin cepat semakin baik agar data akurat.</p>
+                                                    <p>2. <strong>Absensi:</strong> Pastikan jumlah angka sesuai dengan nama siswa yang dipilih.</p>
+                                                    <p>3. <strong>Refleksi:</strong> Wajib diisi untuk keperluan supervisi dan akreditasi.</p>
                                                 </div>
                                             ')),
                                     ]),
 
-                                Section::make('Penting !')
-                                    ->icon('heroicon-o-exclamation-triangle')
-                                    ->columns(1)
+                                Section::make('Status Dokumen')
+                                    ->icon('heroicon-o-document-check')
                                     ->schema([
-                                        \Filament\Forms\Components\Placeholder::make('info_urgent')
+                                        \Filament\Forms\Components\Placeholder::make('status_info')
                                             ->hiddenLabel()
-                                            ->content('Dokumen ini bersifat resmi. Pastikan data yang diinputkan valid dan dapat dipertanggungjawabkan.'),
+                                            ->content('Dokumen ini adalah rekam jejak resmi aktivitas pembelajaran Anda.'),
                                     ]),
                             ]),
                     ]),
@@ -224,6 +217,8 @@ class LearningJournalForm
 
             $tingkat = self::romanToArabic($rombel->kelas?->tingkat ?? '');
             $kelasString = $tingkat . '-' . ($rombel->nama ?? '');
+
+            Log::info("Searching students for class: " . $kelasString);
 
             return \App\Models\Student::where('kelas', $kelasString)
                 ->where('is_active', true)
