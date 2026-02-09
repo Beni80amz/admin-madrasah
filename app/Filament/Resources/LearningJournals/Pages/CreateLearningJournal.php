@@ -9,10 +9,4 @@ class CreateLearningJournal extends CreateRecord
 {
     protected static string $resource = LearningJournalResource::class;
 
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            \App\Filament\Widgets\JournalInformationWidget::class,
-        ];
-    }
 }

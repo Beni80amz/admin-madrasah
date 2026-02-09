@@ -10,12 +10,6 @@ class EditLearningJournal extends EditRecord
 {
     protected static string $resource = LearningJournalResource::class;
 
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            \App\Filament\Widgets\JournalInformationWidget::class,
-        ];
-    }
 
     protected function getHeaderActions(): array
     {
