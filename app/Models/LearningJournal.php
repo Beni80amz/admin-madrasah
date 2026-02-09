@@ -22,6 +22,9 @@ class LearningJournal extends Model
         'absensi_a',
         'hambatan',
         'solusi',
+        'students_sakit',
+        'students_izin',
+        'students_alpha',
     ];
 
     protected $casts = [
@@ -29,6 +32,9 @@ class LearningJournal extends Model
         'absensi_s' => 'integer',
         'absensi_i' => 'integer',
         'absensi_a' => 'integer',
+        'students_sakit' => 'array',
+        'students_izin' => 'array',
+        'students_alpha' => 'array',
     ];
 
     public function user(): BelongsTo

@@ -10,6 +10,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 
 class LearningJournalForm
 {
@@ -21,6 +23,8 @@ class LearningJournalForm
                     ->schema([
                         Section::make('Informasi !')
                             ->columnSpan(2)
+                            ->icon('heroicon-o-information-circle')
+                            ->color('info')
                             ->schema([
                                 \Filament\Forms\Components\Placeholder::make('info_text')
                                     ->hiddenLabel()
@@ -28,6 +32,8 @@ class LearningJournalForm
                             ]),
                         Section::make('Petunjuk Pengisian')
                             ->columnSpan(1)
+                            ->icon('heroicon-o-book-open')
+                            ->color('success')
                             ->schema([
                                 \Filament\Forms\Components\Placeholder::make('instruction_text')
                                     ->hiddenLabel()
@@ -75,6 +81,7 @@ class LearningJournalForm
                                     ->getOptionLabelFromRecordUsing(fn($record) => "{$record->kelas?->nama} - {$record->nama}")
                                     ->searchable()
                                     ->preload()
+                                    ->live()
                                     ->default(function () {
                                         $user = Auth::user();
                                         if ($user && $user->teacher) {
@@ -109,6 +116,29 @@ class LearningJournalForm
                                     ->label('Alpha (A)')
                                     ->numeric()
                                     ->default(0),
+                            ]),
+
+                        Grid::make(3)
+                            ->visible(fn(Get $get) => $get('rombel_id'))
+                            ->schema([
+                                Select::make('students_sakit')
+                                    ->label('Siswa Sakit')
+                                    ->multiple()
+                                    ->options(fn(Get $get) => \App\Models\Student::where('rombel_id', $get('rombel_id'))->where('is_active', true)->pluck('nama_lengkap', 'id'))
+                                    ->preload()
+                                    ->searchable(),
+                                Select::make('students_izin')
+                                    ->label('Siswa Izin')
+                                    ->multiple()
+                                    ->options(fn(Get $get) => \App\Models\Student::where('rombel_id', $get('rombel_id'))->where('is_active', true)->pluck('nama_lengkap', 'id'))
+                                    ->preload()
+                                    ->searchable(),
+                                Select::make('students_alpha')
+                                    ->label('Siswa Alpha')
+                                    ->multiple()
+                                    ->options(fn(Get $get) => \App\Models\Student::where('rombel_id', $get('rombel_id'))->where('is_active', true)->pluck('nama_lengkap', 'id'))
+                                    ->preload()
+                                    ->searchable(),
                             ]),
                     ]),
 
