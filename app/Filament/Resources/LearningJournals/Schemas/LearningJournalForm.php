@@ -19,145 +19,192 @@ class LearningJournalForm
     {
         return $schema
             ->schema([
-                Grid::make(3)
+                Grid::make(['default' => 1, 'sm' => 3, 'xl' => 3])
                     ->schema([
-                        Section::make('Informasi !')
-                            ->columnSpan(2)
-                            ->icon('heroicon-o-information-circle')
+                        // -- LEFT: Main Form (2/3)
+                        Grid::make(1)
+                            ->columnSpan(['sm' => 2])
                             ->schema([
-                                \Filament\Forms\Components\Placeholder::make('info_text')
-                                    ->hiddenLabel()
-                                    ->content('Jurnal Pembelajaran adalah dokumen yang bersifat retrospektif (melihat ke belakang) dan reflektif. Dokumen ini mencatat apa yang sebenarnya terjadi di dalam kelas selama proses pembelajaran berlangsung. Fokus utamanya adalah dokumentasi pelaksanaan dan evaluasi spontan.'),
-                            ]),
-                        Section::make('Petunjuk Pengisian')
-                            ->columnSpan(1)
-                            ->icon('heroicon-o-book-open')
-                            ->schema([
-                                \Filament\Forms\Components\Placeholder::make('instruction_text')
-                                    ->hiddenLabel()
-                                    ->content(new \Illuminate\Support\HtmlString('
-                                        <ol style="list-style-type: decimal; padding-left: 1rem;">
-                                            <li><strong>Jurnal Pembelajaran:</strong> Isi segera setelah keluar dari kelas agar detail kejadian, respon siswa, dan kendala teknis tidak terlupakan.</li>
-                                            <li><strong>Kolom Absensi:</strong> Diisi dengan jumlah siswa yang tidak hadir (S: Sakit, I: Izin, A: Alpha).</li>
-                                            <li><strong>Hambatan & Solusi:</strong> Bagian ini sangat penting untuk akreditasi dan supervisi karena menunjukkan proses refleksi guru.</li>
-                                        </ol>
-                                    ')),
-                            ]),
-                    ]),
-                Section::make('Informasi Pelajaran')
-                    ->schema([
-                        Grid::make(3)
-                            ->schema([
-                                Select::make('user_id')
-                                    ->label('Guru')
-                                    ->options(\App\Models\Teacher::whereNotNull('user_id')->pluck('nama_lengkap', 'user_id'))
-                                    ->searchable()
-                                    ->preload()
-                                    ->default(Auth::id())
-                                    ->disabled(fn() => !Auth::user()->hasRole(['Superadmin', 'super_admin']))
-                                    ->required(),
-                                DatePicker::make('date')
-                                    ->label('Tanggal')
-                                    ->default(now())
-                                    ->required(),
-                                TextInput::make('pertemuan_ke')
-                                    ->label('Pertemuan Ke-')
-                                    ->placeholder('Misal: 1 atau Ganjil 1')
-                                    ->required(),
-                            ]),
-                        Grid::make(2)
-                            ->schema([
-                                Select::make('mata_pelajaran_id')
-                                    ->label('Mata Pelajaran')
-                                    ->relationship('mataPelajaran', 'nama')
-                                    ->searchable()
-                                    ->preload()
-                                    ->required(),
-                                Select::make('rombel_id')
-                                    ->label('Kelas / Rombel')
-                                    ->relationship('rombel', 'nama')
-                                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->kelas?->nama} - {$record->nama}")
-                                    ->searchable()
-                                    ->preload()
-                                    ->live()
-                                    ->default(function () {
-                                        $user = Auth::user();
-                                        if ($user && $user->teacher) {
-                                            $rombel = \App\Models\Rombel::where('wali_kelas_id', $user->teacher->id)->first();
-                                            return $rombel ? $rombel->id : null;
-                                        }
-                                        return null;
-                                    })
-                                    ->required(),
-                            ]),
-                    ]),
+                                // 1. Informasi Pembelajaran
+                                Section::make('Data Administrasi')
+                                    ->description('Informasi dasar terkait pelaksanaan pembelajaran.')
+                                    ->icon('heroicon-o-clipboard-document-list')
+                                    ->schema([
+                                        Grid::make(2)
+                                            ->schema([
+                                                Select::make('user_id')
+                                                    ->label('Guru Pengampu')
+                                                    ->prefixIcon('heroicon-m-user')
+                                                    ->options(\App\Models\Teacher::whereNotNull('user_id')->pluck('nama_lengkap', 'user_id'))
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->default(Auth::id())
+                                                    ->disabled(fn() => !Auth::user()->hasRole(['Superadmin', 'super_admin']))
+                                                    ->required(),
+                                                DatePicker::make('date')
+                                                    ->label('Tanggal Pelaksanaan')
+                                                    ->prefixIcon('heroicon-m-calendar-days')
+                                                    ->default(now())
+                                                    ->required(),
+                                            ]),
+                                        Grid::make(3)
+                                            ->schema([
+                                                Select::make('mata_pelajaran_id')
+                                                    ->label('Mata Pelajaran')
+                                                    ->prefixIcon('heroicon-m-book-open')
+                                                    ->relationship('mataPelajaran', 'nama')
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->required()
+                                                    ->columnSpan(1),
+                                                Select::make('rombel_id')
+                                                    ->label('Kelas / Rombel')
+                                                    ->prefixIcon('heroicon-m-user-group')
+                                                    ->relationship('rombel', 'nama')
+                                                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->kelas?->nama} - {$record->nama}")
+                                                    ->searchable()
+                                                    ->preload()
+                                                    ->live()
+                                                    ->default(function () {
+                                                        $user = Auth::user();
+                                                        if ($user && $user->teacher) {
+                                                            $rombel = \App\Models\Rombel::where('wali_kelas_id', $user->teacher->id)->first();
+                                                            return $rombel ? $rombel->id : null;
+                                                        }
+                                                        return null;
+                                                    })
+                                                    ->required()
+                                                    ->columnSpan(1),
+                                                TextInput::make('pertemuan_ke')
+                                                    ->label('Pertemuan Ke-')
+                                                    ->prefixIcon('heroicon-m-hashtag')
+                                                    ->placeholder('Contoh: 1')
+                                                    ->required()
+                                                    ->columnSpan(1),
+                                            ]),
+                                    ]),
 
-                Section::make('Pelaksanaan Pembelajaran')
-                    ->schema([
-                        Textarea::make('materi')
-                            ->label('Materi / ATP')
-                            ->placeholder('Tuliskan materi yang dibahas hari ini...')
-                            ->rows(3)
-                            ->required(),
+                                // 2. Materi & Kegiatan
+                                Section::make('Jurnal Kegiatan')
+                                    ->description('Deskripsi materi dan aktivitas yang dilakukan.')
+                                    ->icon('heroicon-o-pencil-square')
+                                    ->schema([
+                                        Textarea::make('materi')
+                                            ->label('Materi Pembelajaran / Kompetensi Dasar')
+                                            ->placeholder('Jelaskan materi yang dibahas dan metode yang digunakan...')
+                                            ->rows(4)
+                                            ->required()
+                                            ->columnSpanFull(),
+                                    ]),
 
-                        Grid::make(3)
-                            ->schema([
-                                TextInput::make('absensi_s')
-                                    ->label('Sakit (S)')
-                                    ->numeric()
-                                    ->default(0),
-                                TextInput::make('absensi_i')
-                                    ->label('Izin (I)')
-                                    ->numeric()
-                                    ->default(0),
-                                TextInput::make('absensi_a')
-                                    ->label('Alpha (A)')
-                                    ->numeric()
-                                    ->default(0),
+                                // 3. Presensi Siswa
+                                Section::make('Presensi Peserta Didik')
+                                    ->description('Catat kehadiran siswa secara detail.')
+                                    ->icon('heroicon-o-users')
+                                    ->collapsible()
+                                    ->schema([
+                                        Grid::make(3)
+                                            ->schema([
+                                                TextInput::make('absensi_s')
+                                                    ->label('Sakit (S)')
+                                                    ->numeric()
+                                                    ->prefixIcon('heroicon-m-heart')
+                                                    ->default(0),
+                                                TextInput::make('absensi_i')
+                                                    ->label('Izin (I)')
+                                                    ->numeric()
+                                                    ->prefixIcon('heroicon-m-hand-raised')
+                                                    ->default(0),
+                                                TextInput::make('absensi_a')
+                                                    ->label('Alpha (A)')
+                                                    ->numeric()
+                                                    ->prefixIcon('heroicon-m-x-circle')
+                                                    ->default(0),
+                                            ]),
+
+                                        Grid::make(1)
+                                            ->visible(fn($get) => $get('rombel_id'))
+                                            ->schema([
+                                                Select::make('students_sakit')
+                                                    ->label('Daftar Siswa Sakit')
+                                                    ->multiple()
+                                                    ->options(fn($get) => LearningJournalForm::getStudentOptions($get('rombel_id')))
+                                                    ->preload()
+                                                    ->searchable()
+                                                    ->placeholder('Pilih siswa yang sakit...'),
+                                                Select::make('students_izin')
+                                                    ->label('Daftar Siswa Izin')
+                                                    ->multiple()
+                                                    ->options(fn($get) => LearningJournalForm::getStudentOptions($get('rombel_id')))
+                                                    ->preload()
+                                                    ->searchable()
+                                                    ->placeholder('Pilih siswa yang izin...'),
+                                                Select::make('students_alpha')
+                                                    ->label('Daftar Siswa Alpha')
+                                                    ->multiple()
+                                                    ->options(fn($get) => LearningJournalForm::getStudentOptions($get('rombel_id')))
+                                                    ->preload()
+                                                    ->searchable()
+                                                    ->placeholder('Pilih siswa alpha...'),
+                                            ]),
+                                    ]),
+
+                                // 4. Refleksi
+                                Section::make('Refleksi & Evaluasi')
+                                    ->description('Evaluasi pelaksanaan pembelajaran untuk perbaikan.')
+                                    ->icon('heroicon-o-arrow-path-rounded-square')
+                                    ->collapsible()
+                                    ->schema([
+                                        Grid::make(2)
+                                            ->schema([
+                                                Textarea::make('hambatan')
+                                                    ->label('Hambatan / Catatan Khusus')
+                                                    ->placeholder('Contoh: Siswa kurang fokus saat diskusi kelompok...')
+                                                    ->rows(4),
+                                                Textarea::make('solusi')
+                                                    ->label('Solusi / Tindak Lanjut')
+                                                    ->placeholder('Contoh: Menggunakan media video agar lebih menarik...')
+                                                    ->rows(4),
+                                            ]),
+                                    ]),
                             ]),
 
-                        Grid::make(3)
-                            ->visible(fn($get) => $get('rombel_id'))
+                        // -- RIGHT: Sidebar (Info & Petunjuk) (1/3)
+                        Grid::make(1)
+                            ->columnSpan(['sm' => 1])
                             ->schema([
-                                Select::make('students_sakit')
-                                    ->label('Siswa Sakit')
-                                    ->multiple()
-                                    ->options(function ($get) {
-                                        return LearningJournalForm::getStudentOptions($get('rombel_id'));
-                                    })
-                                    ->preload()
-                                    ->searchable(),
-                                Select::make('students_izin')
-                                    ->label('Siswa Izin')
-                                    ->multiple()
-                                    ->options(function ($get) {
-                                        return LearningJournalForm::getStudentOptions($get('rombel_id'));
-                                    })
-                                    ->preload()
-                                    ->searchable(),
-                                Select::make('students_alpha')
-                                    ->label('Siswa Alpha')
-                                    ->multiple()
-                                    ->options(function ($get) {
-                                        return LearningJournalForm::getStudentOptions($get('rombel_id'));
-                                    })
-                                    ->preload()
-                                    ->searchable(),
-                            ]),
-                    ]),
+                                Section::make('Petunjuk Pengisian')
+                                    ->icon('heroicon-o-information-circle')
+                                    ->collapsible()
+                                    ->schema([
+                                        \Filament\Forms\Components\Placeholder::make('guidelines')
+                                            ->hiddenLabel()
+                                            ->content(new \Illuminate\Support\HtmlString('
+                                                <div class="space-y-4 text-sm text-gray-600 dark:text-gray-400">
+                                                    <div>
+                                                        <strong>1. Jurnal Pembelajaran</strong>
+                                                        <p class="mt-1">Isi jurnal segera setelah pembelajaran selesai agar detail kejadian masih segar dalam ingatan.</p>
+                                                    </div>
+                                                    <div>
+                                                        <strong>2. Kolom Absensi</strong>
+                                                        <p class="mt-1">Pastikan jumlah siswa (S/I/A) sesuai dengan daftar nama yang dipilih di bawahnya.</p>
+                                                    </div>
+                                                    <div>
+                                                        <strong>3. Refleksi Guru</strong>
+                                                        <p class="mt-1">Bagian ini penting untuk akreditasi. Tuliskan hambatan nyata dan solusi yang konkret.</p>
+                                                    </div>
+                                                </div>
+                                            ')),
+                                    ]),
 
-                Section::make('Refleksi & Evaluasi')
-                    ->schema([
-                        Grid::make(2)
-                            ->schema([
-                                Textarea::make('hambatan')
-                                    ->label('Hambatan & Catatan Kelas')
-                                    ->placeholder('Misal: Siswa sulit memahami konsep X, ada kendala proyektor...')
-                                    ->rows(4),
-                                Textarea::make('solusi')
-                                    ->label('Solusi / Tindak Lanjut')
-                                    ->placeholder('Misal: Mengulangi materi di pertemuan depan dengan metode demonstrasi...')
-                                    ->rows(4),
+                                Section::make('Penting !')
+                                    ->icon('heroicon-o-exclamation-triangle')
+                                    ->columns(1)
+                                    ->schema([
+                                        \Filament\Forms\Components\Placeholder::make('info_urgent')
+                                            ->hiddenLabel()
+                                            ->content('Dokumen ini bersifat resmi. Pastikan data yang diinputkan valid dan dapat dipertanggungjawabkan.'),
+                                    ]),
                             ]),
                     ]),
             ]);
