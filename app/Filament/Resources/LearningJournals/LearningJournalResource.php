@@ -60,6 +60,13 @@ class LearningJournalResource extends Resource
         ];
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            // Widgets\LJInstructions::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [

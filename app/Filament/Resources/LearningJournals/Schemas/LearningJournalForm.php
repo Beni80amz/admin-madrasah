@@ -18,16 +18,17 @@ class LearningJournalForm
 {
     public static function configure(Schema $schema): Schema
     {
-        Log::info('Configuring LearningJournalForm - Full Width Version');
+        Log::info('Configuring LearningJournalForm - V3 Force Single Column');
 
         return $schema
+            ->columns(1) // STRICT SINGLE COLUMN FOR ENTIRE PAGE
             ->schema([
                 // 1. Data Administrasi
                 Section::make('Data Administrasi')
                     ->description('Informasi dasar terkait pelaksanaan pembelajaran.')
                     ->icon('heroicon-o-clipboard-document-list')
                     ->schema([
-                        Grid::make(['default' => 1, 'md' => 3, 'lg' => 4])
+                        Grid::make(3) // Inner grid for field distribution
                             ->schema([
                                 Select::make('user_id')
                                     ->label('Guru Pengampu')
@@ -38,19 +39,14 @@ class LearningJournalForm
                                     ->default(Auth::id())
                                     ->disabled(fn() => !Auth::user()->hasRole(['Superadmin', 'super_admin']))
                                     ->required()
-                                    ->columnSpan(['default' => 1, 'md' => 1]),
+                                    ->columnSpan(2), // ENLARGED: Spans 2 out of 3 columns
+
                                 DatePicker::make('date')
                                     ->label('Tanggal Pelaksanaan')
                                     ->prefixIcon('heroicon-m-calendar-days')
                                     ->default(now())
                                     ->required()
-                                    ->columnSpan(['default' => 1, 'md' => 1]),
-                                TextInput::make('pertemuan_ke')
-                                    ->label('Pertemuan Ke-')
-                                    ->prefixIcon('heroicon-m-hashtag')
-                                    ->placeholder('Contoh: 1')
-                                    ->required()
-                                    ->columnSpan(['default' => 1, 'md' => 1]),
+                                    ->columnSpan(1),
 
                                 Select::make('mata_pelajaran_id')
                                     ->label('Mata Pelajaran')
@@ -59,7 +55,14 @@ class LearningJournalForm
                                     ->searchable()
                                     ->preload()
                                     ->required()
-                                    ->columnSpan(['default' => 1, 'md' => 2, 'lg' => 2]),
+                                    ->columnSpan(2),
+
+                                TextInput::make('pertemuan_ke')
+                                    ->label('Pertemuan Ke-')
+                                    ->prefixIcon('heroicon-m-hashtag')
+                                    ->placeholder('Contoh: 1')
+                                    ->required()
+                                    ->columnSpan(1),
 
                                 Select::make('rombel_id')
                                     ->label('Kelas / Rombel')
@@ -78,7 +81,7 @@ class LearningJournalForm
                                         return null;
                                     })
                                     ->required()
-                                    ->columnSpan(['default' => 1, 'md' => 1]),
+                                    ->columnSpan(2),
                             ]),
                     ]),
 
@@ -101,7 +104,7 @@ class LearningJournalForm
                     ->icon('heroicon-o-users')
                     ->collapsible()
                     ->schema([
-                        Grid::make(['default' => 1, 'sm' => 3])
+                        Grid::make(3)
                             ->schema([
                                 TextInput::make('absensi_s')
                                     ->label('Sakit (S)')
@@ -120,7 +123,7 @@ class LearningJournalForm
                                     ->default(0),
                             ]),
 
-                        Grid::make(['default' => 1, 'md' => 3])
+                        Grid::make(1)
                             ->visible(fn($get) => $get('rombel_id'))
                             ->schema([
                                 Select::make('students_sakit')
@@ -154,7 +157,7 @@ class LearningJournalForm
                     ->collapsible()
                     ->collapsed()
                     ->schema([
-                        Grid::make(['default' => 1, 'md' => 2])
+                        Grid::make(2)
                             ->schema([
                                 Textarea::make('hambatan')
                                     ->label('Hambatan / Catatan Khusus')
@@ -164,31 +167,6 @@ class LearningJournalForm
                                     ->label('Solusi / Tindak Lanjut')
                                     ->placeholder('Tuliskan solusi yang dilakukan...')
                                     ->rows(4),
-                            ]),
-                    ]),
-
-                // 5. Sidebar-Alternative: Panduan (Moved to bottom as a stacked section)
-                Section::make('Petunjuk & Status')
-                    ->icon('heroicon-o-information-circle')
-                    ->collapsible()
-                    ->collapsed()
-                    ->schema([
-                        Grid::make(2)
-                            ->schema([
-                                \Filament\Forms\Components\Placeholder::make('guidelines')
-                                    ->label('Petunjuk Pengisian')
-                                    ->content(new \Illuminate\Support\HtmlString('
-                                        <div class="text-sm text-gray-600 dark:text-gray-400">
-                                            <ul class="list-disc pl-5 space-y-1">
-                                                <li><strong>Isi Segera:</strong> Semakin cepat semakin baik agar data akurat.</li>
-                                                <li><strong>Absensi:</strong> Pastikan jumlah angka sesuai dengan daftar nama.</li>
-                                                <li><strong>Refleksi:</strong> Wajib diisi untuk keperluan supervisi/akreditasi.</li>
-                                            </ul>
-                                        </div>
-                                    ')),
-                                \Filament\Forms\Components\Placeholder::make('status_info')
-                                    ->label('Status Dokumen')
-                                    ->content('Dokumen ini adalah rekam jejak resmi aktivitas pembelajaran Anda. Pastikan data valid.'),
                             ]),
                     ]),
             ]);
