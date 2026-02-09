@@ -40,7 +40,7 @@ class LearningJournalResource extends Resource
 
         return $user->hasRole('Superadmin') ||
             $user->hasRole('super_admin') ||
-            $user->hasRole('teacher');
+            $user->hasRole('Guru');
     }
 
     public static function form(Schema $schema): Schema
