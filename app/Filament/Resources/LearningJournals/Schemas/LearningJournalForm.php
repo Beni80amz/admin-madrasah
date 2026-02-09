@@ -124,19 +124,25 @@ class LearningJournalForm
                                 Select::make('students_sakit')
                                     ->label('Siswa Sakit')
                                     ->multiple()
-                                    ->options(fn(Get $get) => \App\Models\Student::where('rombel_id', $get('rombel_id'))->where('is_active', true)->pluck('nama_lengkap', 'id'))
+                                    ->options(function (Get $get) {
+                                        return self::getStudentOptions($get('rombel_id'));
+                                    })
                                     ->preload()
                                     ->searchable(),
                                 Select::make('students_izin')
                                     ->label('Siswa Izin')
                                     ->multiple()
-                                    ->options(fn(Get $get) => \App\Models\Student::where('rombel_id', $get('rombel_id'))->where('is_active', true)->pluck('nama_lengkap', 'id'))
+                                    ->options(function (Get $get) {
+                                        return self::getStudentOptions($get('rombel_id'));
+                                    })
                                     ->preload()
                                     ->searchable(),
                                 Select::make('students_alpha')
                                     ->label('Siswa Alpha')
                                     ->multiple()
-                                    ->options(fn(Get $get) => \App\Models\Student::where('rombel_id', $get('rombel_id'))->where('is_active', true)->pluck('nama_lengkap', 'id'))
+                                    ->options(function (Get $get) {
+                                        return self::getStudentOptions($get('rombel_id'));
+                                    })
                                     ->preload()
                                     ->searchable(),
                             ]),
@@ -157,5 +163,50 @@ class LearningJournalForm
                             ]),
                     ]),
             ]);
+    }
+
+    protected static function getStudentOptions($rombelId): array
+    {
+        if (!$rombelId) {
+            return [];
+        }
+
+        $rombel = \App\Models\Rombel::with('kelas')->find($rombelId);
+        if (!$rombel) {
+            return [];
+        }
+
+        $tingkat = self::romanToArabic($rombel->kelas?->tingkat ?? '');
+        $kelasString = $tingkat . '-' . ($rombel->nama ?? '');
+
+        return \App\Models\Student::where('kelas', $kelasString)
+            ->where('is_active', true)
+            ->pluck('nama_lengkap', 'id')
+            ->toArray();
+    }
+
+    protected static function romanToArabic(string $roman): string
+    {
+        $romans = ['I' => 1, 'V' => 5, 'X' => 10, 'L' => 50, 'C' => 100];
+        $roman = strtoupper(trim($roman));
+
+        if (is_numeric($roman)) {
+            return $roman;
+        }
+
+        $result = 0;
+        $length = strlen($roman);
+        for ($i = 0; $i < $length; $i++) {
+            $current = $romans[$roman[$i]] ?? 0;
+            $next = ($i + 1 < $length) ? ($romans[$roman[$i + 1]] ?? 0) : 0;
+
+            if ($current < $next) {
+                $result -= $current;
+            } else {
+                $result += $current;
+            }
+        }
+
+        return $result > 0 ? (string) $result : $roman;
     }
 }
