@@ -3,14 +3,10 @@
 namespace App\Filament\Widgets;
 
 use Filament\Widgets\Widget;
-use Illuminate\Contracts\View\View;
 
 class JournalInformationWidget extends Widget
 {
-    protected int|string|array $columnSpan = 'full';
+    protected string $view = 'filament.widgets.journal-information-widget';
 
-    public function render(): View
-    {
-        return view('filament.widgets.journal-information-widget');
-    }
+    protected int|string|array $columnSpan = 'full';
 }

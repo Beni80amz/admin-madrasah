@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
         // MANUAL REQUIRE: Bypass server permission issues preventing autoloader update
         // This ensures the class is loaded even if composer dump-autoload fails
         require_once app_path('Filament/Resources/Holidays/HolidayResource.php');
+        require_once app_path('Filament/Widgets/JournalInformationWidget.php');
 
         // Get theme mode from settings (with safety check for migrations)
         $themeMode = 'dark';
