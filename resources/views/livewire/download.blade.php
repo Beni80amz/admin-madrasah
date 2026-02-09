@@ -24,12 +24,23 @@
     <!-- Content Section -->
     <section class="pb-32 relative">
         <div class="layout-container px-5 md:px-10 lg:px-40">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Category Filter Tabs -->
+            <div class="flex flex-wrap items-center justify-center gap-2 mb-12 animate-fade-in-up"
+                style="animation-delay: 300ms">
+                @foreach($categories as $category)
+                    <button wire:click="setCategory('{{ $category }}')"
+                        class="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 {{ $selectedCategory === $category ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-105' : 'bg-white dark:bg-surface-dark text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 border border-border-light dark:border-border-dark' }}">
+                        {{ $category }}
+                    </button>
+                @endforeach
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 @forelse($downloads as $download)
-                    <div
-                        class="group bg-white dark:bg-surface-dark p-8 rounded-3xl border border-border-light dark:border-border-dark hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-2 animate-fade-in-up">
+                    <div wire:key="download-{{ $download->id }}"
+                        class="group bg-white dark:bg-surface-dark p-6 rounded-3xl border border-border-light dark:border-border-dark hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-2 animate-fade-in-up">
                         <div
-                            class="size-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6 transition-colors group-hover:bg-primary group-hover:text-white">
+                            class="size-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-5 transition-colors group-hover:bg-primary group-hover:text-white">
                             @php
                                 $icon = match ($download->category) {
                                     'Pendaftaran' => 'description',
@@ -39,42 +50,58 @@
                                     default => 'draft',
                                 };
                             @endphp
-                            <span class="material-symbols-outlined text-3xl">{{ $icon }}</span>
+                            <span class="material-symbols-outlined text-2xl">{{ $icon }}</span>
                         </div>
-                        <div class="mb-6">
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">
+
+                        <div class="mb-5">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span
+                                    class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400">
+                                    {{ $download->category }}
+                                </span>
+                            </div>
+                            <h3
+                                class="text-lg font-bold text-gray-900 dark:text-white mb-2 leading-tight group-hover:text-primary transition-colors">
                                 {{ $download->title }}
                             </h3>
                             @if($download->description)
-                                <p class="text-gray-600 dark:text-gray-400 line-clamp-2">
+                                <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
                                     {{ $download->description }}
                                 </p>
                             @endif
                         </div>
-                        <button wire:click="downloadFile({{ $download->id }})" wire:loading.attr="disabled"
-                            class="flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all disabled:opacity-50">
-                            <span wire:loading.remove wire:target="downloadFile({{ $download->id }})">Unduh File</span>
-                            <span wire:loading wire:target="downloadFile({{ $download->id }})">Mengunduh...</span>
-                            <span class="material-symbols-outlined text-sm">download</span>
-                        </button>
+
+                        <div
+                            class="pt-4 border-t border-border-light dark:border-white/5 flex items-center justify-between">
+                            <button wire:click="downloadFile({{ $download->id }})" wire:loading.attr="disabled"
+                                class="flex items-center gap-2 text-primary text-sm font-bold hover:gap-3 transition-all disabled:opacity-50">
+                                <span wire:loading.remove wire:target="downloadFile({{ $download->id }})">Unduh</span>
+                                <span wire:loading wire:target="downloadFile({{ $download->id }})">...</span>
+                                <span class="material-symbols-outlined text-sm">download</span>
+                            </button>
+                            <span class="text-[10px] font-medium text-gray-400 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[12px]">visibility</span>
+                                {{ $download->download_count }}x
+                            </span>
+                        </div>
                     </div>
                 @empty
-                    <div class="col-span-full py-20 text-center">
+                    <div class="col-span-full py-20 text-center animate-fade-in-up">
                         <div
                             class="size-20 bg-gray-100 dark:bg-surface-dark rounded-full flex items-center justify-center mx-auto mb-6 text-gray-400">
                             <span class="material-symbols-outlined text-4xl">folder_off</span>
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Belum Ada Dokumen</h3>
                         <p class="text-gray-600 dark:text-gray-400">
-                            Silakan cek kembali nanti untuk dokumen terbaru.
+                            Silakan pilih kategori lain atau cek kembali nanti.
                         </p>
                     </div>
                 @endforelse
             </div>
 
-            <!-- Coming Soon Info -->
+            <!-- Help Info -->
             <div
-                class="mt-20 p-8 rounded-[40px] bg-white dark:bg-surface-dark/50 border border-border-light dark:border-border-dark relative overflow-hidden text-center max-w-4xl mx-auto">
+                class="mt-20 p-8 rounded-[40px] bg-white dark:bg-surface-dark/30 border border-border-light dark:border-border-dark relative overflow-hidden text-center max-w-4xl mx-auto shadow-sm animate-fade-in-up">
                 <div class="relative z-10">
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Butuh Dokumen Lain?</h3>
                     <p class="text-gray-600 dark:text-gray-400 mb-0">

@@ -12,16 +12,39 @@ use Illuminate\Support\Facades\Storage;
 #[Title('Unduhan - Madrasah Portal')]
 class Download extends Component
 {
+    public $selectedCategory = 'Semua';
+
     public function render()
     {
-        $downloads = DownloadModel::where('is_active', true)
+        $query = DownloadModel::where('is_active', true)
             ->orderBy('sort_order')
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->orderBy('created_at', 'desc');
+
+        if ($this->selectedCategory !== 'Semua') {
+            $query->where('category', $this->selectedCategory);
+        }
+
+        $downloads = $query->get();
+
+        $categories = DownloadModel::where('is_active', true)
+            ->distinct()
+            ->pluck('category')
+            ->filter()
+            ->values()
+            ->toArray();
+
+        // Ensure 'Semua' is at the beginning
+        array_unshift($categories, 'Semua');
 
         return view('livewire.download', [
             'downloads' => $downloads,
+            'categories' => $categories,
         ]);
+    }
+
+    public function setCategory($category)
+    {
+        $this->selectedCategory = $category;
     }
 
     public function downloadFile($id)
