@@ -35,29 +35,32 @@
                             class="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700">
                             <span class="text-[10px] font-bold">1</span>
                         </div>
-                        <p class="text-gray-700 dark:text-emerald-100/90 leading-relaxed">
-                            <strong class="text-emerald-950 dark:text-emerald-50 font-bold">Disiplin Waktu:</strong>
-                            Segera isi jurnal setelah KBM selesai agar data tetap akurat.
+                        <p class="text-gray-900 dark:text-white leading-relaxed font-medium">
+                            <strong
+                                class="text-emerald-950 dark:text-emerald-300 font-bold underline decoration-emerald-500/30 underline-offset-4">Disiplin
+                                Waktu:</strong> Segera isi jurnal setelah KBM selesai agar data tetap akurat.
                         </p>
                     </li>
-                    <li class="flex items-start gap-3">
+                    <li class="flex items-start gap-4 group/item">
                         <div
-                            class="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700">
-                            <span class="text-[10px] font-bold">2</span>
+                            class="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.4)] border border-emerald-400">
+                            <span class="text-[11px] font-black italic">2</span>
                         </div>
-                        <p class="text-gray-700 dark:text-emerald-100/90 leading-relaxed">
-                            <strong class="text-emerald-950 dark:text-emerald-50 font-bold">Presensi Siswa:</strong>
-                            Pastikan total angka S/I/A sesuai dengan daftar nama.
+                        <p class="text-gray-900 dark:text-white leading-relaxed font-medium">
+                            <strong
+                                class="text-emerald-950 dark:text-emerald-300 font-bold underline decoration-emerald-500/30 underline-offset-4">Presensi
+                                Siswa:</strong> Pastikan total angka S/I/A sesuai dengan daftar nama.
                         </p>
                     </li>
-                    <li class="flex items-start gap-3">
+                    <li class="flex items-start gap-4 group/item">
                         <div
-                            class="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-700">
-                            <span class="text-[10px] font-bold">3</span>
+                            class="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.4)] border border-emerald-400">
+                            <span class="text-[11px] font-black italic">3</span>
                         </div>
-                        <p class="text-gray-700 dark:text-emerald-100/90 leading-relaxed">
-                            <strong class="text-emerald-950 dark:text-emerald-50 font-bold">Refleksi:</strong> Isian ini
-                            krusial untuk supervisi akademik sekolah.
+                        <p class="text-gray-900 dark:text-white leading-relaxed font-medium">
+                            <strong
+                                class="text-emerald-950 dark:text-emerald-300 font-bold underline decoration-emerald-500/30 underline-offset-4">Refleksi:</strong>
+                            Isian ini krusial untuk supervisi akademik sekolah.
                         </p>
                     </li>
                 </ul>
