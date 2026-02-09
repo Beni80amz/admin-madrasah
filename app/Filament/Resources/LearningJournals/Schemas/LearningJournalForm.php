@@ -9,6 +9,7 @@ use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Get;
@@ -23,6 +24,8 @@ class LearningJournalForm
         return $schema
             ->columns(1) // STRICT SINGLE COLUMN FOR ENTIRE PAGE
             ->components([
+                View::make('filament.resources.learning-journals.header-instructions'),
+
                 // 1. Data Administrasi
                 Section::make('Data Administrasi')
                     ->description('Informasi dasar terkait pelaksanaan pembelajaran.')
