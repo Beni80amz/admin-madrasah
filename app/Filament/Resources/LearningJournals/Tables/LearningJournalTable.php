@@ -26,6 +26,7 @@ class LearningJournalTable
                     ->sortable(),
                 TextColumn::make('user.name')
                     ->label('Guru')
+                    ->getStateUsing(fn($record) => $record->user?->teacher?->nama_lengkap ?? $record->user?->name)
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
@@ -35,6 +36,7 @@ class LearningJournalTable
                     ->sortable(),
                 TextColumn::make('rombel.nama')
                     ->label('Kelas')
+                    ->getStateUsing(fn($record) => "{$record->rombel?->kelas?->nama} - {$record->rombel?->nama}")
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('pertemuan_ke')
@@ -50,6 +52,7 @@ class LearningJournalTable
                 SelectFilter::make('user_id')
                     ->label('Guru')
                     ->relationship('user', 'name')
+                    ->getOptionLabelFromRecordUsing(fn($record) => $record->teacher?->nama_lengkap ?? $record->name)
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('mata_pelajaran_id')
@@ -60,6 +63,7 @@ class LearningJournalTable
                 SelectFilter::make('rombel_id')
                     ->label('Rombel')
                     ->relationship('rombel', 'nama')
+                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->kelas?->nama} - {$record->nama}")
                     ->searchable()
                     ->preload(),
                 Filter::make('date')

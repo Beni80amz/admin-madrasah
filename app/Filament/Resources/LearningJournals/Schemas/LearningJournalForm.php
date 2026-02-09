@@ -24,6 +24,7 @@ class LearningJournalForm
                                 Select::make('user_id')
                                     ->label('Guru')
                                     ->relationship('user', 'name')
+                                    ->getOptionLabelFromRecordUsing(fn($record) => $record->teacher?->nama_lengkap ?? $record->name)
                                     ->searchable()
                                     ->preload()
                                     ->default(Auth::id())
@@ -49,6 +50,7 @@ class LearningJournalForm
                                 Select::make('rombel_id')
                                     ->label('Kelas / Rombel')
                                     ->relationship('rombel', 'nama')
+                                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->kelas?->nama} - {$record->nama}")
                                     ->searchable()
                                     ->preload()
                                     ->required(),
