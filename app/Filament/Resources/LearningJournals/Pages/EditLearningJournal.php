@@ -13,7 +13,7 @@ class EditLearningJournal extends EditRecord
     protected function getHeaderWidgets(): array
     {
         return [
-            \App\Filament\Widgets\LJInstructionWidget::class,
+            \App\Filament\Widgets\JournalInformationWidget::class,
         ];
     }
 
