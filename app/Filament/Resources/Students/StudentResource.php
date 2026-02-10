@@ -75,18 +75,21 @@ class StudentResource extends Resource
 
         $rombelIds = collect();
 
-        // 1. Wali Kelas Logic (Guru Kelas MI - ID 2)
-        if ($teacher->tugas_pokok_id == 2 && $teacher->rombel_id) {
-            $rombelIds->push($teacher->rombel_id);
+        // 1. Wali Kelas Logic
+        $isGuruKelas = $teacher->jabatan?->nama === 'Guru Kelas' || \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->exists();
+
+        if ($isGuruKelas) {
+            $rombelId = $teacher->rombel_id ?? \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->value('id');
+            if ($rombelId) {
+                $rombelIds->push($rombelId);
+            }
+        } else {
+            // 2. Guru Mata Pelajaran Logic: Fetch rombels from schedule
+            $scheduleRombels = \App\Models\JadwalPelajaran::where('teacher_id', $teacher->id)
+                ->pluck('rombel_id')
+                ->unique();
+            $rombelIds = $rombelIds->merge($scheduleRombels)->unique();
         }
-
-        // 2. Guru Mata Pelajaran Logic (ID 1)
-        // Fetch rombels from schedule
-        $scheduleRombels = \App\Models\JadwalPelajaran::where('teacher_id', $teacher->id)
-            ->pluck('rombel_id')
-            ->unique();
-
-        $rombelIds = $rombelIds->merge($scheduleRombels)->unique();
 
         if ($rombelIds->isEmpty()) {
             return collect();

@@ -82,16 +82,38 @@ class LearningJournalForm
                                 Select::make('rombel_id')
                                     ->label('Kelas / Rombel')
                                     ->prefixIcon('heroicon-m-user-group')
-                                    ->relationship('rombel', 'nama')
-                                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->kelas?->nama} - {$record->nama}")
+                                    ->options(function () {
+                                        $user = Auth::user();
+                                        if (!$user || !$user->teacher) {
+                                            return \App\Models\Rombel::all()->pluck('nama_lengkap', 'id');
+                                        }
+
+                                        $teacher = $user->teacher;
+                                        $isGuruKelas = $teacher->jabatan?->nama === 'Guru Kelas' || \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->exists();
+
+                                        if ($isGuruKelas) {
+                                            $rombelId = $teacher->rombel_id ?? \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->value('id');
+                                            return \App\Models\Rombel::where('id', $rombelId)->get()->pluck('nama_lengkap', 'id');
+                                        }
+
+                                        // Guru Mata Pelajaran: Options from their schedule
+                                        $rombelIds = \App\Models\JadwalPelajaran::where('teacher_id', $teacher->id)
+                                            ->pluck('rombel_id');
+
+                                        return \App\Models\Rombel::whereIn('id', $rombelIds)->get()->pluck('nama_lengkap', 'id');
+                                    })
                                     ->searchable()
                                     ->preload()
                                     ->live()
                                     ->default(function () {
                                         $user = Auth::user();
                                         if ($user && $user->teacher) {
-                                            $rombel = \App\Models\Rombel::where('wali_kelas_id', $user->teacher->id)->first();
-                                            return $rombel ? $rombel->id : null;
+                                            $teacher = $user->teacher;
+                                            $isGuruKelas = $teacher->jabatan?->nama === 'Guru Kelas' || \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->exists();
+
+                                            if ($isGuruKelas) {
+                                                return $teacher->rombel_id ?? \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->value('id');
+                                            }
                                         }
                                         return null;
                                     })

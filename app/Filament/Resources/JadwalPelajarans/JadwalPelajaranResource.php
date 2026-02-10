@@ -38,6 +38,33 @@ class JadwalPelajaranResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Jadwal Pelajaran';
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if ($user->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum', 'kepala_sekolah', 'Kepala Sekolah'])) {
+            return $query;
+        }
+
+        $teacher = $user->teacher;
+        if (!$teacher) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        // Logic check: Guru Kelas (Wali Kelas)
+        $isGuruKelas = $teacher->jabatan?->nama === 'Guru Kelas' || \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->exists();
+
+        if ($isGuruKelas) {
+            // Guru Kelas sees all schedules for their Rombel
+            $rombelId = $teacher->rombel_id ?? \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->value('id');
+            return $query->where('rombel_id', $rombelId);
+        }
+
+        // Guru Mata Pelajaran sees only their own teaching schedule
+        return $query->where('teacher_id', $teacher->id);
+    }
+
     public static function getAllowedRombelIds(\App\Models\User $user): ?\Illuminate\Support\Collection
     {
         if ($user->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum', 'kepala_sekolah', 'Kepala Sekolah'])) {
@@ -49,19 +76,17 @@ class JadwalPelajaranResource extends Resource
             return collect();
         }
 
-        $rombelIds = collect();
+        $isGuruKelas = $teacher->jabatan?->nama === 'Guru Kelas' || \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->exists();
 
-        // 1. Wali Kelas Logic
-        if ($teacher->rombel_id) {
-            $rombelIds->push($teacher->rombel_id);
+        if ($isGuruKelas) {
+            $rombelId = $teacher->rombel_id ?? \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->value('id');
+            return collect([$rombelId]);
         }
 
-        // 2. Guru Mata Pelajaran Logic (Fetch rombels from existing schedule)
-        $scheduleRombels = \App\Models\JadwalPelajaran::where('teacher_id', $teacher->id)
+        // Guru Mata Pelajaran: Fetch rombels from their schedule
+        return \App\Models\JadwalPelajaran::where('teacher_id', $teacher->id)
             ->pluck('rombel_id')
             ->unique();
-
-        return $rombelIds->merge($scheduleRombels)->unique();
     }
 
     public static function form(Schema $schema): Schema

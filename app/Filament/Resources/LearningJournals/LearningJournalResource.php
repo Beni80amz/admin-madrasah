@@ -43,6 +43,32 @@ class LearningJournalResource extends Resource
             $user->hasRole('Guru');
     }
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if ($user->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum', 'kepala_sekolah', 'Kepala Sekolah'])) {
+            return $query;
+        }
+
+        $teacher = $user->teacher;
+        if (!$teacher) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        $isGuruKelas = $teacher->jabatan?->nama === 'Guru Kelas' || \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->exists();
+
+        if ($isGuruKelas) {
+            // Guru Kelas sees journals for their Rombel
+            $rombelId = $teacher->rombel_id ?? \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->value('id');
+            return $query->where('rombel_id', $rombelId);
+        }
+
+        // Guru Mata Pelajaran sees only their own journals
+        return $query->where('user_id', $user->id);
+    }
+
     public static function form(Schema $schema): Schema
     {
         return LearningJournalForm::configure($schema);
