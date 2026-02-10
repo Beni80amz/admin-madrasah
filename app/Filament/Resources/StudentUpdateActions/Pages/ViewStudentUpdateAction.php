@@ -26,35 +26,69 @@ class ViewStudentUpdateAction extends ViewRecord
                 ->requiresConfirmation()
                 ->visible(fn(StudentUpdateAction $record) => $record->status === 'pending')
                 ->action(function (StudentUpdateAction $record) {
-                    $student = $record->student;
-                    $changes = $record->changes;
+                    try {
+                        $student = $record->student;
+                        if (!$student) {
+                            Notification::make()
+                                ->title('Error')
+                                ->body('Data siswa tidak ditemukan.')
+                                ->danger()
+                                ->send();
+                            return;
+                        }
 
-                    $updateData = [];
-                    foreach ($changes as $field => $values) {
-                        $updateData[$field] = $values['new'];
+                        $changes = $record->changes;
+                        if (empty($changes)) {
+                            Notification::make()
+                                ->title('Peringatan')
+                                ->body('Tidak ada data perubahan untuk disetujui.')
+                                ->warning()
+                                ->send();
+                            return;
+                        }
+
+                        $updateData = [];
+                        foreach ($changes as $field => $values) {
+                            $updateData[$field] = $values['new'];
+                        }
+
+                        // Use a transaction for safety
+                        \Illuminate\Support\Facades\DB::transaction(function () use ($student, $updateData, $record) {
+                            $student->update($updateData);
+
+                            $record->update([
+                                'status' => 'approved',
+                                'verifier_id' => auth()->id(),
+                                'verified_at' => now(),
+                            ]);
+                        });
+
+                        // Attempt to send notification (don't let it crash the whole process)
+                        try {
+                            if ($record->requester) {
+                                Notification::make()
+                                    ->title('Perubahan Data Siswa Disetujui')
+                                    ->body("Perubahan data untuk siswa **{$student->nama_lengkap}** telah disetujui oleh Admin.")
+                                    ->success()
+                                    ->sendToDatabase($record->requester);
+                            }
+                        } catch (\Exception $e) {
+                            // Log or ignore notification failure
+                        }
+
+                        Notification::make()
+                            ->title('Berhasil Disetujui')
+                            ->success()
+                            ->send();
+
+                        return redirect($this->getResource()::getUrl('index'));
+                    } catch (\Exception $e) {
+                        Notification::make()
+                            ->title('Proses Gagal')
+                            ->body('Terjadi kesalahan: ' . $e->getMessage())
+                            ->danger()
+                            ->send();
                     }
-
-                    $student->update($updateData);
-
-                    $record->update([
-                        'status' => 'approved',
-                        'verifier_id' => auth()->id(),
-                        'verified_at' => now(),
-                    ]);
-
-                    // Send notification to teacher
-                    Notification::make()
-                        ->title('Perubahan Data Siswa Disetujui')
-                        ->body("Perubahan data untuk siswa **{$student?->nama_lengkap}** telah disetujui oleh Admin.")
-                        ->success()
-                        ->sendToDatabase($record->requester);
-
-                    Notification::make()
-                        ->title('Berhasil Disetujui')
-                        ->success()
-                        ->send();
-
-                    return redirect($this->getResource()::getUrl('index'));
                 }),
             Action::make('reject')
                 ->label('Tolak Perubahan')
@@ -68,26 +102,40 @@ class ViewStudentUpdateAction extends ViewRecord
                 ])
                 ->visible(fn(StudentUpdateAction $record) => $record->status === 'pending')
                 ->action(function (StudentUpdateAction $record, array $data) {
-                    $record->update([
-                        'status' => 'rejected',
-                        'rejection_reason' => $data['rejection_reason'],
-                        'verifier_id' => auth()->id(),
-                        'verified_at' => now(),
-                    ]);
+                    try {
+                        $record->update([
+                            'status' => 'rejected',
+                            'rejection_reason' => $data['rejection_reason'],
+                            'verifier_id' => auth()->id(),
+                            'verified_at' => now(),
+                        ]);
 
-                    // Send notification to teacher
-                    Notification::make()
-                        ->title('Perubahan Data Siswa Ditolak')
-                        ->body("Perubahan data untuk siswa **{$record->student?->nama_lengkap}** ditolak oleh Admin. Alasan: {$data['rejection_reason']}")
-                        ->danger()
-                        ->sendToDatabase($record->requester);
+                        // Attempt to send notification
+                        try {
+                            if ($record->requester) {
+                                Notification::make()
+                                    ->title('Perubahan Data Siswa Ditolak')
+                                    ->body("Perubahan data untuk siswa **{$record->student?->nama_lengkap}** ditolak oleh Admin. Alasan: {$data['rejection_reason']}")
+                                    ->danger()
+                                    ->sendToDatabase($record->requester);
+                            }
+                        } catch (\Exception $e) {
+                            // Log or ignore
+                        }
 
-                    Notification::make()
-                        ->title('Perubahan Ditolak')
-                        ->danger()
-                        ->send();
+                        Notification::make()
+                            ->title('Perubahan Ditolak')
+                            ->danger()
+                            ->send();
 
-                    return redirect($this->getResource()::getUrl('index'));
+                        return redirect($this->getResource()::getUrl('index'));
+                    } catch (\Exception $e) {
+                        Notification::make()
+                            ->title('Proses Gagal')
+                            ->body('Terjadi kesalahan: ' . $e->getMessage())
+                            ->danger()
+                            ->send();
+                    }
                 }),
         ];
     }
