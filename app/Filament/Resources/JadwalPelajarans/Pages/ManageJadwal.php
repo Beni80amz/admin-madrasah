@@ -433,7 +433,21 @@ class ManageJadwal extends Page implements HasForms
                     $isLinier = in_array($mapelName, $linierMapels);
                 } else {
                     $teacherMainMapel = trim($teacher->mataPelajaran?->nama ?? '');
+
+                    // AUTO-DETECTION: If main mapel is missing, check if they teach religious subjects
                     $isAgamaTeacher = in_array($teacherMainMapel, $agamaGroup);
+                    if (!$isAgamaTeacher && !$teacher->mata_pelajaran_id) {
+                        // Check ALL schedules for this teacher to see if they are an Agama teacher
+                        $teachesAgama = JadwalPelajaran::where('teacher_id', $teacher->id)
+                            ->where('tahun_ajaran_id', $this->tahunAjaranId)
+                            ->where('semester', $this->semester)
+                            ->whereHas('mataPelajaran', function ($q) use ($agamaLinier) {
+                            $q->whereIn('nama', $agamaLinier);
+                        })->exists();
+                        if ($teachesAgama) {
+                            $isAgamaTeacher = true;
+                        }
+                    }
 
                     if ($isAgamaTeacher) {
                         // Religious teacher: core agama subjects are linier, B.Arab is not
@@ -443,7 +457,7 @@ class ManageJadwal extends Page implements HasForms
                         if ($teacher->mata_pelajaran_id) {
                             $isLinier = ($jadwal->mata_pelajaran_id == $teacher->mata_pelajaran_id);
                         } else {
-                            $isLinier = ($mapelName === $teacherMainMapel);
+                            $isLinier = ($teacherMainMapel !== '' && $mapelName === $teacherMainMapel);
                         }
                     }
                 }
@@ -518,11 +532,18 @@ class ManageJadwal extends Page implements HasForms
             })->count();
         } else {
             // Guru Mata Pelajaran
-            $teacherMapelId = $teacher->mata_pelajaran_id;
             $teacherMainMapel = trim($teacher->mataPelajaran?->nama ?? '');
 
-            // Identify if this teacher is a religious teacher based on their main subject
+            // AUTO-DETECTION: If main mapel is missing, check if they teach religious subjects
             $isAgamaTeacher = in_array($teacherMainMapel, $agamaGroup);
+            if (!$isAgamaTeacher && !$teacher->mata_pelajaran_id) {
+                $teachesAgama = $allSchedules->contains(function ($s) use ($agamaLinier) {
+                    return in_array(trim($s->mataPelajaran?->nama), $agamaLinier);
+                });
+                if ($teachesAgama) {
+                    $isAgamaTeacher = true;
+                }
+            }
 
             if ($isAgamaTeacher) {
                 // If religious teacher, sum all religious mapels (EXCLUDING Bahasa Arab as requested)
@@ -531,14 +552,14 @@ class ManageJadwal extends Page implements HasForms
                 })->count();
             } else {
                 // Otherwise, sum only the sessions matching their assigned main subject ID
-                if ($teacherMapelId) {
-                    $jtmLinier = $allSchedules->filter(function ($s) use ($teacherMapelId) {
-                        return $s->mata_pelajaran_id == $teacherMapelId;
+                if ($teacher->mata_pelajaran_id) {
+                    $jtmLinier = $allSchedules->filter(function ($s) use ($teacher) {
+                        return $s->mata_pelajaran_id == $teacher->mata_pelajaran_id;
                     })->count();
                 } else {
-                    // Fallback: If mapel ID is null but they teach something that matches the name
+                    // Fallback: If mapel ID is null but they teach something that matches the name in profile
                     $jtmLinier = $allSchedules->filter(function ($s) use ($teacherMainMapel) {
-                        return trim($s->mataPelajaran?->nama) === $teacherMainMapel;
+                        return $teacherMainMapel !== '' && trim($s->mataPelajaran?->nama) === $teacherMainMapel;
                     })->count();
                 }
             }
