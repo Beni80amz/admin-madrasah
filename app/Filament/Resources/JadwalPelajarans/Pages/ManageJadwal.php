@@ -398,12 +398,10 @@ class ManageJadwal extends Page implements HasForms
                     'mapel' => $jadwal->mataPelajaran?->nama ?? '-',
                     'guru' => $jadwal->teacher?->nama_lengkap ?? '-',
                     'jtm' => JadwalPelajaran::where('teacher_id', $jadwal->teacher_id)
+                        ->where('mata_pelajaran_id', $jadwal->mata_pelajaran_id) // Filter by specific mapel
                         ->where('tahun_ajaran_id', $this->tahunAjaranId)
                         ->where('semester', $this->semester)
                         ->where('rombel_id', $this->rombelId)
-                        ->whereHas('mataPelajaran', function ($query) use ($nonKbmMapels) {
-                            $query->whereNotIn('nama', $nonKbmMapels);
-                        })
                         ->count(),
                 ];
             })
