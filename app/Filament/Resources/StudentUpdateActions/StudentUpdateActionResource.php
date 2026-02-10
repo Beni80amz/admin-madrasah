@@ -64,12 +64,12 @@ class StudentUpdateActionResource extends Resource
                 \Filament\Schemas\Components\Section::make('Detail Perubahan Data')
                     ->description('Daftar field yang diubah oleh guru dan menunggu persetujuan.')
                     ->schema([
-                        \Filament\Infolists\Components\TextEntry::make('changes_display')
+                        \Filament\Infolists\Components\TextEntry::make('id')
                             ->label('')
-                            ->state(fn(StudentUpdateAction $record) => $record->changes)
+                            ->columnSpanFull()
                             ->html()
-                            ->formatStateUsing(function ($state) {
-                                $changes = $state;
+                            ->formatStateUsing(function ($state, StudentUpdateAction $record) {
+                                $changes = $record->changes;
                                 if (empty($changes))
                                     return '<div class="p-4 text-gray-500 italic">Tidak ada data perubahan yang tercatat.</div>';
 
@@ -88,9 +88,9 @@ class StudentUpdateActionResource extends Resource
                                     $old = $values['old'] ?? '-';
                                     $new = $values['new'] ?? '-';
 
-                                    if (empty($old))
+                                    if ($old === null || $old === '')
                                         $old = '-';
-                                    if (empty($new))
+                                    if ($new === null || $new === '')
                                         $new = '-';
 
                                     $output .= '<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">';

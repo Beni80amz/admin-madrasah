@@ -35,7 +35,9 @@ class EditStudent extends EditRecord
                     $newValue = $value;
 
                     // Normalize for comparison
-                    $normalizedOld = is_null($oldValue) ? '' : (string) $oldValue;
+                    $normalizedOld = is_object($oldValue) && method_exists($oldValue, 'format')
+                        ? $oldValue->format('Y-m-d')
+                        : (is_null($oldValue) ? '' : (string) $oldValue);
                     $normalizedNew = is_null($newValue) ? '' : (string) $newValue;
 
                     if ($normalizedOld !== $normalizedNew) {
