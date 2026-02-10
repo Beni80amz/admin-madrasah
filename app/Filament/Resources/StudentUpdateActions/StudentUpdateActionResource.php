@@ -26,7 +26,9 @@ class StudentUpdateActionResource extends Resource
 
     protected static ?string $modelLabel = 'Daftar Tindakan';
 
-    protected static UnitEnum|string|null $navigationGroup = 'Administrasi Siswa';
+    protected static UnitEnum|string|null $navigationGroup = 'Akademik';
+
+    protected static ?int $navigationSort = 3;
 
     public static function canAccess(): bool
     {
