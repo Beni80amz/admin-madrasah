@@ -42,6 +42,11 @@ class LearningJournalTable
                 TextColumn::make('pertemuan_ke')
                     ->label('Pertemuan')
                     ->toggleable(),
+                TextColumn::make('semester')
+                    ->label('Semester')
+                    ->badge()
+                    ->color(fn($state) => $state === 'Ganjil' ? 'warning' : 'success')
+                    ->toggleable(),
                 TextColumn::make('absensi_summary')
                     ->label('Absensi (S/I/A)')
                     ->getStateUsing(fn($record) => $record->getFormattedAttendanceNames())
