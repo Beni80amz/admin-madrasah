@@ -403,6 +403,72 @@ class ManageJadwal extends Page implements HasForms
             ->toArray();
     }
 
+    public function getJtmSummaryData(): array
+    {
+        $user = auth()->user();
+        if (!$user || !$user->teacher) {
+            return ['reguler' => 0, 'linier' => 0];
+        }
+
+        $teacher = $user->teacher;
+
+        // JTM Reguler: All schedules for this teacher
+        $allSchedules = JadwalPelajaran::with('mataPelajaran')
+            ->where('teacher_id', $teacher->id)
+            ->where('tahun_ajaran_id', $this->tahunAjaranId)
+            ->where('semester', $this->semester)
+            ->get();
+
+        $jtmReguler = $allSchedules->count();
+
+        // JTM Linier Logic
+        $jtmLinier = 0;
+        $isGuruKelas = $teacher->jabatan?->nama === 'Guru Kelas' || \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->exists();
+
+        if ($isGuruKelas) {
+            $linierMapels = [
+                'Al Quran Hadits',
+                'Akidah Akhlak',
+                'Fikih',
+                'Sej. Kebudayaan Islam',
+                'Pendidikan Pancasila',
+                'Bahasa Indonesia',
+                'Matematika',
+                'Seni Rupa',
+                'Seni Tari',
+                'Seni Musik',
+                'Seni Drama'
+            ];
+            $jtmLinier = $allSchedules->filter(function ($s) use ($linierMapels) {
+                return in_array($s->mataPelajaran?->nama, $linierMapels);
+            })->count();
+        } else {
+            // Guru Mata Pelajaran
+            $teacherMapelId = $teacher->mata_pelajaran_id;
+            $teacherMainMapel = $teacher->mataPelajaran?->nama;
+
+            $agamaMapels = ['Al Quran Hadits', 'Akidah Akhlak', 'Fikih', 'Sej. Kebudayaan Islam'];
+            $isAgamaTeacher = in_array($teacherMainMapel, $agamaMapels);
+
+            if ($isAgamaTeacher) {
+                // If religious teacher, sum all religious mapels
+                $jtmLinier = $allSchedules->filter(function ($s) use ($agamaMapels) {
+                    return in_array($s->mataPelajaran?->nama, $agamaMapels);
+                })->count();
+            } else {
+                // Otherwise, sum only the same mapel
+                $jtmLinier = $allSchedules->filter(function ($s) use ($teacherMapelId) {
+                    return $s->mata_pelajaran_id == $teacherMapelId;
+                })->count();
+            }
+        }
+
+        return [
+            'reguler' => $jtmReguler,
+            'linier' => $jtmLinier,
+        ];
+    }
+
     public function exportExcel(): BinaryFileResponse|StreamedResponse
     {
         $user = auth()->user();

@@ -242,6 +242,35 @@
                 </table>
             </div>
 
+            {{-- JTM Summary Table --}}
+            @php $jtmSummary = $this->getJtmSummaryData(); @endphp
+            <div
+                style="background: var(--fi-body-bg); border-radius: 12px; overflow: hidden; border: 1px solid rgba(156, 163, 175, 0.2); margin-top: 12px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #10b981; color: white;">
+                            <th
+                                style="padding: 10px 16px; text-align: center; font-size: 13px; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                JTM REGULER</th>
+                            <th style="padding: 10px 16px; text-align: center; font-size: 13px; font-weight: 600;">JTM
+                                LINIER</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td
+                                style="padding: 15px 16px; font-size: 24px; font-weight: 700; text-align: center; border-right: 1px solid rgba(156, 163, 175, 0.2);">
+                                {{ $jtmSummary['reguler'] }}
+                            </td>
+                            <td
+                                style="padding: 15px 16px; font-size: 24px; font-weight: 700; text-align: center; color: #10b981;">
+                                {{ $jtmSummary['linier'] }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             {{-- Day Tabs --}}
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 @foreach($this->getHariOptions() as $hari)
