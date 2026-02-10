@@ -25,17 +25,27 @@ class EditStudent extends EditRecord
 
         // If not admin/kurikulum, intercept sensitive changes
         if (!$user->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum'])) {
-            $sensitiveFields = ['nama_lengkap', 'nisn', 'nik', 'no_kk', 'nis_lokal'];
+            $excludeFields = ['rdm_id', 'photo', 'is_active', 'status', 'user_id', 'tahun_ajaran_id', 'kelas', 'created_at', 'updated_at'];
             $pendingChanges = [];
 
-            foreach ($sensitiveFields as $field) {
-                if (isset($data[$field]) && $data[$field] !== $record->$field) {
-                    $pendingChanges[$field] = [
-                        'old' => $record->$field,
-                        'new' => $data[$field],
-                    ];
-                    // Restore original value for protected field
-                    $data[$field] = $record->$field;
+            foreach ($data as $field => $value) {
+                // Only track fields that are in fillable and not excluded
+                if (in_array($field, $record->getFillable()) && !in_array($field, $excludeFields)) {
+                    $oldValue = $record->$field;
+                    $newValue = $value;
+
+                    // Normalize for comparison (especially for dates and empty strings vs null)
+                    $normalizedOld = is_object($oldValue) && method_exists($oldValue, 'format') ? $oldValue->format('Y-m-d') : (string) $oldValue;
+                    $normalizedNew = (string) $newValue;
+
+                    if ($normalizedOld !== $normalizedNew && !(empty($normalizedOld) && empty($normalizedNew))) {
+                        $pendingChanges[$field] = [
+                            'old' => $oldValue,
+                            'new' => $newValue,
+                        ];
+                        // Restore original value for protected field
+                        $data[$field] = $record->$field;
+                    }
                 }
             }
 
