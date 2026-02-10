@@ -53,15 +53,36 @@ class StudentUpdateActionResource extends Resource
                     ->sortable(),
                 TextColumn::make('changes')
                     ->label('Perubahan')
-                    ->formatStateUsing(function ($state) {
-                        if (empty($state))
-                            return 'Tidak ada perubahan';
-                        $output = [];
-                        foreach ($state as $field => $values) {
-                            $fieldName = ucwords(str_replace('_', ' ', $field));
-                            $output[] = "<strong>{$fieldName}</strong>: <span style='color: #ef4444;'>" . ($values['old'] ?? '-') . "</span> → <span style='color: #10b981;'>" . ($values['new'] ?? '-') . "</span>";
+                    ->formatStateUsing(function (StudentUpdateAction $record) {
+                        $changes = $record->changes;
+                        if (empty($changes)) {
+                            return '<span class="text-gray-400">Tidak ada perubahan data</span>';
                         }
-                        return implode('<br>', $output);
+
+                        $output = [];
+                        foreach ($changes as $field => $values) {
+                            $fieldName = ucwords(str_replace('_', ' ', $field));
+                            
+                            // Handle potential non-nested structure gracefully
+                            if (!is_array($values)) {
+                                $output[] = "<strong>{$fieldName}</strong>: <span style='color: #10b981;'>{$values}</span>";
+                                continue;
+                            }
+
+                            $old = $values['old'] ?? '-';
+                            $new = $values['new'] ?? '-';
+                            
+                            if (empty($old)) $old = '-';
+                            if (empty($new)) $new = '-';
+
+                            $output[] = "<div class='mb-1 last:mb-0'>" .
+                                        "<strong>{$fieldName}</strong>: " .
+                                        "<span style='color: #ef4444;'>{$old}</span>" .
+                                        " <span class='text-gray-400'>&rarr;</span> " .
+                                        "<span style='color: #10b981;'>{$new}</span>" .
+                                        "</div>";
+                        }
+                        return implode('', $output);
                     })
                     ->html(),
                 TextColumn::make('status')
