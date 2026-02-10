@@ -9,6 +9,7 @@ use Filament\Schemas\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Hidden;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
@@ -108,48 +109,42 @@ class LearningJournalForm
                     ->icon('heroicon-o-users')
                     ->collapsible()
                     ->schema([
-                        Grid::make(3)
-                            ->schema([
-                                TextInput::make('absensi_s')
-                                    ->label('Sakit (S)')
-                                    ->numeric()
-                                    ->prefixIcon('heroicon-m-heart')
-                                    ->default(0),
-                                TextInput::make('absensi_i')
-                                    ->label('Izin (I)')
-                                    ->numeric()
-                                    ->prefixIcon('heroicon-m-hand-raised')
-                                    ->default(0),
-                                TextInput::make('absensi_a')
-                                    ->label('Alpha (A)')
-                                    ->numeric()
-                                    ->prefixIcon('heroicon-m-x-circle')
-                                    ->default(0),
-                            ]),
+                        Hidden::make('absensi_s')->default(0),
+                        Hidden::make('absensi_i')->default(0),
+                        Hidden::make('absensi_a')->default(0),
 
                         Grid::make(1)
                             ->visible(fn($get) => $get('rombel_id'))
                             ->schema([
                                 Select::make('students_sakit')
-                                    ->label('Daftar Siswa Sakit')
+                                    ->label('Sakit (S)')
                                     ->multiple()
                                     ->options(fn($get) => LearningJournalForm::getStudentOptions($get('rombel_id')))
                                     ->preload()
                                     ->searchable()
+                                    ->live()
+                                    ->afterStateUpdated(fn($state, $set) => $set('absensi_s', count($state ?? [])))
+                                    ->prefixIcon('heroicon-m-heart')
                                     ->placeholder('Pilih siswa sakit...'),
                                 Select::make('students_izin')
-                                    ->label('Daftar Siswa Izin')
+                                    ->label('Izin (I)')
                                     ->multiple()
                                     ->options(fn($get) => LearningJournalForm::getStudentOptions($get('rombel_id')))
                                     ->preload()
                                     ->searchable()
+                                    ->live()
+                                    ->afterStateUpdated(fn($state, $set) => $set('absensi_i', count($state ?? [])))
+                                    ->prefixIcon('heroicon-m-hand-raised')
                                     ->placeholder('Pilih siswa izin...'),
                                 Select::make('students_alpha')
-                                    ->label('Daftar Siswa Alpha')
+                                    ->label('Alpha (A)')
                                     ->multiple()
                                     ->options(fn($get) => LearningJournalForm::getStudentOptions($get('rombel_id')))
                                     ->preload()
                                     ->searchable()
+                                    ->live()
+                                    ->afterStateUpdated(fn($state, $set) => $set('absensi_a', count($state ?? [])))
+                                    ->prefixIcon('heroicon-m-x-circle')
                                     ->placeholder('Pilih siswa alpha...'),
                             ]),
                     ]),
