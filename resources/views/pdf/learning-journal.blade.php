@@ -183,15 +183,15 @@
         <thead>
             <tr>
                 <th style="width: 25px;" class="center">No</th>
-                <th style="width: 70px;">Tanggal</th>
-                <th style="width: 100px;">Guru</th>
-                <th style="width: 80px;">Mapel</th>
-                <th style="width: 60px;">Kelas</th>
-                <th style="width: 40px;" class="center">Pert.</th>
-                <th style="width: 120px;">Materi</th>
-                <th>Absensi (S/I/A)</th>
-                <th style="width: 100px;">Evaluasi (Hambatan)</th>
-                <th style="width: 100px;">Tindak Lanjut (Solusi)</th>
+                <th style="width: 60px;">Tanggal</th>
+                <th style="width: 90px;">Guru</th>
+                <th style="width: 110px;">Mapel</th>
+                <th style="width: 50px;">Kelas</th>
+                <th style="width: 30px;" class="center">Pert.</th>
+                <th style="width: 160px;">Materi</th>
+                <th style="width: 110px;">Absensi (S/I/A)</th>
+                <th style="width: 130px;">Evaluasi (Hambatan)</th>
+                <th style="width: 120px;">Tindak Lanjut (Solusi)</th>
             </tr>
         </thead>
         <tbody>
