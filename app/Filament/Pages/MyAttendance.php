@@ -60,12 +60,12 @@ class MyAttendance extends Page implements HasTable
             ->columns([
                 TextColumn::make('date')
                     ->label('Tanggal')
-                    ->date('d F Y')
+                    ->formatStateUsing(fn($state) => Carbon::parse($state)->locale('id')->translatedFormat('d F Y'))
                     ->sortable(),
 
                 TextColumn::make('date_day')
                     ->label('Hari')
-                    ->state(fn(Attendance $record) => Carbon::parse($record->date)->translatedFormat('l')),
+                    ->state(fn(Attendance $record) => Carbon::parse($record->date)->locale('id')->translatedFormat('l')),
 
                 TextColumn::make('time_in')
                     ->label('Masuk')
@@ -80,22 +80,35 @@ class MyAttendance extends Page implements HasTable
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
-                        'Hadir' => 'success',
-                        'Telat' => 'warning',
-                        'Izin' => 'info',
-                        'Sakit' => 'danger',
-                        'Alpha' => 'gray',
+                    ->formatStateUsing(fn(string $state): string => ucfirst($state))
+                    ->color(fn(string $state): string => match (strtolower($state)) {
+                        'hadir' => 'success',
+                        'telat' => 'warning',
+                        'izin' => 'info',
+                        'sakit' => 'danger',
+                        'alpha' => 'gray',
                         default => 'secondary',
                     }),
 
                 TextColumn::make('keterlambatan')
                     ->label('Telat')
-                    ->state(fn($record) => $record->keterlambatan > 0 ? $record->keterlambatan . 'm' : '0m'),
+                    ->state(function ($record) {
+                        if ($record->keterlambatan <= 0)
+                            return '0m';
+                        $hours = floor($record->keterlambatan / 60);
+                        $minutes = $record->keterlambatan % 60;
+                        return ($hours > 0 ? "{$hours}j " : "") . "{$minutes}m";
+                    }),
 
                 TextColumn::make('lembur')
                     ->label('Lembur')
-                    ->state(fn($record) => $record->lembur > 0 ? $record->lembur . 'm' : '0m'),
+                    ->state(function ($record) {
+                        if ($record->lembur <= 0)
+                            return '0m';
+                        $hours = floor($record->lembur / 60);
+                        $minutes = $record->lembur % 60;
+                        return ($hours > 0 ? "{$hours}j " : "") . "{$minutes}m";
+                    }),
             ])
             ->filters([
                 Filter::make('date')
