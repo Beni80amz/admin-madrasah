@@ -30,21 +30,21 @@ class EditStudent extends EditRecord
 
             foreach ($data as $field => $value) {
                 // Only track fields that are in fillable and not excluded
-                if (in_array($field, $record->getFillable()) && !in_array($field, $excludeFields)) {
-                    $oldValue = $record->$field;
+                if ($record->isFillable($field) && !in_array($field, $excludeFields)) {
+                    $oldValue = $record->getOriginal($field);
                     $newValue = $value;
 
-                    // Normalize for comparison (especially for dates and empty strings vs null)
-                    $normalizedOld = is_object($oldValue) && method_exists($oldValue, 'format') ? $oldValue->format('Y-m-d') : (string) $oldValue;
-                    $normalizedNew = (string) $newValue;
+                    // Normalize for comparison
+                    $normalizedOld = is_null($oldValue) ? '' : (string) $oldValue;
+                    $normalizedNew = is_null($newValue) ? '' : (string) $newValue;
 
-                    if ($normalizedOld !== $normalizedNew && !(empty($normalizedOld) && empty($normalizedNew))) {
+                    if ($normalizedOld !== $normalizedNew) {
                         $pendingChanges[$field] = [
                             'old' => $oldValue,
                             'new' => $newValue,
                         ];
-                        // Restore original value for protected field
-                        $data[$field] = $record->$field;
+                        // Revert the field in the data array to original so the record->update($data) doesn't change it yet
+                        $data[$field] = $oldValue;
                     }
                 }
             }
@@ -59,7 +59,7 @@ class EditStudent extends EditRecord
 
                 $this->dispatch('swal:info', [
                     'title' => 'Verifikasi Diperlukan',
-                    'text' => 'Perubahan pada data kritis (Nama/NISN/NIK) telah diajukan dan menunggu persetujuan Admin.',
+                    'text' => 'Perubahan pada data kritis telah diajukan dan menunggu persetujuan Admin.',
                 ]);
             }
         }

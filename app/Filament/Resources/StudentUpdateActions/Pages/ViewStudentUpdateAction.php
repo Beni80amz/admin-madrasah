@@ -42,14 +42,17 @@ class ViewStudentUpdateAction extends ViewRecord
                             ->formatStateUsing(function (StudentUpdateAction $record) {
                                 $changes = $record->changes;
                                 if (empty($changes))
-                                    return 'Tidak ada data perubahan.';
+                                    return '<div class="p-4 text-gray-500 italic">Tidak ada data perubahan yang tercatat.</div>';
 
-                                $output = '<table class="w-full text-sm text-left border-collapse border border-gray-200 dark:border-gray-700">';
-                                $output .= '<thead class="bg-gray-50 dark:bg-gray-800"><tr>';
-                                $output .= '<th class="border border-gray-200 dark:border-gray-700 px-4 py-2">Nama Field</th>';
-                                $output .= '<th class="border border-gray-200 dark:border-gray-700 px-4 py-2 text-danger-600">Data Lama</th>';
-                                $output .= '<th class="border border-gray-200 dark:border-gray-700 px-4 py-2 text-success-600">Data Baru</th>';
-                                $output .= '</tr></thead><tbody>';
+                                $output = '<div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">';
+                                $output .= '<table class="w-full text-sm text-left border-collapse">';
+                                $output .= '<thead class="bg-gray-50 dark:bg-gray-800 text-xs uppercase text-gray-700 dark:text-gray-300">';
+                                $output .= '<tr>';
+                                $output .= '<th class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 font-bold">Field / Data</th>';
+                                $output .= '<th class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 font-bold text-red-600 dark:text-red-400">Data Terakhir (Lama)</th>';
+                                $output .= '<th class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 font-bold text-green-600 dark:text-green-400">Usulan Baru</th>';
+                                $output .= '</tr></thead>';
+                                $output .= '<tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">';
 
                                 foreach ($changes as $field => $values) {
                                     $fieldName = ucwords(str_replace('_', ' ', $field));
@@ -61,13 +64,13 @@ class ViewStudentUpdateAction extends ViewRecord
                                     if (empty($new))
                                         $new = '-';
 
-                                    $output .= '<tr>';
-                                    $output .= "<td class='border border-gray-200 dark:border-gray-700 px-4 py-2 font-medium'>{$fieldName}</td>";
-                                    $output .= "<td class='border border-gray-200 dark:border-gray-700 px-4 py-2 text-danger-600'>{$old}</td>";
-                                    $output .= "<td class='border border-gray-200 dark:border-gray-700 px-4 py-2 text-success-600'>{$new}</td>";
+                                    $output .= '<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">';
+                                    $output .= "<td class='px-4 py-3 font-semibold bg-gray-50/30 dark:bg-gray-800/30 w-1/4'>{$fieldName}</td>";
+                                    $output .= "<td class='px-4 py-3 text-red-600 dark:text-red-400 font-mono text-xs w-3/8'>{$old}</td>";
+                                    $output .= "<td class='px-4 py-3 text-green-600 dark:text-green-400 font-mono text-xs w-3/8'>{$new}</td>";
                                     $output .= '</tr>';
                                 }
-                                $output .= '</tbody></table>';
+                                $output .= '</tbody></table></div>';
                                 return $output;
                             }),
                     ]),
