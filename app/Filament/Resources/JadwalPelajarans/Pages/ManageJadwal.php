@@ -384,28 +384,77 @@ class ManageJadwal extends Page implements HasForms
         $nonKbmMapels = ['Istirahat', 'Soliskan', 'Shalat Dluha', '7 Kebiasaan Anak Indonesia Hebat'];
 
         // Get all teachers assigned to teach in this rombel's jadwal (EXCLUDING Non-KBM Mapels)
-        return JadwalPelajaran::with(['mataPelajaran', 'teacher'])
+        return JadwalPelajaran::with([
+            'mataPelajaran',
+            'teacher' => function ($q) {
+                $q->with(['mataPelajaran', 'jabatan']);
+            }
+        ])
             ->where('tahun_ajaran_id', $this->tahunAjaranId)
             ->where('semester', $this->semester)
             ->where('rombel_id', $this->rombelId)
             ->get()
             ->filter(function ($jadwal) use ($nonKbmMapels) {
-                return !in_array($jadwal->mataPelajaran?->nama, $nonKbmMapels);
+                return !in_array(trim($jadwal->mataPelajaran?->nama), $nonKbmMapels);
             })
-            // Remove unique('teacher_id') to show all subjects per teacher
-            ->map(function ($jadwal) use ($nonKbmMapels) {
+            ->map(function ($jadwal) {
+                $teacher = $jadwal->teacher;
+                $mapelName = trim($jadwal->mataPelajaran?->nama ?? '');
+
+                $isWaliKelas = \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->exists();
+                $isGuruKelas = ($teacher->jabatan?->nama === 'Guru Kelas') || $isWaliKelas;
+
+                $agamaLinier = ['Al Quran Hadits', 'Akidah Akhlak', 'Fikih', 'S K I', 'Sejarah Kebudayaan Islam'];
+                $agamaGroup = array_merge($agamaLinier, ['Bahasa Arab', 'B. Arab']);
+
+                $jtm = JadwalPelajaran::where('teacher_id', $jadwal->teacher_id)
+                    ->where('mata_pelajaran_id', $jadwal->mata_pelajaran_id)
+                    ->where('tahun_ajaran_id', $this->tahunAjaranId)
+                    ->where('semester', $this->semester)
+                    ->where('rombel_id', $this->rombelId)
+                    ->count();
+
+                // Linier Check per Row
+                $isLinier = false;
+                if ($isGuruKelas) {
+                    $linierMapels = array_merge($agamaLinier, [
+                        'Pend. Pancasila',
+                        'Pendidikan Pancasila',
+                        'Bhs. Indonesia',
+                        'Bahasa Indonesia',
+                        'Matematika',
+                        'I P A S',
+                        'Ilmu Pengetahuan Alam & Sosial',
+                        'Seni Rupa',
+                        'Seni Tari',
+                        'Seni Musik',
+                        'Seni Drama'
+                    ]);
+                    $isLinier = in_array($mapelName, $linierMapels);
+                } else {
+                    $teacherMainMapel = trim($teacher->mataPelajaran?->nama ?? '');
+                    $isAgamaTeacher = in_array($teacherMainMapel, $agamaGroup);
+
+                    if ($isAgamaTeacher) {
+                        // Religious teacher: core agama subjects are linier, B.Arab is not
+                        $isLinier = in_array($mapelName, $agamaLinier);
+                    } else {
+                        // General teacher: only their certified subject is linier
+                        if ($teacher->mata_pelajaran_id) {
+                            $isLinier = ($jadwal->mata_pelajaran_id == $teacher->mata_pelajaran_id);
+                        } else {
+                            $isLinier = ($mapelName === $teacherMainMapel);
+                        }
+                    }
+                }
+
                 return [
                     'mapel' => $jadwal->mataPelajaran?->nama ?? '-',
                     'guru' => $jadwal->teacher?->nama_lengkap ?? '-',
-                    'jtm' => JadwalPelajaran::where('teacher_id', $jadwal->teacher_id)
-                        ->where('mata_pelajaran_id', $jadwal->mata_pelajaran_id) // Filter by specific mapel
-                        ->where('tahun_ajaran_id', $this->tahunAjaranId)
-                        ->where('semester', $this->semester)
-                        ->where('rombel_id', $this->rombelId)
-                        ->count(),
+                    'jtm' => $jtm,
+                    'jtm_linier' => $isLinier ? $jtm : 0,
                 ];
             })
-            // Re-unique by combination of teacher and mapel to avoid duplicate rows for same mapel in same rombel (different jam_ke)
             ->unique(function ($item) {
                 return $item['guru'] . $item['mapel'];
             })

@@ -219,6 +219,8 @@
                             </th>
                             <th style="padding: 12px 16px; text-align: center; font-size: 13px; font-weight: 600;">JTM
                                 ROMBEL</th>
+                            <th style="padding: 12px 16px; text-align: center; font-size: 13px; font-weight: 600;">JTM
+                                LINIER</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -230,10 +232,12 @@
                                     {{ $item['guru'] }}
                                 </td>
                                 <td style="padding: 12px 16px; font-size: 14px; text-align: center;">{{ $item['jtm'] }}</td>
+                                <td style="padding: 12px 16px; font-size: 14px; text-align: center;">{{ $item['jtm_linier'] }}
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" style="padding: 24px; text-align: center; color: #9ca3af; font-size: 14px;">
+                                <td colspan="5" style="padding: 24px; text-align: center; color: #9ca3af; font-size: 14px;">
                                     Belum ada jadwal. Silakan tambahkan jadwal di bawah.
                                 </td>
                             </tr>
