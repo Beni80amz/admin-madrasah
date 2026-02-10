@@ -252,8 +252,14 @@
                             <th
                                 style="padding: 10px 16px; text-align: center; font-size: 13px; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
                                 JTM REGULER</th>
-                            <th style="padding: 10px 16px; text-align: center; font-size: 13px; font-weight: 600;">JTM
-                                LINIER</th>
+                            <th
+                                style="padding: 10px 16px; text-align: center; font-size: 13px; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                JTM LINIER</th>
+                            <th
+                                style="padding: 10px 16px; text-align: center; font-size: 13px; font-weight: 600; border-right: 1px solid rgba(255,255,255,0.2);">
+                                JTM TUGAS</th>
+                            <th style="padding: 10px 16px; text-align: center; font-size: 13px; font-weight: 600;">TOTAL
+                                JTM</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -263,8 +269,16 @@
                                 {{ $jtmSummary['reguler'] }}
                             </td>
                             <td
-                                style="padding: 15px 16px; font-size: 24px; font-weight: 700; text-align: center; color: #10b981;">
+                                style="padding: 15px 16px; font-size: 24px; font-weight: 700; text-align: center; border-right: 1px solid rgba(156, 163, 175, 0.2);">
                                 {{ $jtmSummary['linier'] }}
+                            </td>
+                            <td
+                                style="padding: 15px 16px; font-size: 24px; font-weight: 700; text-align: center; border-right: 1px solid rgba(156, 163, 175, 0.2);">
+                                {{ $jtmSummary['tugas'] }}
+                            </td>
+                            <td
+                                style="padding: 15px 16px; font-size: 24px; font-weight: 700; text-align: center; color: #10b981;">
+                                {{ $jtmSummary['total'] }}
                             </td>
                         </tr>
                     </tbody>

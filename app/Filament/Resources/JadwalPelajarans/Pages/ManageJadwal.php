@@ -407,7 +407,7 @@ class ManageJadwal extends Page implements HasForms
     {
         $user = auth()->user();
         if (!$user || !$user->teacher) {
-            return ['reguler' => 0, 'linier' => 0];
+            return ['reguler' => 0, 'linier' => 0, 'tugas' => 0, 'total' => 0];
         }
 
         $teacher = $user->teacher;
@@ -423,7 +423,8 @@ class ManageJadwal extends Page implements HasForms
 
         // JTM Linier Logic
         $jtmLinier = 0;
-        $isGuruKelas = $teacher->jabatan?->nama === 'Guru Kelas' || \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->exists();
+        $isWaliKelas = \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->exists();
+        $isGuruKelas = $teacher->jabatan?->nama === 'Guru Kelas' || $isWaliKelas;
 
         if ($isGuruKelas) {
             $linierMapels = [
@@ -464,9 +465,39 @@ class ManageJadwal extends Page implements HasForms
             }
         }
 
+        // JTM Tugas Logic
+        $jtmTugas = 0;
+
+        // a. Wali Kelas and Guru Piket: 6 JTM each
+        if ($isWaliKelas) {
+            $jtmTugas += 6;
+        }
+
+        $tugasTambahanNama = $teacher->tugasTambahan?->nama ?? '';
+
+        if (stripos($tugasTambahanNama, 'Guru Piket') !== false) {
+            $jtmTugas += 6;
+        }
+
+        // b. PKM. Kurikulum or PKM. Kesiswaan or Pembina OSIS: 12 JTM each
+        $pkmRoles = ['PKM. Kurikulum', 'PKM. Kesiswaan', 'Pembina OSIS'];
+        $isPkmOrOsis = false;
+        foreach ($pkmRoles as $role) {
+            if (stripos($tugasTambahanNama, $role) !== false) {
+                $isPkmOrOsis = true;
+                break;
+            }
+        }
+
+        if ($isPkmOrOsis) {
+            $jtmTugas += 12;
+        }
+
         return [
             'reguler' => $jtmReguler,
             'linier' => $jtmLinier,
+            'tugas' => $jtmTugas,
+            'total' => $jtmLinier + $jtmTugas,
         ];
     }
 
