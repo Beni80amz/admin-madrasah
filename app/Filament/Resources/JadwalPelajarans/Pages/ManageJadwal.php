@@ -434,6 +434,7 @@ class ManageJadwal extends Page implements HasForms
                 'Pendidikan Pancasila',
                 'Bahasa Indonesia',
                 'Matematika',
+                'Ilmu Pengetahuan Alam & Sosial',
                 'Seni Rupa',
                 'Seni Tari',
                 'Seni Musik',
