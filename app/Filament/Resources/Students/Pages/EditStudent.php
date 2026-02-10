@@ -18,6 +18,47 @@ class EditStudent extends EditRecord
         return $this->getResource()::getUrl('index');
     }
 
+    protected function handleRecordUpdate(\Illuminate\Database\Eloquent\Model $record, array $data): \Illuminate\Database\Eloquent\Model
+    {
+        /** @var Student $record */
+        $user = auth()->user();
+
+        // If not admin/kurikulum, intercept sensitive changes
+        if (!$user->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum'])) {
+            $sensitiveFields = ['nama_lengkap', 'nisn', 'nik', 'no_kk', 'nis_lokal'];
+            $pendingChanges = [];
+
+            foreach ($sensitiveFields as $field) {
+                if (isset($data[$field]) && $data[$field] !== $record->$field) {
+                    $pendingChanges[$field] = [
+                        'old' => $record->$field,
+                        'new' => $data[$field],
+                    ];
+                    // Restore original value for protected field
+                    $data[$field] = $record->$field;
+                }
+            }
+
+            if (!empty($pendingChanges)) {
+                \App\Models\StudentUpdateAction::create([
+                    'student_id' => $record->id,
+                    'user_id' => $user->id,
+                    'changes' => $pendingChanges,
+                    'status' => 'pending',
+                ]);
+
+                $this->dispatch('swal:info', [
+                    'title' => 'Verifikasi Diperlukan',
+                    'text' => 'Perubahan pada data kritis (Nama/NISN/NIK) telah diajukan dan menunggu persetujuan Admin.',
+                ]);
+            }
+        }
+
+        $record->update($data);
+
+        return $record;
+    }
+
     protected function getHeaderActions(): array
     {
         return [
