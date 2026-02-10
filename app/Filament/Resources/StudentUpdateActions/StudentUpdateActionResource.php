@@ -4,11 +4,11 @@ namespace App\Filament\Resources\StudentUpdateActions;
 
 use App\Filament\Resources\StudentUpdateActions\Pages\ManageStudentUpdateActions;
 use App\Models\StudentUpdateAction;
+use BackedEnum;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use UnitEnum;
@@ -17,7 +17,7 @@ class StudentUpdateActionResource extends Resource
 {
     protected static ?string $model = StudentUpdateAction::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-shield-check';
 
     protected static ?string $navigationLabel = 'Daftar Tindakan';
 
