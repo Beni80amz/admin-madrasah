@@ -381,17 +381,19 @@ class ManageJadwal extends Page implements HasForms
             return [];
         }
 
-        // Get all teachers assigned to teach in this rombel's jadwal (EXCLUDING Istirahat)
+        $nonKbmMapels = ['Istirahat', 'Soliskan', 'Shalat Dluha', '7 Kebiasaan Anak Indonesia Hebat'];
+
+        // Get all teachers assigned to teach in this rombel's jadwal (EXCLUDING Non-KBM Mapels)
         return JadwalPelajaran::with(['mataPelajaran', 'teacher'])
             ->where('tahun_ajaran_id', $this->tahunAjaranId)
             ->where('semester', $this->semester)
             ->where('rombel_id', $this->rombelId)
             ->get()
-            ->filter(function ($jadwal) {
-                return $jadwal->mataPelajaran?->nama !== 'Istirahat';
+            ->filter(function ($jadwal) use ($nonKbmMapels) {
+                return !in_array($jadwal->mataPelajaran?->nama, $nonKbmMapels);
             })
-            ->unique('teacher_id')
-            ->map(function ($jadwal) {
+            // Remove unique('teacher_id') to show all subjects per teacher
+            ->map(function ($jadwal) use ($nonKbmMapels) {
                 return [
                     'mapel' => $jadwal->mataPelajaran?->nama ?? '-',
                     'guru' => $jadwal->teacher?->nama_lengkap ?? '-',
@@ -399,11 +401,15 @@ class ManageJadwal extends Page implements HasForms
                         ->where('tahun_ajaran_id', $this->tahunAjaranId)
                         ->where('semester', $this->semester)
                         ->where('rombel_id', $this->rombelId)
-                        ->whereHas('mataPelajaran', function ($query) {
-                            $query->where('nama', '!=', 'Istirahat');
+                        ->whereHas('mataPelajaran', function ($query) use ($nonKbmMapels) {
+                            $query->whereNotIn('nama', $nonKbmMapels);
                         })
                         ->count(),
                 ];
+            })
+            // Re-unique by combination of teacher and mapel to avoid duplicate rows for same mapel in same rombel (different jam_ke)
+            ->unique(function ($item) {
+                return $item['guru'] . $item['mapel'];
             })
             ->values()
             ->toArray();
@@ -417,15 +423,16 @@ class ManageJadwal extends Page implements HasForms
         }
 
         $teacher = $user->teacher;
+        $nonKbmMapels = ['Istirahat', 'Soliskan', 'Shalat Dluha', '7 Kebiasaan Anak Indonesia Hebat'];
 
-        // JTM Reguler: All schedules for this teacher (EXCLUDING Istirahat)
+        // JTM Reguler: All schedules for this teacher (EXCLUDING Non-KBM Mapels)
         $allSchedules = JadwalPelajaran::with('mataPelajaran')
             ->where('teacher_id', $teacher->id)
             ->where('tahun_ajaran_id', $this->tahunAjaranId)
             ->where('semester', $this->semester)
             ->get()
-            ->filter(function ($s) {
-                return $s->mataPelajaran?->nama !== 'Istirahat';
+            ->filter(function ($s) use ($nonKbmMapels) {
+                return !in_array($s->mataPelajaran?->nama, $nonKbmMapels);
             });
 
         $jtmReguler = $allSchedules->count();
