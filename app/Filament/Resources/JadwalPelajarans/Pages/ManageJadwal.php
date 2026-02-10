@@ -418,11 +418,17 @@ class ManageJadwal extends Page implements HasForms
     public function getJtmSummaryData(): array
     {
         $user = auth()->user();
-        if (!$user || !$user->teacher) {
+        if (!$user) {
             return ['reguler' => 0, 'linier' => 0, 'tugas' => 0, 'total' => 0];
         }
 
-        $teacher = $user->teacher;
+        // Eager load teacher with its relationships to ensure data is available
+        $teacher = $user->teacher()->with(['mataPelajaran', 'jabatan', 'tugasTambahan'])->first();
+
+        if (!$teacher) {
+            return ['reguler' => 0, 'linier' => 0, 'tugas' => 0, 'total' => 0];
+        }
+
         $nonKbmMapels = ['Istirahat', 'Soliskan', 'Shalat Dluha', '7 Kebiasaan Anak Indonesia Hebat'];
 
         // JTM Reguler: All schedules for this teacher (EXCLUDING Non-KBM Mapels)
@@ -432,7 +438,7 @@ class ManageJadwal extends Page implements HasForms
             ->where('semester', $this->semester)
             ->get()
             ->filter(function ($s) use ($nonKbmMapels) {
-                return !in_array($s->mataPelajaran?->nama, $nonKbmMapels);
+                return !in_array(trim($s->mataPelajaran?->nama), $nonKbmMapels);
             });
 
         $jtmReguler = $allSchedules->count();
@@ -440,15 +446,14 @@ class ManageJadwal extends Page implements HasForms
         // JTM Linier Logic
         $jtmLinier = 0;
         $isWaliKelas = \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->exists();
-        $isGuruKelas = $teacher->jabatan?->nama === 'Guru Kelas' || $isWaliKelas;
+        $isGuruKelas = ($teacher->jabatan?->nama === 'Guru Kelas') || $isWaliKelas;
+
+        // Religious Mapels Group
+        $agamaGroup = ['Al Quran Hadits', 'Akidah Akhlak', 'Fikih', 'S K I', 'Sejarah Kebudayaan Islam', 'Bahasa Arab', 'B. Arab'];
+        $agamaLinier = ['Al Quran Hadits', 'Akidah Akhlak', 'Fikih', 'S K I', 'Sejarah Kebudayaan Islam'];
 
         if ($isGuruKelas) {
-            $linierMapels = [
-                'Al Quran Hadits',
-                'Akidah Akhlak',
-                'Fikih',
-                'S K I',
-                'Sejarah Kebudayaan Islam',
+            $linierMapels = array_merge($agamaLinier, [
                 'Pend. Pancasila',
                 'Pendidikan Pancasila',
                 'Bhs. Indonesia',
@@ -460,47 +465,49 @@ class ManageJadwal extends Page implements HasForms
                 'Seni Tari',
                 'Seni Musik',
                 'Seni Drama'
-            ];
+            ]);
             $jtmLinier = $allSchedules->filter(function ($s) use ($linierMapels) {
-                return in_array($s->mataPelajaran?->nama, $linierMapels);
+                return in_array(trim($s->mataPelajaran?->nama), $linierMapels);
             })->count();
         } else {
             // Guru Mata Pelajaran
             $teacherMapelId = $teacher->mata_pelajaran_id;
-            $teacherMainMapel = $teacher->mataPelajaran?->nama;
+            $teacherMainMapel = trim($teacher->mataPelajaran?->nama ?? '');
 
-            // List mapel agama - Bahasa Arab EXCLUDED as it's not linier with these
-            $agamaMapels = ['Al Quran Hadits', 'Akidah Akhlak', 'Fikih', 'S K I', 'Sejarah Kebudayaan Islam'];
-            $isAgamaTeacher = in_array($teacherMainMapel, $agamaMapels);
+            // Identify if this teacher is a religious teacher based on their main subject
+            $isAgamaTeacher = in_array($teacherMainMapel, $agamaGroup);
 
             if ($isAgamaTeacher) {
-                // If religious teacher, sum all religious mapels (excluding B.Arab)
-                $jtmLinier = $allSchedules->filter(function ($s) use ($agamaMapels) {
-                    return in_array($s->mataPelajaran?->nama, $agamaMapels);
+                // If religious teacher, sum all religious mapels (EXCLUDING Bahasa Arab as requested)
+                $jtmLinier = $allSchedules->filter(function ($s) use ($agamaLinier) {
+                    return in_array(trim($s->mataPelajaran?->nama), $agamaLinier);
                 })->count();
             } else {
-                // Otherwise, sum only the same mapel
-                $jtmLinier = $allSchedules->filter(function ($s) use ($teacherMapelId) {
-                    return $s->mata_pelajaran_id == $teacherMapelId;
-                })->count();
+                // Otherwise, sum only the sessions matching their assigned main subject ID
+                if ($teacherMapelId) {
+                    $jtmLinier = $allSchedules->filter(function ($s) use ($teacherMapelId) {
+                        return $s->mata_pelajaran_id == $teacherMapelId;
+                    })->count();
+                } else {
+                    // Fallback: If mapel ID is null but they teach something that matches the name
+                    $jtmLinier = $allSchedules->filter(function ($s) use ($teacherMainMapel) {
+                        return trim($s->mataPelajaran?->nama) === $teacherMainMapel;
+                    })->count();
+                }
             }
         }
 
         // JTM Tugas Logic
         $jtmTugas = 0;
-
-        // a. Wali Kelas and Guru Piket: 6 JTM each
         if ($isWaliKelas) {
             $jtmTugas += 6;
         }
 
         $tugasTambahanNama = $teacher->tugasTambahan?->nama ?? '';
-
         if (stripos($tugasTambahanNama, 'Guru Piket') !== false) {
             $jtmTugas += 6;
         }
 
-        // b. PKM. Kurikulum or PKM. Kesiswaan or Pembina OSIS: 12 JTM each
         $pkmRoles = ['PKM. Kurikulum', 'PKM. Kesiswaan', 'Pembina OSIS'];
         $isPkmOrOsis = false;
         foreach ($pkmRoles as $role) {
