@@ -12,9 +12,9 @@ class Login extends BaseLogin
         $schoolName = \App\Models\ProfileMadrasah::first()?->nama_madrasah ?? 'Madrasah';
 
         return new \Illuminate\Support\HtmlString("
-            <div class='flex flex-col items-center gap-1'>
-                <span class='text-sm font-medium text-[#20c997]'>$schoolName</span>
-                <span class='text-2xl font-bold tracking-tight'>Welcome Back</span>
+            <div class='flex flex-col items-center gap-2'>
+                <span class='text-xl font-bold' style='color: #20c997;'>$schoolName</span>
+                <span class='text-2xl font-bold tracking-tight text-white'>Welcome Back</span>
             </div>
         ");
     }
