@@ -44,6 +44,68 @@ class StudentUpdateActionResource extends Resource
         return parent::getEloquentQuery()->where('status', 'pending');
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                \Filament\Schemas\Components\Section::make('Informasi Pengajuan')
+                    ->schema([
+                        \Filament\Schemas\Components\Grid::make(3)
+                            ->schema([
+                                \Filament\Infolists\Components\TextEntry::make('created_at')
+                                    ->label('Tanggal Pengajuan')
+                                    ->dateTime('d F Y H:i'),
+                                \Filament\Infolists\Components\TextEntry::make('requester.name')
+                                    ->label('Wali Kelas / Guru'),
+                                \Filament\Infolists\Components\TextEntry::make('student.nama_lengkap')
+                                    ->label('Nama Siswa'),
+                            ]),
+                    ]),
+                \Filament\Schemas\Components\Section::make('Detail Perubahan Data')
+                    ->description('Daftar field yang diubah oleh guru dan menunggu persetujuan.')
+                    ->schema([
+                        \Filament\Infolists\Components\TextEntry::make('changes_display')
+                            ->label('')
+                            ->state(fn(StudentUpdateAction $record) => $record->changes)
+                            ->html()
+                            ->formatStateUsing(function ($state) {
+                                $changes = $state;
+                                if (empty($changes))
+                                    return '<div class="p-4 text-gray-500 italic">Tidak ada data perubahan yang tercatat.</div>';
+
+                                $output = '<div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">';
+                                $output .= '<table class="w-full text-sm text-left border-collapse">';
+                                $output .= '<thead class="bg-gray-50 dark:bg-gray-800 text-xs uppercase text-gray-700 dark:text-gray-300">';
+                                $output .= '<tr>';
+                                $output .= '<th class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 font-bold">Field / Data</th>';
+                                $output .= '<th class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 font-bold text-red-600 dark:text-red-400">Data Terakhir (Lama)</th>';
+                                $output .= '<th class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 font-bold text-green-600 dark:text-green-400">Usulan Baru</th>';
+                                $output .= '</tr></thead>';
+                                $output .= '<tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">';
+
+                                foreach ($changes as $field => $values) {
+                                    $fieldName = ucwords(str_replace('_', ' ', $field));
+                                    $old = $values['old'] ?? '-';
+                                    $new = $values['new'] ?? '-';
+
+                                    if (empty($old))
+                                        $old = '-';
+                                    if (empty($new))
+                                        $new = '-';
+
+                                    $output .= '<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">';
+                                    $output .= "<td class='px-4 py-3 font-semibold bg-gray-50/30 dark:bg-gray-800/30 w-1/4'>{$fieldName}</td>";
+                                    $output .= "<td class='px-4 py-3 text-red-600 dark:text-red-400 font-mono text-xs w-3/8'>{$old}</td>";
+                                    $output .= "<td class='px-4 py-3 text-green-600 dark:text-green-400 font-mono text-xs w-3/8'>{$new}</td>";
+                                    $output .= '</tr>';
+                                }
+                                $output .= '</tbody></table></div>';
+                                return $output;
+                            }),
+                    ]),
+            ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
