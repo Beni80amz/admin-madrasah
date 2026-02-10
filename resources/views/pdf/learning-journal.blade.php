@@ -179,56 +179,69 @@
         </table>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th style="width: 25px;" class="center">No</th>
-                <th style="width: 60px;">Tanggal</th>
-                <th style="width: 90px;">Guru</th>
-                <th style="width: 110px;">Mapel</th>
-                <th style="width: 50px;">Kelas</th>
-                <th style="width: 30px;" class="center">Pert.</th>
-                <th style="width: 160px;">Materi</th>
-                <th style="width: 110px;">Absensi (S/I/A)</th>
-                <th style="width: 130px;">Evaluasi (Hambatan)</th>
-                <th style="width: 120px;">Tindak Lanjut (Solusi)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($journals as $index => $journal)
-                <tr>
-                    <td class="center">{{ $index + 1 }}</td>
-                    <td>{{ \Carbon\Carbon::parse($journal->date)->locale('id')->translatedFormat('d/m/Y') }}</td>
-                    <td>{{ $journal->user?->teacher?->nama_lengkap ?? $journal->user?->name }}</td>
-                    <td>{{ $journal->mataPelajaran?->nama }}</td>
-                    <td>{{ $journal->rombel?->kelas?->nama }} - {{ $journal->rombel?->nama }}</td>
-                    <td class="center">{{ $journal->pertemuan_ke }}</td>
-                    <td>{{ $journal->materi }}</td>
-                    <td>{{ $journal->getFormattedAttendanceNames() }}</td>
-                    <td>{{ $journal->hambatan }}</td>
-                    <td>{{ $journal->solusi }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+    @foreach($groupedJournals as $monthYear => $journals)
+        <div class="month-section" style="{{ !$loop->first ? 'page-break-before: always;' : '' }}">
+            <h3 style="margin-bottom: 10px; color: #333; font-size: 11px; text-transform: uppercase; border-left: 3px solid #10B981; padding-left: 10px;">
+                Bulan: {{ $monthYear }}
+            </h3>
 
-    <div class="footer">
-        <table class="footer-table">
-            <tr>
-                <td class="qr-section">
-                    <p style="font-size: 7px; color: #666; margin-bottom: 5px;">Scan untuk verifikasi:</p>
-                    <img src="{{ $qrCodeImage }}" class="qr-code" alt="QR Code">
-                </td>
-                <td style="width: 50%;"></td>
-                <td class="signature-box">
-                    <p>{{ $profile->kota ?? 'Kota' }}, {{ now()->locale('id')->translatedFormat('d F Y') }}</p>
-                    <p>Guru Pengampu,</p>
-                    <div class="signature-space"></div>
-                    <p><strong>{{ Auth::user()->teacher?->nama_lengkap ?? Auth::user()->name }}</strong></p>
-                </td>
-            </tr>
-        </table>
-    </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 25px;" class="center">No</th>
+                        <th style="width: 60px;">Tanggal</th>
+                        <th style="width: 90px;">Guru</th>
+                        <th style="width: 110px;">Mapel</th>
+                        <th style="width: 50px;">Kelas</th>
+                        <th style="width: 30px;" class="center">Pert.</th>
+                        <th style="width: 160px;">Materi</th>
+                        <th style="width: 110px;">Absensi (S/I/A)</th>
+                        <th style="width: 130px;">Evaluasi (Hambatan)</th>
+                        <th style="width: 120px;">Tindak Lanjut (Solusi)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($journals as $index => $journal)
+                        <tr>
+                            <td class="center">{{ $loop->iteration }}</td>
+                            <td>{{ \Carbon\Carbon::parse($journal->date)->locale('id')->translatedFormat('d/m/Y') }}</td>
+                            <td>{{ $journal->user?->teacher?->nama_lengkap ?? $journal->user?->name }}</td>
+                            <td>{{ $journal->mataPelajaran?->nama }}</td>
+                            <td>{{ $journal->rombel?->kelas?->nama }} - {{ $journal->rombel?->nama }}</td>
+                            <td class="center">{{ $journal->pertemuan_ke }}</td>
+                            <td>{{ $journal->materi }}</td>
+                            <td>{{ $journal->getFormattedAttendanceNames() }}</td>
+                            <td>{{ $journal->hambatan }}</td>
+                            <td>{{ $journal->solusi }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            <div class="footer">
+                <table class="footer-table">
+                    <tr>
+                        <td class="qr-section">
+                            <p style="font-size: 7px; color: #666; margin-bottom: 5px;">Scan untuk verifikasi:</p>
+                            <img src="{{ $qrCodeImage }}" class="qr-code" alt="QR Code">
+                        </td>
+                        <td style="width: 50%;"></td>
+                        <td class="signature-box">
+                            @php
+                                // Use the last date of the journals in this month or current date if empty?
+                                // User usually wants the signing date to be relevant to the month.
+                                $lastJournalDate = \Carbon\Carbon::parse($journals->last()->date);
+                            @endphp
+                            <p>{{ $profile->kota ?? 'Kota' }}, {{ $lastJournalDate->locale('id')->translatedFormat('d F Y') }}</p>
+                            <p>Guru Pengampu,</p>
+                            <div class="signature-space"></div>
+                            <p><strong>{{ Auth::user()->teacher?->nama_lengkap ?? Auth::user()->name }}</strong></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    @endforeach
 </body>
 
 </html>

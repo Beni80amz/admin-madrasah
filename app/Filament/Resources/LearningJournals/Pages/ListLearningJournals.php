@@ -36,24 +36,25 @@ class ListLearningJournals extends ListRecords
                         if ($semesterFilter) {
                             $query->where('semester', $semesterFilter);
                         }
-                        $journals = $query->orderBy('date', 'desc')->get();
+                        $journals = $query->orderBy('date', 'asc')->get();
+
+                        // Group by month and year
+                        $groupedJournals = $journals->groupBy(function ($journal) {
+                            return \Carbon\Carbon::parse($journal->date)->format('F Y');
+                        });
 
                         $profile = \App\Models\ProfileMadrasah::first();
                         $academicYear = \App\Models\TahunAjaran::getActive();
 
                         // Get Teacher data for Bio (Logged in user)
                         $teacher = Auth::user()->teacher;
-                        if (!$teacher && Auth::user()->hasRole(['Superadmin', 'super_admin'])) {
-                            // If admin, maybe take from first record or leave generic? 
-                            // Usually teachers export their own journals.
-                        }
 
                         // Generate QR Code
                         $qrRaw = app(\App\Services\QrCodeService::class)->generateDocumentVerificationQrCode();
                         $qrCodeImage = 'data:image/png;base64,' . base64_encode($qrRaw);
 
                         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.learning-journal', [
-                            'journals' => $journals,
+                            'groupedJournals' => $groupedJournals,
                             'profile' => $profile,
                             'academicYear' => $academicYear,
                             'teacher' => $teacher,
