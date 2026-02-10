@@ -27,7 +27,7 @@
 
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             border-bottom: 2px solid #10B981;
             padding-bottom: 10px;
             position: relative;
@@ -62,7 +62,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         th {
@@ -138,7 +138,7 @@
         </p>
     </div>
 
-    <div style="margin-bottom: 15px;">
+    <div style="margin-bottom: 5px;">
         <table style="width: 100%; border: none;">
             <tr>
                 <td style="border: none; width: 50%; padding: 0;">
@@ -147,13 +147,15 @@
                             <td style="border: none; width: 120px; padding: 2px 0;">Nama Lengkap Guru</td>
                             <td style="border: none; width: 10px; padding: 2px 0;">:</td>
                             <td style="border: none; padding: 2px 0;">
-                                <strong>{{ $teacher->nama_lengkap ?? Auth::user()->name }}</strong></td>
+                                <strong>{{ $teacher->nama_lengkap ?? Auth::user()->name }}</strong>
+                            </td>
                         </tr>
                         <tr>
                             <td style="border: none; padding: 2px 0;">NUPTK / NPK / NIP</td>
                             <td style="border: none; padding: 2px 0;">:</td>
                             <td style="border: none; padding: 2px 0;">
-                                {{ $teacher->nuptk ?? ($teacher->npk_peg_id ?? ($teacher->nip ?? '-')) }}</td>
+                                {{ $teacher->nuptk ?? ($teacher->npk_peg_id ?? ($teacher->nip ?? '-')) }}
+                            </td>
                         </tr>
                     </table>
                 </td>
@@ -168,7 +170,8 @@
                             <td style="border: none; padding: 2px 0;">Semester / TA</td>
                             <td style="border: none; padding: 2px 0;">:</td>
                             <td style="border: none; padding: 2px 0;">{{ $semester ?? 'Semua' }} /
-                                {{ $academicYear->nama ?? '-' }}</td>
+                                {{ $academicYear->nama ?? '-' }}
+                            </td>
                         </tr>
                     </table>
                 </td>
