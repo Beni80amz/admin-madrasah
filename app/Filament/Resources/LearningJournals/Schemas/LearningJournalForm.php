@@ -41,6 +41,7 @@ class LearningJournalForm
                                     ->preload()
                                     ->default(Auth::id())
                                     ->disabled(fn() => !Auth::user()->hasRole(['Superadmin', 'super_admin']))
+                                    ->dehydrated()
                                     ->required()
                                     ->columnSpan(2), // ENLARGED: Spans 2 out of 3 columns
 
@@ -187,7 +188,7 @@ class LearningJournalForm
                 return [];
             }
 
-            $tingkat = self::romanToArabic($rombel->kelas?->tingkat ?? '');
+            $tingkat = self::romanToArabic((string) ($rombel->kelas?->tingkat ?? ''));
             $kelasString = $tingkat . '-' . ($rombel->nama ?? '');
 
             return \App\Models\Student::where('kelas', $kelasString)
@@ -200,8 +201,12 @@ class LearningJournalForm
         }
     }
 
-    public static function romanToArabic(string $roman): string
+    public static function romanToArabic(?string $roman): string
     {
+        if (is_null($roman) || $roman === '') {
+            return '';
+        }
+
         $romans = ['I' => 1, 'V' => 5, 'X' => 10, 'L' => 50, 'C' => 100];
         $roman = strtoupper(trim($roman));
 
