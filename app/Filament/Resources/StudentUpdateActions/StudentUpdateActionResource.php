@@ -11,6 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use UnitEnum;
 
 class StudentUpdateActionResource extends Resource
 {
@@ -24,7 +25,7 @@ class StudentUpdateActionResource extends Resource
 
     protected static ?string $modelLabel = 'Daftar Tindakan';
 
-    protected static ?string $navigationGroup = 'Administrasi Siswa';
+    protected static UnitEnum|string|null $navigationGroup = 'Administrasi Siswa';
 
     public static function canAccess(): bool
     {
