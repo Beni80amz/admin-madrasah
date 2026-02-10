@@ -52,20 +52,7 @@ class LearningJournalResource extends Resource
             return $query;
         }
 
-        $teacher = $user->teacher;
-        if (!$teacher) {
-            return $query->whereRaw('1 = 0');
-        }
-
-        $isGuruKelas = $teacher->jabatan?->nama === 'Guru Kelas' || \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->exists();
-
-        if ($isGuruKelas) {
-            // Guru Kelas sees journals for their Rombel
-            $rombelId = $teacher->rombel_id ?? \App\Models\Rombel::where('wali_kelas_id', $teacher->id)->value('id');
-            return $query->where('rombel_id', $rombelId);
-        }
-
-        // Guru Mata Pelajaran sees only their own journals
+        // All teachers (Guru Kelas and Guru Mapel) see only their own journals
         return $query->where('user_id', $user->id);
     }
 
