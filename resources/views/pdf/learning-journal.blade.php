@@ -134,7 +134,46 @@
         <h1>JURNAL PEMBELAJARAN</h1>
         <h2>{{ $profile->nama_madrasah ?? 'MADRASAH' }}</h2>
         <p>{{ $profile->alamat ?? '' }} {{ $profile->kelurahan ? 'Kel. ' . $profile->kelurahan : '' }}
-            {{ $profile->kecamatan ? 'Kec. ' . $profile->kecamatan : '' }} {{ $profile->kota ?? '' }}</p>
+            {{ $profile->kecamatan ? 'Kec. ' . $profile->kecamatan : '' }} {{ $profile->kota ?? '' }}
+        </p>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <table style="width: 100%; border: none;">
+            <tr>
+                <td style="border: none; width: 50%; padding: 0;">
+                    <table style="width: 100%; border: none; border-collapse: collapse;">
+                        <tr>
+                            <td style="border: none; width: 120px; padding: 2px 0;">Nama Lengkap Guru</td>
+                            <td style="border: none; width: 10px; padding: 2px 0;">:</td>
+                            <td style="border: none; padding: 2px 0;">
+                                <strong>{{ $teacher->nama_lengkap ?? Auth::user()->name }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="border: none; padding: 2px 0;">NUPTK / NPK / NIP</td>
+                            <td style="border: none; padding: 2px 0;">:</td>
+                            <td style="border: none; padding: 2px 0;">
+                                {{ $teacher->nuptk ?? ($teacher->npk_peg_id ?? ($teacher->nip ?? '-')) }}</td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="border: none; width: 50%; padding: 0;">
+                    <table style="width: 100%; border: none; border-collapse: collapse;">
+                        <tr>
+                            <td style="border: none; width: 100px; padding: 2px 0;">Tugas Pokok</td>
+                            <td style="border: none; width: 10px; padding: 2px 0;">:</td>
+                            <td style="border: none; padding: 2px 0;">{{ $teacher->tugasPokok?->nama ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: none; padding: 2px 0;">Semester / TA</td>
+                            <td style="border: none; padding: 2px 0;">:</td>
+                            <td style="border: none; padding: 2px 0;">{{ $semester ?? 'Semua' }} /
+                                {{ $academicYear->nama ?? '-' }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <table>

@@ -12,11 +12,22 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class LearningJournalExport implements FromCollection, WithHeadings, WithStyles, WithColumnWidths, WithMapping
 {
+    protected ?string $semester;
+
+    public function __construct(?string $semester = null)
+    {
+        $this->semester = $semester;
+    }
+
     public function collection()
     {
-        return LearningJournal::with(['user.teacher', 'mataPelajaran', 'rombel.kelas'])
-            ->orderBy('date', 'desc')
-            ->get();
+        $query = LearningJournal::with(['user.teacher', 'mataPelajaran', 'rombel.kelas']);
+
+        if ($this->semester) {
+            $query->where('semester', $this->semester);
+        }
+
+        return $query->orderBy('date', 'desc')->get();
     }
 
     public function headings(): array

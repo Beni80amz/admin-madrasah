@@ -50,6 +50,11 @@ class LearningJournalTable
                     ->wrap(),
             ])
             ->filters([
+                \Filament\Tables\Filters\SelectFilter::make('semester')
+                    ->options([
+                        'Ganjil' => 'Ganjil',
+                        'Genap' => 'Genap',
+                    ]),
                 SelectFilter::make('user_id')
                     ->label('Guru')
                     ->options(\App\Models\Teacher::whereNotNull('user_id')->pluck('nama_lengkap', 'user_id'))
