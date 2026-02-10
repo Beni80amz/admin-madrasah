@@ -3,9 +3,11 @@
 namespace App\Filament\Resources\StudentUpdateActions;
 
 use App\Filament\Resources\StudentUpdateActions\Pages\ManageStudentUpdateActions;
+use App\Filament\Resources\StudentUpdateActions\Pages\ViewStudentUpdateAction;
 use App\Models\StudentUpdateAction;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -36,6 +38,12 @@ class StudentUpdateActionResource extends Resource
         return $user && $user->hasAnyRole(['super_admin', 'admin', 'Superadmin', 'Admin', 'Kurikulum', 'kepala_sekolah', 'Kepala Sekolah']);
     }
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        // Only show pending actions in the list
+        return parent::getEloquentQuery()->where('status', 'pending');
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -50,41 +58,10 @@ class StudentUpdateActionResource extends Resource
                 TextColumn::make('student.nama_lengkap')
                     ->label('Siswa')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('changes')
-                    ->label('Perubahan')
-                    ->formatStateUsing(function (StudentUpdateAction $record) {
-                        $changes = $record->changes;
-                        if (empty($changes)) {
-                            return '<span class="text-gray-400">Tidak ada perubahan data</span>';
-                        }
-
-                        $output = [];
-                        foreach ($changes as $field => $values) {
-                            $fieldName = ucwords(str_replace('_', ' ', $field));
-                            
-                            // Handle potential non-nested structure gracefully
-                            if (!is_array($values)) {
-                                $output[] = "<strong>{$fieldName}</strong>: <span style='color: #10b981;'>{$values}</span>";
-                                continue;
-                            }
-
-                            $old = $values['old'] ?? '-';
-                            $new = $values['new'] ?? '-';
-                            
-                            if (empty($old)) $old = '-';
-                            if (empty($new)) $new = '-';
-
-                            $output[] = "<div class='mb-1 last:mb-0'>" .
-                                        "<strong>{$fieldName}</strong>: " .
-                                        "<span style='color: #ef4444;'>{$old}</span>" .
-                                        " <span class='text-gray-400'>&rarr;</span> " .
-                                        "<span style='color: #10b981;'>{$new}</span>" .
-                                        "</div>";
-                        }
-                        return implode('', $output);
-                    })
-                    ->html(),
+                    ->sortable()
+                    ->url(fn(StudentUpdateAction $record) => static::getUrl('view', ['record' => $record]))
+                    ->weight('bold')
+                    ->color('info'),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
@@ -98,58 +75,11 @@ class StudentUpdateActionResource extends Resource
                 //
             ])
             ->actions([
-                Action::make('approve')
-                    ->label('Setuju')
-                    ->color('success')
-                    ->icon('heroicon-o-check')
-                    ->requiresConfirmation()
-                    ->visible(fn(StudentUpdateAction $record) => $record->status === 'pending')
-                    ->action(function (StudentUpdateAction $record) {
-                        $student = $record->student;
-                        $changes = $record->changes;
-
-                        $updateData = [];
-                        foreach ($changes as $field => $values) {
-                            $updateData[$field] = $values['new'];
-                        }
-
-                        $student->update($updateData);
-
-                        $record->update([
-                            'status' => 'approved',
-                            'verifier_id' => auth()->id(),
-                            'verified_at' => now(),
-                        ]);
-
-                        Notification::make()
-                            ->title('Perubahan Disetujui')
-                            ->success()
-                            ->send();
-                    }),
-                Action::make('reject')
-                    ->label('Tolak')
-                    ->color('danger')
-                    ->icon('heroicon-o-x-mark')
-                    ->requiresConfirmation()
-                    ->form([
-                        \Filament\Forms\Components\Textarea::make('rejection_reason')
-                            ->label('Alasan Penolakan')
-                            ->required(),
-                    ])
-                    ->visible(fn(StudentUpdateAction $record) => $record->status === 'pending')
-                    ->action(function (StudentUpdateAction $record, array $data) {
-                        $record->update([
-                            'status' => 'rejected',
-                            'rejection_reason' => $data['rejection_reason'],
-                            'verifier_id' => auth()->id(),
-                            'verified_at' => now(),
-                        ]);
-
-                        Notification::make()
-                            ->title('Perubahan Ditolak')
-                            ->danger()
-                            ->send();
-                    }),
+                ViewAction::make()
+                    ->label('Detail Perubahan')
+                    ->button()
+                    ->color('info')
+                    ->icon('heroicon-o-eye'),
             ])
             ->bulkActions([
                 //
@@ -161,6 +91,7 @@ class StudentUpdateActionResource extends Resource
     {
         return [
             'index' => ManageStudentUpdateActions::route('/'),
+            'view' => ViewStudentUpdateAction::route('/{record}'),
         ];
     }
 }
