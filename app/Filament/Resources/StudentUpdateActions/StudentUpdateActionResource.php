@@ -5,10 +5,10 @@ namespace App\Filament\Resources\StudentUpdateActions;
 use App\Filament\Resources\StudentUpdateActions\Pages\ManageStudentUpdateActions;
 use App\Models\StudentUpdateAction;
 use BackedEnum;
-use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
@@ -54,10 +54,12 @@ class StudentUpdateActionResource extends Resource
                 TextColumn::make('changes')
                     ->label('Perubahan')
                     ->formatStateUsing(function ($state) {
+                        if (empty($state))
+                            return 'Tidak ada perubahan';
                         $output = [];
                         foreach ($state as $field => $values) {
                             $fieldName = ucwords(str_replace('_', ' ', $field));
-                            $output[] = "<strong>{$fieldName}</strong>: <span style='color: #ef4444;'>{$values['old']}</span> → <span style='color: #10b981;'>{$values['new']}</span>";
+                            $output[] = "<strong>{$fieldName}</strong>: <span style='color: #ef4444;'>" . ($values['old'] ?? '-') . "</span> → <span style='color: #10b981;'>" . ($values['new'] ?? '-') . "</span>";
                         }
                         return implode('<br>', $output);
                     })
