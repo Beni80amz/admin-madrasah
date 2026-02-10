@@ -381,12 +381,15 @@ class ManageJadwal extends Page implements HasForms
             return [];
         }
 
-        // Get all teachers assigned to teach in this rombel's jadwal
+        // Get all teachers assigned to teach in this rombel's jadwal (EXCLUDING Istirahat)
         return JadwalPelajaran::with(['mataPelajaran', 'teacher'])
             ->where('tahun_ajaran_id', $this->tahunAjaranId)
             ->where('semester', $this->semester)
             ->where('rombel_id', $this->rombelId)
             ->get()
+            ->filter(function ($jadwal) {
+                return $jadwal->mataPelajaran?->nama !== 'Istirahat';
+            })
             ->unique('teacher_id')
             ->map(function ($jadwal) {
                 return [
@@ -396,6 +399,9 @@ class ManageJadwal extends Page implements HasForms
                         ->where('tahun_ajaran_id', $this->tahunAjaranId)
                         ->where('semester', $this->semester)
                         ->where('rombel_id', $this->rombelId)
+                        ->whereHas('mataPelajaran', function ($query) {
+                            $query->where('nama', '!=', 'Istirahat');
+                        })
                         ->count(),
                 ];
             })
@@ -412,12 +418,15 @@ class ManageJadwal extends Page implements HasForms
 
         $teacher = $user->teacher;
 
-        // JTM Reguler: All schedules for this teacher
+        // JTM Reguler: All schedules for this teacher (EXCLUDING Istirahat)
         $allSchedules = JadwalPelajaran::with('mataPelajaran')
             ->where('teacher_id', $teacher->id)
             ->where('tahun_ajaran_id', $this->tahunAjaranId)
             ->where('semester', $this->semester)
-            ->get();
+            ->get()
+            ->filter(function ($s) {
+                return $s->mataPelajaran?->nama !== 'Istirahat';
+            });
 
         $jtmReguler = $allSchedules->count();
 
@@ -431,10 +440,14 @@ class ManageJadwal extends Page implements HasForms
                 'Al Quran Hadits',
                 'Akidah Akhlak',
                 'Fikih',
-                'Sej. Kebudayaan Islam',
+                'S K I',
+                'Sejarah Kebudayaan Islam',
+                'Pend. Pancasila',
                 'Pendidikan Pancasila',
+                'Bhs. Indonesia',
                 'Bahasa Indonesia',
                 'Matematika',
+                'I P A S',
                 'Ilmu Pengetahuan Alam & Sosial',
                 'Seni Rupa',
                 'Seni Tari',
@@ -449,11 +462,12 @@ class ManageJadwal extends Page implements HasForms
             $teacherMapelId = $teacher->mata_pelajaran_id;
             $teacherMainMapel = $teacher->mataPelajaran?->nama;
 
-            $agamaMapels = ['Al Quran Hadits', 'Akidah Akhlak', 'Fikih', 'Sej. Kebudayaan Islam'];
+            // List mapel agama - Bahasa Arab EXCLUDED as it's not linier with these
+            $agamaMapels = ['Al Quran Hadits', 'Akidah Akhlak', 'Fikih', 'S K I', 'Sejarah Kebudayaan Islam'];
             $isAgamaTeacher = in_array($teacherMainMapel, $agamaMapels);
 
             if ($isAgamaTeacher) {
-                // If religious teacher, sum all religious mapels
+                // If religious teacher, sum all religious mapels (excluding B.Arab)
                 $jtmLinier = $allSchedules->filter(function ($s) use ($agamaMapels) {
                     return in_array($s->mataPelajaran?->nama, $agamaMapels);
                 })->count();

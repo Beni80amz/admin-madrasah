@@ -1,0 +1,127 @@
+[
+    {
+        "id": 1,
+        "nama": "Al Quran Hadits",
+        "kode": "AQH"
+    },
+    {
+        "id": 2,
+        "nama": "Akidah Akhlak",
+        "kode": "AKA"
+    },
+    {
+        "id": 3,
+        "nama": "Fikih",
+        "kode": "FKH"
+    },
+    {
+        "id": 4,
+        "nama": "S K I",
+        "kode": "SKI"
+    },
+    {
+        "id": 5,
+        "nama": "Bahasa Arab",
+        "kode": "BAR"
+    },
+    {
+        "id": 6,
+        "nama": "Pend. Pancasila",
+        "kode": "PKN"
+    },
+    {
+        "id": 7,
+        "nama": "Bhs. Indonesia",
+        "kode": "BIN"
+    },
+    {
+        "id": 8,
+        "nama": "Matematika",
+        "kode": "MTK"
+    },
+    {
+        "id": 9,
+        "nama": "I P A S",
+        "kode": "IPAS"
+    },
+    {
+        "id": 10,
+        "nama": "P J O K",
+        "kode": "PJOK"
+    },
+    {
+        "id": 11,
+        "nama": "Seni Rupa",
+        "kode": "SR"
+    },
+    {
+        "id": 12,
+        "nama": "Seni Tari",
+        "kode": "ST"
+    },
+    {
+        "id": 13,
+        "nama": "Seni Drama",
+        "kode": "SD"
+    },
+    {
+        "id": 14,
+        "nama": "Seni Musik",
+        "kode": "SM"
+    },
+    {
+        "id": 15,
+        "nama": "Bahasa Sunda",
+        "kode": "BSUN"
+    },
+    {
+        "id": 16,
+        "nama": "Bahasa Inggris",
+        "kode": "BING"
+    },
+    {
+        "id": 17,
+        "nama": "T I K",
+        "kode": "TIK"
+    },
+    {
+        "id": 18,
+        "nama": "Tahsinul Kitabah",
+        "kode": "THK"
+    },
+    {
+        "id": 19,
+        "nama": "Dienul Islam",
+        "kode": "DIN"
+    },
+    {
+        "id": 20,
+        "nama": "7 Kebiasaan Anak Indonesia Hebat",
+        "kode": "KAIH"
+    },
+    {
+        "id": 21,
+        "nama": "Kurikulum Berbasis Cinta",
+        "kode": "KBC"
+    },
+    {
+        "id": 46,
+        "nama": "Upacara Bendera",
+        "kode": "UBR"
+    },
+    {
+        "id": 47,
+        "nama": "Shalat Dluha",
+        "kode": "SHD"
+    },
+    {
+        "id": 48,
+        "nama": "Istirahat",
+        "kode": "IST"
+    },
+    {
+        "id": 49,
+        "nama": "Soliskan",
+        "kode": "SOL"
+    }
+]
