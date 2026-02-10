@@ -53,6 +53,16 @@ class LearningJournalForm
                                     ->required()
                                     ->columnSpan(1),
 
+                                Select::make('semester')
+                                    ->label('Semester')
+                                    ->prefixIcon('heroicon-m-clock')
+                                    ->options([
+                                        'Ganjil' => 'Ganjil',
+                                        'Genap' => 'Genap',
+                                    ])
+                                    ->required()
+                                    ->columnSpan(1),
+
                                 Select::make('mata_pelajaran_id')
                                     ->label('Mata Pelajaran')
                                     ->prefixIcon('heroicon-m-book-open')

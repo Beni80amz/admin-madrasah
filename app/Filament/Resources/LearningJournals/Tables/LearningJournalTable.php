@@ -22,7 +22,7 @@ class LearningJournalTable
             ->columns([
                 TextColumn::make('date')
                     ->label('Tanggal')
-                    ->date('D, d M Y')
+                    ->formatStateUsing(fn($state) => \Carbon\Carbon::parse($state)->locale('id')->translatedFormat('d F Y'))
                     ->sortable(),
                 TextColumn::make('user.name')
                     ->label('Guru')
@@ -44,9 +44,10 @@ class LearningJournalTable
                     ->toggleable(),
                 TextColumn::make('absensi_summary')
                     ->label('Absensi (S/I/A)')
-                    ->getStateUsing(fn($record) => "{$record->absensi_s} / {$record->absensi_i} / {$record->absensi_a}")
+                    ->getStateUsing(fn($record) => $record->getFormattedAttendanceNames())
                     ->badge()
-                    ->color('info'),
+                    ->color('info')
+                    ->wrap(),
             ])
             ->filters([
                 SelectFilter::make('user_id')
