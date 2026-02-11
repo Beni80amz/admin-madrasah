@@ -1,32 +1,44 @@
 <div>
     {{-- Floating Button --}}
-    <button wire:click="toggleChat"
-        class="!fixed !z-[999999] flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-2xl hover:bg-emerald-600 hover:scale-110 transition-all focus:outline-none ring-4 ring-white dark:ring-slate-800"
-        style="bottom: 2rem !important; right: 2rem !important; left: auto !important;" aria-label="Tanya AI">
-        @if($isOpen)
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        @else
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.456-2.454L18 2.25l.259 1.035a3.375 3.375 0 002.454 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.454zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-            </svg>
-        @endif
-    </button>
+    {{-- Floating Button Area --}}
+    <div class="!fixed !z-[999999] flex items-center gap-2"
+        style="bottom: 2rem !important; right: 2rem !important; left: auto !important;">
+        {{-- Label --}}
+        <div class="hidden md:flex flex-col items-end">
+            <span
+                class="bg-white dark:bg-slate-800 text-primary dark:text-emerald-400 text-[11px] px-3 py-1.5 rounded-xl font-bold shadow-xl border border-primary/20 dark:border-emerald-400/20 animate-fadeIn">
+                AI Madrasah
+            </span>
+        </div>
+
+        <button wire:click="toggleChat"
+            class="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-2xl hover:bg-emerald-600 hover:scale-110 transition-all focus:outline-none ring-4 ring-white dark:ring-slate-800"
+            aria-label="Tanya AI">
+            @if($isOpen)
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            @else
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.456-2.454L18 2.25l.259 1.035a3.375 3.375 0 002.454 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.454zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+                </svg>
+            @endif
+        </button>
+    </div>
 
     {{-- Chat Panel --}}
     <div x-data="{ isOpen: @entangle('isOpen') }" x-show="isOpen"
         x-transition:enter="transition ease-out duration-300 transform"
-        x-transition:enter-start="opacity-0 translate-y-10 scale-95"
+        x-transition:enter-start="opacity-0 translate-y-32 scale-90"
         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
         x-transition:leave="transition ease-in duration-200 transform"
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-        x-transition:leave-end="opacity-0 translate-y-10 scale-95"
-        class="!fixed !z-[999999] bg-white dark:bg-slate-900 shadow-2xl rounded-2xl flex flex-col overflow-hidden border border-gray-100 dark:border-slate-800"
-        style="display: none; bottom: 6rem !important; right: 2rem !important; left: auto !important; width: 90vw; max-width: 400px; height: 70vh; max-height: 600px;">
+        x-transition:leave-end="opacity-0 translate-y-32 scale-90"
+        class="!fixed !z-[999999] bg-white dark:bg-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-3xl flex flex-col overflow-hidden border border-gray-100 dark:border-slate-800"
+        style="display: none; bottom: 6.5rem !important; right: 2rem !important; left: auto !important; width: 90vw; max-width: 420px; height: 75vh; max-height: 650px;">
         {{-- Header --}}
         <div class="bg-primary p-4 text-white flex items-center justify-between shadow-lg">
             <div class="flex items-center gap-3">
