@@ -5,7 +5,8 @@
         {{-- Label --}}
         <div class="hidden md:flex">
             <span
-                class="bg-white dark:bg-slate-800 text-[#0d9488] dark:text-[#2dd4bf] text-[12px] px-4 py-2 rounded-2xl font-bold shadow-2xl border-2 border-[#0d9488]/20 dark:border-[#2dd4bf]/20 whitespace-nowrap">
+                class="bg-white dark:bg-slate-800 text-[12px] px-4 py-2 rounded-2xl font-bold shadow-2xl border-2 border-[#0d9488]/20 dark:border-[#2dd4bf]/20 whitespace-nowrap"
+                style="color: #0d9488 !important;">
                 AI Madrasah
             </span>
         </div>
@@ -80,7 +81,8 @@
                     <div class="max-w-[85%] flex flex-col {{ $message['role'] === 'user' ? 'items-end' : 'items-start' }}">
                         <div class="p-3 rounded-2xl text-sm shadow-sm {{ $message['role'] === 'user' ? 'text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-slate-700 rounded-tl-none' }}"
                             style="{{ $message['role'] === 'user' ? 'background-color: #0d9488 !important;' : '' }}">
-                            <div class="markdown-content text-gray-800 dark:text-gray-200">
+                            <div class="markdown-content"
+                                style="color: {{ $message['role'] === 'user' ? '#ffffff' : '#1f2937' }} !important;">
                                 {!! Str::markdown($message['content']) !!}
                             </div>
                         </div>
