@@ -6,7 +6,7 @@
         default => 'dark',
     };
 @endphp
-<html class="{{ $themeClass }} scroll-smooth" lang="id">
+<html class="{{ $themeClass }} scroll-smooth" lang="id" dir="ltr">
 
 <head>
     <meta charset="utf-8" />

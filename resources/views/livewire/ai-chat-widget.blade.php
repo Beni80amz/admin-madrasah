@@ -2,7 +2,7 @@
     {{-- Floating Button --}}
     {{-- Floating Button Area --}}
     <div class="!fixed !z-[999999] flex items-center gap-2"
-        style="bottom: 2rem !important; right: 2rem !important; left: auto !important;">
+        style="bottom: 2rem !important; right: 2rem !important; left: auto !important; direction: ltr !important;">
         {{-- Label --}}
         <div class="hidden md:flex flex-col items-end">
             <span
