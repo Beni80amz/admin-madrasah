@@ -103,8 +103,9 @@
         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
         class="fixed bottom-8 right-8 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg hover:bg-primary-dark hover:scale-110 hover:shadow-xl transition-all focus:outline-none"
         aria-label="Back to top">
-        <span class="material-symbols-outlined text-2xl font-bold">arrow_upward</span>
-        @livewire('ai-chat-widget')
+    </button>
+
+    @livewire('ai-chat-widget')
 
 </body>
 
