@@ -1,5 +1,5 @@
-<div>
-    {{-- Floating Button --}}
+<div style="position: relative; z-index: 2147483647;">
+    {{-- Floating Button area --}}
     <div class="!fixed !z-[2147483647] flex items-center gap-3"
         style="bottom: 2rem !important; right: 6rem !important; left: auto !important; position: fixed !important; direction: ltr !important;">
         {{-- Label --}}
