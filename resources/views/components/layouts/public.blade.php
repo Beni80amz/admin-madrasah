@@ -107,7 +107,6 @@
         <span class="material-symbols-outlined text-2xl font-bold">arrow_upward</span>
     </button>
 
-    @livewire('ai-chat-widget')
 
 </body>
 
