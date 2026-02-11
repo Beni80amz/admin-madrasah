@@ -3,17 +3,17 @@
     {{-- Floating Button Area --}}
     {{-- Floating Button Area --}}
     <div class="!fixed !z-[999999] flex items-center gap-3"
-        style="bottom: 2rem !important; right: 2rem !important; left: auto !important; position: fixed !important; direction: ltr !important;">
+        style="bottom: 2rem !important; right: 6rem !important; left: auto !important; position: fixed !important; direction: ltr !important;">
         {{-- Label --}}
         <div class="hidden md:flex">
             <span
-                class="bg-white dark:bg-slate-800 text-primary dark:text-emerald-400 text-[12px] px-4 py-2 rounded-2xl font-bold shadow-2xl border-2 border-primary/20 dark:border-emerald-400/20 whitespace-nowrap">
+                class="bg-white dark:bg-slate-800 text-teal-600 dark:text-teal-400 text-[12px] px-4 py-2 rounded-2xl font-bold shadow-2xl border-2 border-teal-600/20 dark:border-teal-400/20 whitespace-nowrap">
                 AI Madrasah
             </span>
         </div>
 
         <button wire:click="toggleChat"
-            class="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-2xl hover:bg-emerald-600 hover:scale-110 active:scale-95 transition-all focus:outline-none ring-4 ring-white dark:ring-slate-800"
+            class="flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 text-white shadow-2xl hover:bg-teal-700 hover:scale-110 active:scale-95 transition-all focus:outline-none ring-4 ring-white dark:ring-slate-800"
             aria-label="Tanya AI">
             @if($isOpen)
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
@@ -41,7 +41,7 @@
         class="!fixed !z-[999999] bg-white dark:bg-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.5)] rounded-[2rem] flex flex-col overflow-hidden border border-gray-100 dark:border-slate-800"
         style="display: none; bottom: 6.5rem !important; right: 2rem !important; left: auto !important; position: fixed !important; width: 92vw; max-width: 440px; height: 75vh; max-height: 650px;">
         {{-- Header --}}
-        <div class="bg-primary p-4 text-white flex items-center justify-between shadow-lg">
+        <div class="bg-teal-600 p-4 text-white flex items-center justify-between shadow-lg">
             <div class="flex items-center gap-3">
                 <div class="size-10 rounded-full bg-white/20 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
