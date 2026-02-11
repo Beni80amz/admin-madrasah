@@ -59,10 +59,10 @@ class GeminiService
 
             $errorDetail = $response->json()['error']['message'] ?? $response->body();
             Log::error('Gemini API Error: ' . $errorDetail);
-            return "Terjadi kesalahan saat menghubungi layanan AI. Silakan coba lagi nanti.";
+            return "Error (v1beta): " . $errorDetail;
         } catch (\Exception $e) {
             Log::error('Gemini Service Exception: ' . $e->getMessage());
-            return "Maaf, sistem sedang sibuk. Silakan coba beberapa saat lagi.";
+            return "Exception: " . $e->getMessage();
         }
     }
 }
