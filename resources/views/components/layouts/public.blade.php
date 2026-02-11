@@ -66,6 +66,8 @@
 
 <body
     class="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark font-display overflow-x-hidden selection:bg-primary selection:text-white transition-colors duration-300">
+    
+    @livewire('ai-chat-widget')
 
     {{-- Navigation Progress Bar --}}
     <div x-data="{ loading: false, progress: 0 }" x-init="
