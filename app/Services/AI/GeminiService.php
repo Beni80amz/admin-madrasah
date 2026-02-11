@@ -57,11 +57,12 @@ class GeminiService
                 return $data['candidates'][0]['content']['parts'][0]['text'] ?? "Maaf, saya tidak bisa memproses permintaan tersebut.";
             }
 
-            Log::error('Gemini API Error: ' . $response->body());
-            return "Terjadi kesalahan saat menghubungi layanan AI. Silakan coba lagi nanti.";
+            $errorDetail = $response->json()['error']['message'] ?? $response->body();
+            Log::error('Gemini API Error: ' . $errorDetail);
+            return "Error: " . $errorDetail;
         } catch (\Exception $e) {
             Log::error('Gemini Service Exception: ' . $e->getMessage());
-            return "Maaf, sistem sedang sibuk. Silakan coba beberapa saat lagi.";
+            return "Exception: " . $e->getMessage();
         }
     }
 }
