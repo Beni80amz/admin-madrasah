@@ -68,7 +68,7 @@ class GeminiService
             Log::error('Gemini API Error: ' . $errorDetail);
 
             if (str_contains($errorDetail, 'quota') || str_contains($errorDetail, 'limit')) {
-                return "Maaf, kuota harian AI Madrasah telah habis. Silakan coba lagi besok atau hubungi administrator.";
+                return "Mohon maaf untuk saat ini, kami tidak dapat melayani Anda. Silakan coba lagi besok.";
             }
 
             return "Terjadi kesalahan saat menghubungi layanan AI. Silakan coba lagi nanti.";
