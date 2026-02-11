@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 class GeminiService
 {
     protected string $apiKey;
-    protected string $baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+    protected string $baseUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent';
 
     public function __construct()
     {
@@ -40,13 +40,14 @@ class GeminiService
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '?key=' . $this->apiKey, [
-                        /* 'system_instruction' => [
-                            'parts' => [['text' => $systemInstruction]]
-                        ], */
                         'contents' => [
                             [
                                 'role' => 'user',
-                                'parts' => [['text' => "Instructions: " . $systemInstruction]]
+                                'parts' => [['text' => "Instructions: " . $systemInstruction . "\n\nUser Question follows below:"]]
+                            ],
+                            [
+                                'role' => 'model',
+                                'parts' => [['text' => "Baik, saya mengerti. Saya adalah AI Madrasah, asisten ahli administrasi Madrasah. Saya siap membantu Anda dengan profesional, ramah, dan solutif. Melanjutkan percakapan..."]]
                             ],
                             ...$contents
                         ],
@@ -65,10 +66,10 @@ class GeminiService
 
             $errorDetail = $response->json()['error']['message'] ?? $response->body();
             Log::error('Gemini API Error: ' . $errorDetail);
-            return "Debug Error: " . $errorDetail;
+            return "Terjadi kesalahan saat menghubungi layanan AI. Silakan coba lagi nanti.";
         } catch (\Exception $e) {
             Log::error('Gemini Service Exception: ' . $e->getMessage());
-            return "Debug Exception: " . $e->getMessage();
+            return "Maaf, sistem sedang sibuk. Silakan coba beberapa saat lagi.";
         }
     }
 }
