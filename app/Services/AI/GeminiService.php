@@ -37,7 +37,7 @@ class GeminiService
         }
 
         try {
-            $response = Http::withHeaders([
+            $response = Http::withoutVerifying()->withHeaders([
                 'Content-Type' => 'application/json',
             ])->post($this->baseUrl . '?key=' . $this->apiKey, [
                         'contents' => [
@@ -66,10 +66,10 @@ class GeminiService
 
             $errorDetail = $response->json()['error']['message'] ?? $response->body();
             Log::error('Gemini API Error: ' . $errorDetail);
-            return "Terjadi kesalahan saat menghubungi layanan AI. Silakan coba lagi nanti.";
+            return "Debug Error (v1): " . $errorDetail;
         } catch (\Exception $e) {
             Log::error('Gemini Service Exception: ' . $e->getMessage());
-            return "Maaf, sistem sedang sibuk. Silakan coba beberapa saat lagi.";
+            return "Debug Exception (v1): " . $e->getMessage();
         }
     }
 }
