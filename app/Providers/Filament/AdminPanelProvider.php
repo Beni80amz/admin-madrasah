@@ -159,6 +159,7 @@ class AdminPanelProvider extends PanelProvider
                             });
                         });
                     </script>
+                    @livewire("ai-chat-widget")
                 ')
             )
             ->navigationGroups([
