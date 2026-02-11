@@ -1,7 +1,7 @@
 <div>
     {{-- Floating Button --}}
     <button wire:click="toggleChat"
-        class="fixed bottom-8 right-8 z-[9999] flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-2xl hover:bg-emerald-600 hover:scale-110 transition-all focus:outline-none ring-4 ring-white dark:ring-slate-800"
+        class="!fixed bottom-8 right-8 !z-[99999] flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-2xl hover:bg-emerald-600 hover:scale-110 transition-all focus:outline-none ring-4 ring-white dark:ring-slate-800"
         aria-label="Tanya AI">
         @if($isOpen)
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
@@ -25,7 +25,7 @@
         x-transition:leave="transition ease-in duration-200 transform"
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
         x-transition:leave-end="opacity-0 translate-y-10 scale-95"
-        class="fixed bottom-24 right-8 z-[9999] w-[90vw] md:w-[400px] max-h-[600px] h-[70vh] bg-white dark:bg-slate-900 shadow-2xl rounded-2xl flex flex-col overflow-hidden border border-gray-100 dark:border-slate-800"
+        class="!fixed bottom-24 right-8 !z-[99999] w-[90vw] md:w-[400px] max-h-[600px] h-[70vh] bg-white dark:bg-slate-900 shadow-2xl rounded-2xl flex flex-col overflow-hidden border border-gray-100 dark:border-slate-800"
         style="display: none;">
         {{-- Header --}}
         <div class="bg-primary p-4 text-white flex items-center justify-between shadow-lg">
