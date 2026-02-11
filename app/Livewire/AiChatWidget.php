@@ -17,7 +17,7 @@ class AiChatWidget extends Component
         // Add welcome message
         $this->messages[] = [
             'role' => 'model',
-            'content' => "Halo! 👋 Saya adalah AI Madrasah. Ada yang bisa saya bantu terkait administrasi guru, materi pembelajaran, RPP, atau urusan pendidikan lainnya?"
+            'content' => "Assalamu'alaikum wr.wb 👋 Saya adalah AI Madrasah. Ada yang bisa saya bantu?"
         ];
     }
 
