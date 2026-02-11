@@ -1,6 +1,6 @@
-<div style="position: relative; z-index: 2147483647;">
-    {{-- Floating Button area --}}
-    <div class="!fixed !z-[2147483647] flex items-center gap-3"
+<div>
+    {{-- Floating Button Area --}}
+    <div class="!fixed !z-[999999999] flex items-center gap-3"
         style="bottom: 2rem !important; right: 6rem !important; left: auto !important; position: fixed !important; direction: ltr !important;">
         {{-- Label --}}
         <div class="hidden md:flex">
@@ -37,7 +37,7 @@
         x-transition:leave="transition ease-in duration-200 origin-bottom-right"
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
         x-transition:leave-end="opacity-0 translate-y-full scale-50"
-        class="!fixed !z-[2147483647] bg-white dark:bg-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.5)] rounded-[2rem] flex flex-col overflow-hidden border border-gray-100 dark:border-slate-800"
+        class="!fixed !z-[999999999] bg-white dark:bg-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.5)] rounded-[2rem] flex flex-col overflow-hidden border border-gray-100 dark:border-slate-800"
         style="display: none; bottom: 6.5rem !important; right: 2rem !important; left: auto !important; position: fixed !important; width: 92vw; max-width: 440px; height: 75vh; max-height: 650px;">
         {{-- Header --}}
         <div class="p-4 text-white flex items-center justify-between shadow-lg"
