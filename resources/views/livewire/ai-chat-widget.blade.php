@@ -80,8 +80,8 @@
                 <div class="flex {{ $message['role'] === 'user' ? 'justify-end' : 'justify-start' }} animate-fadeIn">
                     <div class="max-w-[85%] flex flex-col {{ $message['role'] === 'user' ? 'items-end' : 'items-start' }}">
                         <div
-                            class="p-3 rounded-2xl text-sm shadow-sm {{ $message['role'] === 'user' ? 'bg-primary text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-slate-700 rounded-tl-none' }}">
-                            <div class="markdown-content">
+                            class="p-3 rounded-2xl text-sm shadow-sm {{ $message['role'] === 'user' ? 'bg-teal-600 text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-slate-700 rounded-tl-none' }}">
+                            <div class="markdown-content text-gray-800 dark:text-gray-200">
                                 {!! Str::markdown($message['content']) !!}
                             </div>
                         </div>
