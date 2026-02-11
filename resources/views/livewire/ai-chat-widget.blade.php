@@ -1,21 +1,22 @@
 <div>
     {{-- Floating Button --}}
     {{-- Floating Button Area --}}
-    <div class="!fixed !z-[999999] flex items-center gap-2"
-        style="bottom: 2rem !important; right: 2rem !important; left: auto !important; direction: ltr !important;">
+    {{-- Floating Button Area --}}
+    <div class="!fixed !z-[999999] flex items-center gap-3"
+        style="bottom: 2rem !important; right: 2rem !important; left: auto !important; position: fixed !important; direction: ltr !important;">
         {{-- Label --}}
-        <div class="hidden md:flex flex-col items-end">
+        <div class="hidden md:flex">
             <span
-                class="bg-white dark:bg-slate-800 text-primary dark:text-emerald-400 text-[11px] px-3 py-1.5 rounded-xl font-bold shadow-xl border border-primary/20 dark:border-emerald-400/20 animate-fadeIn">
+                class="bg-white dark:bg-slate-800 text-primary dark:text-emerald-400 text-[12px] px-4 py-2 rounded-2xl font-bold shadow-2xl border-2 border-primary/20 dark:border-emerald-400/20 whitespace-nowrap">
                 AI Madrasah
             </span>
         </div>
 
         <button wire:click="toggleChat"
-            class="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-2xl hover:bg-emerald-600 hover:scale-110 transition-all focus:outline-none ring-4 ring-white dark:ring-slate-800"
+            class="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-2xl hover:bg-emerald-600 hover:scale-110 active:scale-95 transition-all focus:outline-none ring-4 ring-white dark:ring-slate-800"
             aria-label="Tanya AI">
             @if($isOpen)
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
                     stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -31,14 +32,14 @@
 
     {{-- Chat Panel --}}
     <div x-data="{ isOpen: @entangle('isOpen') }" x-show="isOpen"
-        x-transition:enter="transition ease-out duration-300 transform"
-        x-transition:enter-start="opacity-0 translate-y-32 scale-90"
+        x-transition:enter="transition ease-out duration-300 origin-bottom-right"
+        x-transition:enter-start="opacity-0 translate-y-full scale-50"
         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-        x-transition:leave="transition ease-in duration-200 transform"
+        x-transition:leave="transition ease-in duration-200 origin-bottom-right"
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-        x-transition:leave-end="opacity-0 translate-y-32 scale-90"
-        class="!fixed !z-[999999] bg-white dark:bg-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-3xl flex flex-col overflow-hidden border border-gray-100 dark:border-slate-800"
-        style="display: none; bottom: 6.5rem !important; right: 2rem !important; left: auto !important; width: 90vw; max-width: 420px; height: 75vh; max-height: 650px;">
+        x-transition:leave-end="opacity-0 translate-y-full scale-50"
+        class="!fixed !z-[999999] bg-white dark:bg-slate-900 shadow-[0_20px_60px_rgba(0,0,0,0.5)] rounded-[2rem] flex flex-col overflow-hidden border border-gray-100 dark:border-slate-800"
+        style="display: none; bottom: 6.5rem !important; right: 2rem !important; left: auto !important; position: fixed !important; width: 92vw; max-width: 440px; height: 75vh; max-height: 650px;">
         {{-- Header --}}
         <div class="bg-primary p-4 text-white flex items-center justify-between shadow-lg">
             <div class="flex items-center gap-3">
