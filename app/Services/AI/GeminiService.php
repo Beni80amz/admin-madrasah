@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 class GeminiService
 {
     protected string $apiKey;
-    protected string $baseUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent';
+    protected string $baseUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-lite:generateContent';
 
     public function __construct()
     {
@@ -66,10 +66,15 @@ class GeminiService
 
             $errorDetail = $response->json()['error']['message'] ?? $response->body();
             Log::error('Gemini API Error: ' . $errorDetail);
-            return "Debug Error (v1): " . $errorDetail;
+
+            if (str_contains($errorDetail, 'quota') || str_contains($errorDetail, 'limit')) {
+                return "Maaf, kuota harian AI Madrasah telah habis. Silakan coba lagi besok atau hubungi administrator.";
+            }
+
+            return "Terjadi kesalahan saat menghubungi layanan AI. Silakan coba lagi nanti.";
         } catch (\Exception $e) {
             Log::error('Gemini Service Exception: ' . $e->getMessage());
-            return "Debug Exception (v1): " . $e->getMessage();
+            return "Maaf, sistem sedang sibuk. Silakan coba beberapa saat lagi.";
         }
     }
 }
