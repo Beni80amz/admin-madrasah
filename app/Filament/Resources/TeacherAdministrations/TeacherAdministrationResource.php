@@ -35,6 +35,8 @@ class TeacherAdministrationResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
 
+    protected static ?int $navigationSort = 10;
+
     public static function getNavigationGroup(): ?string
     {
         $user = Auth::user();

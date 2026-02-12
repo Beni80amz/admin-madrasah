@@ -27,7 +27,18 @@ class LearningJournalResource extends Resource
 
     protected static ?string $modelLabel = 'Jurnal Pembelajaran';
 
-    protected static UnitEnum|string|null $navigationGroup = 'Akademik';
+    public static function getNavigationGroup(): ?string
+    {
+        $user = Auth::user();
+        if ($user && $user->hasRole('Kurikulum')) {
+            return 'Akademik';
+        }
+
+        return 'Administrasi Guru';
+    }
+
+    protected static ?int $navigationSort = 11;
+
 
     protected static ?string $recordTitleAttribute = 'date';
 

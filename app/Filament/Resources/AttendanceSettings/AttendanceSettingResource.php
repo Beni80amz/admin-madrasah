@@ -28,6 +28,8 @@ class AttendanceSettingResource extends Resource
 
     protected static UnitEnum|string|null $navigationGroup = 'Akademik';
 
+    protected static ?int $navigationSort = 20;
+
     protected static ?string $recordTitleAttribute = 'key';
 
     public static function form(Schema $schema): Schema
