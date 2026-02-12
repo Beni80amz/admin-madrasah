@@ -27,7 +27,7 @@ class DownloadResource extends Resource
 
     protected static ?string $slug = 'downloads';
 
-    protected static UnitEnum|string|null $navigationGroup = 'Setting';
+    protected static UnitEnum|string|null $navigationGroup = 'Data Pendukung';
 
     protected static ?int $navigationSort = 4;
 
