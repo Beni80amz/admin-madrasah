@@ -31,9 +31,9 @@ class SyncErrorLogResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedExclamationTriangle;
 
-    protected static UnitEnum|string|null $navigationGroup = 'Data Pendukung';
+    protected static UnitEnum|string|null $navigationGroup = 'Setting';
 
-    protected static ?int $navigationSort = 99;
+    protected static ?int $navigationSort = 101;
 
     protected static ?string $navigationLabel = 'Log Error Sinkronisasi';
 
